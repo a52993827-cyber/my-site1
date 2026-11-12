@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1 сайт</title>
+    <title>Мой сайт</title>
     <style>
         :root {
             --ink: #1d1b4d;
@@ -285,7 +285,7 @@
         }
 
         /* --- ОКНО РЕГИСТРАЦИИ --- */
-        #welcomeScreen {
+        #welcomeScreen, #deviceScreen {
             position: fixed;
             top: 0;
             left: 0;
@@ -325,6 +325,41 @@
         }
         .welcome-card input:focus {
             outline: 4px solid var(--coral);
+        }
+
+        /* --- ВЫБОР УСТРОЙСТВА --- */
+        .device-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .device-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--sun);
+            border: 4px solid var(--ink);
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 var(--ink);
+            transition: transform 0.1s, box-shadow 0.1s;
+            color: #000;
+        }
+        .device-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0 var(--ink);
+        }
+        .device-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 2px 2px 0 var(--ink);
+        }
+        .device-btn span {
+            font-size: 32px;
         }
 
         /* --- МЕНЮ ИГР --- */
@@ -519,13 +554,32 @@
 </head>
 <body>
 
-    <!-- Окно приветствия -->
+    <!-- Окно приветствия (Имя) -->
     <div id="welcomeScreen">
         <div class="welcome-card">
             <h2>Добро пожаловать!</h2>
             <p>Давай познакомимся. Как тебя зовут?</p>
             <input type="text" id="inputName" placeholder="Введи своё имя..." maxlength="20">
-            <button onclick="saveName()" style="width: 100%;">Войти на сайт ▶</button>
+            <button onclick="saveName()" style="width: 100%;">Далее ▶</button>
+        </div>
+    </div>
+
+    <!-- Окно выбора устройства -->
+    <div id="deviceScreen" style="display: none;">
+        <div class="welcome-card">
+            <h2>С какого устройства вы зашли?</h2>
+            <p>Это поможет нам настроить интерфейс и игры под вас.</p>
+            <div class="device-options">
+                <div class="device-btn" onclick="saveDevice('phone')">
+                    <span>📱</span> Телефон
+                </div>
+                <div class="device-btn" onclick="saveDevice('tablet')">
+                    <span>📟</span> Планшет
+                </div>
+                <div class="device-btn" onclick="saveDevice('desktop')">
+                    <span>💻</span> Компьютер
+                </div>
+            </div>
         </div>
     </div>
 
@@ -558,18 +612,29 @@
     <script>
         // --- РЕГИСТРАЦИЯ / ПРИВЕТСТВИЕ ---
         const welcomeScreen = document.getElementById("welcomeScreen");
+        const deviceScreen = document.getElementById("deviceScreen");
         const inputName = document.getElementById("inputName");
         const mainTitle = document.getElementById("mainTitle");
         const greetingText = document.getElementById("greetingText");
 
+        // Проверяем, сохранены ли имя и устройство
         const savedName = localStorage.getItem("userName");
+        const savedDevice = localStorage.getItem("userDevice");
 
         if (savedName) {
             welcomeScreen.style.display = "none";
             mainTitle.textContent = `Привет, ${savedName}!`;
             greetingText.textContent = "Как прошёл твой день? Надеюсь, отлично! Давай поиграем?";
+            
+            if (savedDevice) {
+                deviceScreen.style.display = "none";
+                applyDeviceSettings(savedDevice);
+            } else {
+                deviceScreen.style.display = "flex";
+            }
         } else {
             welcomeScreen.style.display = "flex";
+            deviceScreen.style.display = "none";
         }
 
         function saveName() {
@@ -582,6 +647,9 @@
             welcomeScreen.style.display = "none";
             mainTitle.textContent = `Привет, ${name}!`;
             greetingText.textContent = "Как прошёл твой день? Надеюсь, отлично! Давай поиграем?";
+            
+            // Показываем экран выбора устройства
+            deviceScreen.style.display = "flex";
         }
 
         inputName.addEventListener("keypress", function(event) {
@@ -590,9 +658,41 @@
             }
         });
 
+        // --- ВЫБОР УСТРОЙСТВА ---
+        function saveDevice(device) {
+            localStorage.setItem("userDevice", device);
+            deviceScreen.style.display = "none";
+            applyDeviceSettings(device);
+        }
+
+        function applyDeviceSettings(device) {
+            // Сохраняем устройство в глобальную переменную для использования в играх
+            window.userDevice = device;
+            
+            // Можно добавить визуальные изменения, если нужно
+            if (device === 'phone') {
+                // Например, немного уменьшить отступы на телефоне
+                document.body.style.padding = '12px';
+            } else {
+                document.body.style.padding = '24px';
+            }
+        }
+
         // --- Данные ---
         const avatars = ["🐢", "🦊", "🐼", "🦖", "🐱", "🐶", "🦁", "🐸", "🐵", "🐧", "🦄", "🐉"];
-        const gamesList = ['dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet', 'tictactoe', 'guessnumber'];
+        // Список всех игр
+        const allGamesList = ['dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet', 'tictactoe', 'guessnumber'];
+        
+        // Функция для получения доступных игр в зависимости от устройства
+        function getAvailableGames() {
+            const device = localStorage.getItem("userDevice");
+            if (device === 'phone' || device === 'tablet') {
+                // Исключаем игры, которые не работают на мобильных
+                return allGamesList.filter(game => game !== 'dino' && game !== '2048');
+            }
+            return allGamesList;
+        }
+
         const avatarColors = [
             { name: 'Жёлтый', hex: '#ffd23f' },
             { name: 'Мятный', hex: '#3ddbb0' },
@@ -654,9 +754,11 @@
             const currentAvatar = localStorage.getItem("savedAvatar") || "🐢";
             const currentName = localStorage.getItem("userName") || "Гость";
             const currentColor = localStorage.getItem("savedAvatarColor") || "#ffd23f";
+            const currentDevice = localStorage.getItem("userDevice") || "Не выбрано";
 
+            // Для статистики используем все игры, чтобы видеть полную картину
             let statsHtml = '';
-            gamesList.forEach(game => {
+            allGamesList.forEach(game => {
                 let count = parseInt(localStorage.getItem("playCount_" + game) || "0");
                 let names = {
                     'dino': '🦖 Динозаврик',
@@ -687,6 +789,12 @@
                         <h3>Твоё имя</h3>
                         <p style="font-size: 20px; font-weight: bold;">${currentName}</p>
                         <button onclick="changeName()" style="width: 100%; padding: 10px; margin-top: 10px;">✏️ Сменить имя</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Твоё устройство</h3>
+                        <p style="font-size: 20px; font-weight: bold; text-transform: capitalize;">${currentDevice === 'phone' ? '📱 Телефон' : currentDevice === 'tablet' ? '📟 Планшет' : currentDevice === 'desktop' ? '💻 Компьютер' : 'Не выбрано'}</p>
+                        <button onclick="changeDevice()" style="width: 100%; padding: 10px; margin-top: 10px;">🔄 Сменить устройство</button>
                     </div>
                     
                     <div class="settings-section">
@@ -735,6 +843,13 @@
             }
         }
 
+        function changeDevice() {
+            // Сбрасываем устройство, чтобы показать экран выбора заново
+            localStorage.removeItem("userDevice");
+            document.getElementById("btn-settings").click(); // Закрываем настройки
+            deviceScreen.style.display = "flex"; // Показываем экран выбора
+        }
+
         function selectAvatar(emoji) {
             localStorage.setItem("savedAvatar", emoji);
             avatarElement.textContent = emoji;
@@ -774,6 +889,25 @@
         }
 
         document.getElementById("btn-games").addEventListener("click", () => {
+            const availableGames = getAvailableGames();
+            
+            // Формируем HTML для доступных игр
+            let gamesHtml = '';
+            availableGames.forEach(game => {
+                let icon = '';
+                let name = '';
+                if (game === 'dino') { icon = '🦖'; name = 'Динозаврик'; }
+                else if (game === '2048') { icon = '🧩'; name = '2048'; }
+                else if (game === 'blockblast') { icon = '🧱'; name = 'Block Blast'; }
+                else if (game === 'sudoku') { icon = '🔢'; name = 'Судоку'; }
+                else if (game === 'watersort') { icon = '🧪'; name = 'Water Sort'; }
+                else if (game === 'onet') { icon = '🀄'; name = 'Onet'; }
+                else if (game === 'tictactoe') { icon = '⭕'; name = 'Крестики-нолики'; }
+                else if (game === 'guessnumber') { icon = '🎯'; name = 'Угадай число'; }
+                
+                gamesHtml += `<div class="game-cell" onclick="showRules('${game}')"><span>${icon}</span>${name}</div>`;
+            });
+
             openModal(`
                 <div class="games-menu-container">
                     <div class="games-menu-header">
@@ -781,21 +915,15 @@
                         <button class="random-btn" onclick="startRandomGame()">🎲 Случайная</button>
                     </div>
                     <div class="games-grid">
-                        <div class="game-cell" onclick="showRules('dino')"><span>🦖</span>Динозаврик</div>
-                        <div class="game-cell" onclick="showRules('2048')"><span>🧩</span>2048</div>
-                        <div class="game-cell" onclick="showRules('blockblast')"><span>🧱</span>Block Blast</div>
-                        <div class="game-cell" onclick="showRules('sudoku')"><span>🔢</span>Судоку</div>
-                        <div class="game-cell" onclick="showRules('watersort')"><span>🧪</span>Water Sort</div>
-                        <div class="game-cell" onclick="showRules('onet')"><span>🀄</span>Onet</div>
-                        <div class="game-cell" onclick="showRules('tictactoe')"><span>⭕</span>Крестики-нолики</div>
-                        <div class="game-cell" onclick="showRules('guessnumber')"><span>🎯</span>Угадай число</div>
+                        ${gamesHtml}
                     </div>
                 </div>
             `);
         });
 
         function startRandomGame() {
-            const randomGame = gamesList[Math.floor(Math.random() * gamesList.length)];
+            const availableGames = getAvailableGames();
+            const randomGame = availableGames[Math.floor(Math.random() * availableGames.length)];
             showRules(randomGame);
         }
 
