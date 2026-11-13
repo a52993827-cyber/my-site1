@@ -112,7 +112,6 @@
             transform: scale(0.98);
         }
 
-        /* --- КНОПКИ --- */
         button {
             font: inherit;
             font-weight: bold;
@@ -145,7 +144,6 @@
             color: var(--ink);
         }
 
-        /* --- МОДАЛЬНОЕ ОКНО --- */
         #myModal {
             display: none;
             position: fixed;
@@ -220,7 +218,6 @@
             z-index: 998;
         }
 
-        /* --- ПАНЕЛЬ НАСТРОЕК --- */
         .settings-panel {
             width: 100%;
             height: 100%;
@@ -284,7 +281,6 @@
             box-shadow: 5px 5px 0 #1d1b4d;
         }
 
-        /* --- ОКНО РЕГИСТРАЦИИ --- */
         #welcomeScreen, #deviceScreen {
             position: fixed;
             top: 0;
@@ -327,7 +323,6 @@
             outline: 4px solid var(--coral);
         }
 
-        /* --- ВЫБОР УСТРОЙСТВА --- */
         .device-options {
             display: flex;
             flex-direction: column;
@@ -362,7 +357,6 @@
             font-size: 32px;
         }
 
-        /* --- МЕНЮ ИГР --- */
         .games-menu-container {
             width: 100%;
             height: 100%;
@@ -415,7 +409,6 @@
             margin-bottom: 5px;
         }
 
-        /* Блок для кнопки "Случайная" внизу */
         .random-game-footer {
             padding: 15px;
             background: var(--menu-bg);
@@ -445,7 +438,6 @@
             box-shadow: 0 0 0 var(--ink);
         }
 
-        /* --- ПАЛИТРА ЦВЕТОВ ДЛЯ АВАТАРКИ --- */
         .color-list {
             display: flex;
             flex-wrap: wrap;
@@ -468,7 +460,6 @@
             box-shadow: 0 0 0 2px var(--paper);
         }
 
-        /* --- СОВРЕМЕННЫЙ ФОН ДЛЯ ВСТРОЕННЫХ ИГР --- */
         .modern-game-bg {
             background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
             border-radius: 20px;
@@ -555,7 +546,6 @@
             color: #aaa;
             margin-top: 15px;
         }
-        /* Переопределяем стили кнопок внутри современных игр */
         .modern-game-bg button {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
@@ -572,7 +562,6 @@
             transform: none;
         }
 
-        /* --- ПЕРЕКЛЮЧАТЕЛЬ УСТРОЙСТВ В НАСТРОЙКАХ --- */
         .device-switch {
             display: flex;
             gap: 10px;
@@ -602,12 +591,12 @@
             box-shadow: 0 0 0 var(--ink);
         }
 
-        /* --- СТИЛИ ДЛЯ ВСТРОЕННЫХ ИГР --- */
         .game-canvas {
             border-radius: 12px;
             background: #1a1a2e;
             border: 3px solid rgba(255, 255, 255, 0.3);
             max-width: 100%;
+            touch-action: none;
         }
         .hangman-word {
             font-size: 32px;
@@ -747,7 +736,6 @@
             background: #ffd23f;
             color: #000;
         }
-        /* --- ВЫБОР СЛОЖНОСТИ В КРЕСТИКАХ --- */
         .ttt-difficulty {
             display: flex;
             gap: 8px;
@@ -772,7 +760,6 @@
             border-color: #ffd23f;
         }
 
-        /* --- МЕНЮ РИСОВАНИЯ --- */
         .drawing-menu {
             display: flex;
             flex-direction: column;
@@ -816,7 +803,6 @@
             opacity: 0.7;
         }
         
-        /* --- НОВЫЙ ИНТЕРФЕЙС РИСОВАНИЯ --- */
         .drawing-workspace {
             display: flex;
             flex-direction: row;
@@ -948,10 +934,9 @@
             margin-bottom: 10px;
         }
 
-        /* --- МОБИЛЬНАЯ АДАПТАЦИЯ --- */
         @media (max-width: 768px) {
             .drawing-workspace {
-                flex-direction: column-reverse; /* Панель снизу, холст сверху */
+                flex-direction: column-reverse;
                 padding: 5px;
                 gap: 10px;
             }
@@ -1006,7 +991,6 @@
 </head>
 <body>
 
-    <!-- Окно приветствия (Имя) -->
     <div id="welcomeScreen">
         <div class="welcome-card">
             <h2>Добро пожаловать!</h2>
@@ -1016,7 +1000,6 @@
         </div>
     </div>
 
-    <!-- Окно выбора устройства -->
     <div id="deviceScreen" style="display: none;">
         <div class="welcome-card">
             <h2>С какого устройства вы зашли?</h2>
@@ -1056,9 +1039,7 @@
 
     <div id="myModal">
         <button id="closeModal">Закрыть ❌</button>
-        <div id="modalContent">
-            <!-- Контент появится здесь -->
-        </div>
+        <div id="modalContent"></div>
     </div>
 
     <script>
@@ -1107,7 +1088,6 @@
             }
         });
 
-        // --- ВЫБОР УСТРОЙСТВА ---
         function saveDevice(device) {
             localStorage.setItem("userDevice", device);
             deviceScreen.style.display = "none";
@@ -1123,16 +1103,12 @@
             }
         }
 
-        // --- СПИСКИ ИГР (по 15 на каждое устройство) ---
-        
-        // 15 игр для компьютера
         const desktopGames = [
             'dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet',
             'tictactoe', 'guessnumber', 'flappybird',
             'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory'
         ];
         
-        // 15 игр для мобильных (без dino и 2048, + 2 мобильные)
         const mobileGames = [
             'blockblast', 'sudoku', 'watersort', 'onet',
             'tictactoe', 'guessnumber', 'flappybird',
@@ -1183,13 +1159,11 @@
             { name: 'Белый', hex: '#ffffff' }
         ];
 
-        // --- Тёмная тема ---
         const body = document.body;
         if (localStorage.getItem("theme") === "dark") {
             body.classList.add("dark-theme");
         }
 
-        // --- Загрузка аватара и его цвета ---
         const avatarElement = document.getElementById("avatar");
         const savedAvatar = localStorage.getItem("savedAvatar") || "🐢";
         avatarElement.textContent = savedAvatar;
@@ -1197,7 +1171,6 @@
         const savedAvatarColor = localStorage.getItem("savedAvatarColor") || "#ffd23f";
         document.documentElement.style.setProperty('--avatar-bg', savedAvatarColor);
 
-        // --- Модальное окно ---
         const modal = document.getElementById("myModal");
         const modalContent = document.getElementById("modalContent");
         const closeBtn = document.getElementById("closeModal");
@@ -1217,7 +1190,6 @@
             modalContent.innerHTML = "";
         }
 
-        // --- 1. Кнопка "Нажми меня" ---
         const phrases = ["Ура, я это сделал!"];
         let n = 0;
         document.getElementById("btn").addEventListener("click", function () {
@@ -1225,7 +1197,6 @@
             n++;
         });
 
-        // --- 2. Настройки ---
         document.getElementById("btn-settings").addEventListener("click", () => {
             const isDark = body.classList.contains("dark-theme");
             const currentAvatar = localStorage.getItem("savedAvatar") || "🐢";
@@ -1353,7 +1324,6 @@
             }
         }
 
-        // --- 3. ИГРЫ ---
         function backToGamesMenu() {
             document.getElementById("btn-games").click();
         }
@@ -1405,11 +1375,11 @@
                 '2048': { text: "Используй СТРЕЛКИ на клавиатуре, чтобы двигать плитки. Соединяй одинаковые цифры, чтобы получить 2048!", warn: "Перед началом игры обязательно нажми левой кнопкой мыши по игровому полю!" },
                 'blockblast': { text: "Перетаскивай блоки на поле, чтобы заполнить линии и очистить их. Игра закончится, когда не будет места для нового блока.", warn: "Перед началом игры нажми левой кнопкой мыши по полю!" },
                 'sudoku': { text: "Заполни сетку 9x9 цифрами от 1 до 9 так, чтобы в каждой строке, столбце и квадрате 3x3 цифры не повторялись.", warn: "Перед началом игры нажми левой кнопкой мыши по полю!" },
-                'watersort': { text: "Переливай воду между колбами, чтобы собрать в каждой колбе воду одного цвета. Нажми на колбу, чтобы выбрать, и на другую — чтобы перелить.", warn: "Перед началом игры нажми левой кнопкой мыши по полю!" },
+                'watersort': { text: "Переливай воду между колбами, чтобы собрать в каждой колбе воду одного цвета. 200 уровней! Нажми на колбу, чтобы выбрать, и на другую — чтобы перелить. Прогресс сохраняется.", warn: "" },
                 'onet': { text: "Находи одинаковые картинки и соединяй их линией, которая не пересекает другие картинки.", warn: "Перед началом игры нажми левой кнопкой мыши по полю!" },
                 'tictactoe': { text: "Классические крестики-нолики. Выбери уровень сложности бота и играй за ❌. Собери три своих знака в ряд!", warn: "" },
                 'guessnumber': { text: "Я загадал число от 1 до 100. Попробуй угадать его за минимальное количество попыток!", warn: "" },
-                'flappybird': { text: "Нажимай ПРОБЕЛ, кликай мышкой или тапай по экрану, чтобы птичка летела вверх. Пролетай между трубами!", warn: "" },
+                'flappybird': { text: "Нажимай ПРОБЕЛ, кликай мышкой или тапай по экрану, чтобы птичка летела вверх. Пролетай между трубами! Игра замедленная и плавная.", warn: "" },
                 'hangman': { text: "Угадай слово по буквам. У тебя есть 6 попыток. Каждая неверная буква приближает поражение!", warn: "" },
                 'rps': { text: "Камень побеждает ножницы, ножницы побеждают бумагу, бумага побеждает камень. Выбери свой ход!", warn: "" },
                 'reaction': { text: "Нажми на круг как можно быстрее, когда он появится! Чем быстрее реакция — тем больше очков.", warn: "" },
@@ -1438,11 +1408,9 @@
             `);
         }
 
-        // --- ЗАПУСК ИГР ---
         function startGame(gameType) {
             saveGameResult(gameType);
 
-            // --- ВСТРОЕННЫЕ ИГРЫ ---
             if (gameType === 'tictactoe') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
@@ -1626,12 +1594,19 @@
             if (gameType === 'watersort') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
-                        <div class="embedded-game">
-                            <h2>Water Sort</h2>
-                            <div class="ttt-status" id="watersort-status">Нажми на колбу, чтобы выбрать</div>
-                            <div class="ttt-status" id="watersort-level" style="font-size: 14px; color: #ffd23f;">Уровень 1</div>
-                            <div id="watersort-area" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 10px;"></div>
-                            <button onclick="initWaterSort()" style="margin-top: 20px;">Заново</button>
+                        <div class="embedded-game" style="padding: 12px;">
+                            <h2 style="margin: 0 0 8px;">🧪 Water Sort</h2>
+                            <div style="display: flex; gap: 12px; font-size: 14px; font-weight: bold; color: #ffd23f; margin-bottom: 6px;">
+                                <span id="watersort-level">Уровень 1 / 200</span>
+                                <span id="watersort-moves">Ходов: 0</span>
+                            </div>
+                            <div class="ttt-status" id="watersort-status" style="font-size: 14px; margin-bottom: 8px;">Нажми на колбу, чтобы выбрать</div>
+                            <div id="watersort-area" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 12px; margin-top: 8px; min-height: 200px;"></div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px;">
+                                <button onclick="waterSortResetLevel()" style="padding: 8px 14px; font-size: 13px;">🔄 Заново</button>
+                                <button onclick="waterSortSkipLevel()" style="padding: 8px 14px; font-size: 13px;">⏭️ Пропустить</button>
+                                <button onclick="waterSortGoToLevel()" style="padding: 8px 14px; font-size: 13px;">🎯 Уровень</button>
+                            </div>
                         </div>
                     </div>
                 `);
@@ -1639,7 +1614,6 @@
                 return;
             }
 
-            // --- ВНЕШНИЕ ИГРЫ (IFRAME) ---
             const gameUrls = {
                 'dino': 'https://imkennyyip.github.io/chrome-dinosaur-game/',
                 '2048': 'https://monicatvera.github.io/2048/',
@@ -1668,7 +1642,6 @@
         // === ВСТРОЕННЫЕ ИГРЫ ===
         // ============================================
 
-        // --- КРЕСТИКИ-НОЛИКИ (с уровнями сложности) ---
         let tttBoard = ['', '', '', '', '', '', '', '', ''];
         let tttCurrentPlayer = 'X';
         let tttGameActive = true;
@@ -1851,10 +1824,23 @@
             initGuessGame();
         }
 
-        // --- FLAPPY BIRD ---
+        // ============================================
+        // === FLAPPY BIRD (замедленная, плавная физика) ===
+        // ============================================
         let flappyState = {
             birdY: 250, birdV: 0, pipes: [], score: 0, running: false,
             gameOver: false, animId: null, frame: 0
+        };
+
+        // Все параметры сложности в одном месте — легко крутить баланс
+        const FLAPPY_CFG = {
+            gravity: 0.32,          // было 0.5 — птица падает медленнее
+            jumpVelocity: -5.2,     // было -6 — прыжок мягче
+            pipeSpeed: 1.8,         // было 3 — трубы плывут медленнее
+            pipeInterval: 110,      // было 80 — трубы появляются реже
+            pipeGap: 170,           // было 150 — проход между трубами шире
+            maxFallSpeed: 6,        // ограничение скорости падения
+            startDelay: 60          // кадров до первой трубы, чтобы игрок освоился
         };
 
         function initFlappy() {
@@ -1866,16 +1852,27 @@
                 gameOver: false, animId: null, frame: 0
             };
             drawFlappy(ctx);
+
+            // Клик по канвасу
             canvas.onclick = () => {
                 if (!flappyState.running && !flappyState.gameOver) startFlappy();
-                else if (flappyState.running) flappyState.birdV = -6;
+                else if (flappyState.running) flappyState.birdV = FLAPPY_CFG.jumpVelocity;
             };
+
+            // Пробел / стрелка вверх на клавиатуре
             document.onkeydown = (e) => {
-                if (e.code === 'Space') {
+                if (e.code === 'Space' || e.code === 'ArrowUp') {
                     e.preventDefault();
                     if (!flappyState.running && !flappyState.gameOver) startFlappy();
-                    else if (flappyState.running) flappyState.birdV = -6;
+                    else if (flappyState.running) flappyState.birdV = FLAPPY_CFG.jumpVelocity;
                 }
+            };
+
+            // Тап по экрану для мобильных
+            canvas.ontouchstart = (e) => {
+                e.preventDefault();
+                if (!flappyState.running && !flappyState.gameOver) startFlappy();
+                else if (flappyState.running) flappyState.birdV = FLAPPY_CFG.jumpVelocity;
             };
         }
 
@@ -1883,27 +1880,49 @@
             const w = 400, h = 500;
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 0, w, h);
-            
+
+            // Трубы
             flappyState.pipes.forEach(p => {
                 ctx.fillStyle = '#3ddbb0';
                 ctx.fillRect(p.x, 0, 60, p.top);
-                ctx.fillRect(p.x, p.top + 150, 60, h - p.top - 150);
+                ctx.fillRect(p.x, p.top + FLAPPY_CFG.pipeGap, 60, h - p.top - FLAPPY_CFG.pipeGap);
+                // Блик для объёма
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.fillRect(p.x + 8, 0, 10, p.top);
+                ctx.fillRect(p.x + 8, p.top + FLAPPY_CFG.pipeGap, 10, h - p.top - FLAPPY_CFG.pipeGap);
             });
-            
+
+            // Птичка с наклоном по скорости
+            ctx.save();
+            ctx.translate(80, flappyState.birdY);
+            const angle = Math.max(-0.5, Math.min(0.9, flappyState.birdV * 0.08));
+            ctx.rotate(angle);
             ctx.fillStyle = '#ffd23f';
             ctx.beginPath();
-            ctx.arc(80, flappyState.birdY, 15, 0, Math.PI * 2);
+            ctx.arc(0, 0, 15, 0, Math.PI * 2);
             ctx.fill();
+            // Глаз
             ctx.fillStyle = '#1d1b4d';
             ctx.beginPath();
-            ctx.arc(85, flappyState.birdY - 5, 3, 0, Math.PI * 2);
+            ctx.arc(5, -5, 3, 0, Math.PI * 2);
             ctx.fill();
-            
+            // Клюв
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.moveTo(12, 2);
+            ctx.lineTo(22, 5);
+            ctx.lineTo(12, 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // Счёт
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 24px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Счёт: ' + flappyState.score, w / 2, 40);
-            
+
+            // Экран проигрыша
             if (flappyState.gameOver) {
                 ctx.fillStyle = 'rgba(0,0,0,0.7)';
                 ctx.fillRect(0, 0, w, h);
@@ -1913,6 +1932,19 @@
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 24px sans-serif';
                 ctx.fillText('Счёт: ' + flappyState.score, w / 2, h / 2 + 20);
+                ctx.font = '16px sans-serif';
+                ctx.fillStyle = '#aaa';
+                ctx.fillText('Нажми, чтобы начать заново', w / 2, h / 2 + 60);
+            }
+
+            // Подсказка перед стартом
+            if (!flappyState.running && !flappyState.gameOver && flappyState.frame === 0) {
+                ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                ctx.font = 'bold 18px sans-serif';
+                ctx.fillText('Нажми ПРОБЕЛ или кликни', w / 2, h / 2 + 80);
+                ctx.font = '14px sans-serif';
+                ctx.fillStyle = '#aaa';
+                ctx.fillText('чтобы птичка летела вверх', w / 2, h / 2 + 105);
             }
         }
 
@@ -1924,32 +1956,47 @@
                 birdY: 250, birdV: 0, pipes: [], score: 0, running: true,
                 gameOver: false, animId: null, frame: 0
             };
+            // Даём птичке стартовый импульс, чтобы не падала сразу
+            flappyState.birdV = FLAPPY_CFG.jumpVelocity;
             flappyLoop(ctx);
         }
 
         function flappyLoop(ctx) {
             if (!flappyState.running) return;
             flappyState.frame++;
-            flappyState.birdV += 0.5;
+
+            // --- ФИЗИКА ---
+            flappyState.birdV += FLAPPY_CFG.gravity;
+            if (flappyState.birdV > FLAPPY_CFG.maxFallSpeed) {
+                flappyState.birdV = FLAPPY_CFG.maxFallSpeed;
+            }
             flappyState.birdY += flappyState.birdV;
-            
+
+            // Столкновение с полом/потолком
             if (flappyState.birdY > 485 || flappyState.birdY < 15) {
                 flappyState.running = false;
                 flappyState.gameOver = true;
                 drawFlappy(ctx);
                 return;
             }
-            
-            if (flappyState.frame % 80 === 0) {
-                flappyState.pipes.push({ x: 400, top: 80 + Math.random() * 200 });
+
+            // --- ГЕНЕРАЦИЯ ТРУБ ---
+            const spawnFrame = flappyState.frame - FLAPPY_CFG.startDelay;
+            if (spawnFrame > 0 && spawnFrame % FLAPPY_CFG.pipeInterval === 0) {
+                const minTop = 60;
+                const maxTop = 500 - FLAPPY_CFG.pipeGap - 60;
+                const top = minTop + Math.random() * (maxTop - minTop);
+                flappyState.pipes.push({ x: 400, top: top });
             }
-            
-            flappyState.pipes.forEach(p => p.x -= 3);
+
+            // --- ДВИЖЕНИЕ ТРУБ ---
+            flappyState.pipes.forEach(p => p.x -= FLAPPY_CFG.pipeSpeed);
             flappyState.pipes = flappyState.pipes.filter(p => p.x > -60);
-            
+
+            // --- КОЛЛИЗИИ И ОЧКИ ---
             for (let p of flappyState.pipes) {
                 if (80 + 15 > p.x && 80 - 15 < p.x + 60) {
-                    if (flappyState.birdY - 15 < p.top || flappyState.birdY + 15 > p.top + 150) {
+                    if (flappyState.birdY - 15 < p.top || flappyState.birdY + 15 > p.top + FLAPPY_CFG.pipeGap) {
                         flappyState.running = false;
                         flappyState.gameOver = true;
                         drawFlappy(ctx);
@@ -1961,7 +2008,7 @@
                     flappyState.score++;
                 }
             }
-            
+
             drawFlappy(ctx);
             flappyState.animId = requestAnimationFrame(() => flappyLoop(ctx));
         }
@@ -2152,10 +2199,9 @@
             document.getElementById('color-score').textContent = `Счёт: ${colorGameState.score}`;
         }
 
-        // --- ПАЗЛ С ЧИСЛАМИ (полностью переработан) ---
+        // --- ПАЗЛ С ЧИСЛАМИ ---
         let puzzleState = {};
 
-        // Надёжное перемешивание (алгоритм Фишера-Йетса)
         function shuffleArray(arr) {
             const array = [...arr];
             for (let i = array.length - 1; i > 0; i--) {
@@ -2166,16 +2212,13 @@
         }
 
         function initPuzzle() {
-            // 1. Перемешиваем числа для сетки (от 1 до 12)
             const gridNumbers = shuffleArray(Array.from({length: 12}, (_, i) => i + 1));
-            
-            // 2. Перемешиваем ОЧЕРЕДЬ поиска (в каком порядке просить числа)
             const searchQueue = shuffleArray(Array.from({length: 12}, (_, i) => i + 1));
             
             puzzleState = { 
                 gridNumbers: gridNumbers,
                 searchQueue: searchQueue,
-                currentIndex: 0 // индекс текущего искомого числа в searchQueue
+                currentIndex: 0
             };
             
             renderPuzzle();
@@ -2186,7 +2229,6 @@
             if (!grid) return;
             grid.innerHTML = '';
             
-            // Выводим сетку с перемешанными числами
             puzzleState.gridNumbers.forEach((num) => {
                 const cell = document.createElement('div');
                 cell.className = 'puzzle-cell';
@@ -2195,7 +2237,6 @@
                 grid.appendChild(cell);
             });
             
-            // Показываем, какое число искать сейчас
             const targetNumber = puzzleState.searchQueue[puzzleState.currentIndex];
             document.getElementById('puzzle-status').textContent = `Найди число: ${targetNumber}`;
         }
@@ -2216,7 +2257,7 @@
                         initPuzzle();
                     }, 1000);
                 } else {
-                    renderPuzzle(); // Перерисовываем, чтобы показать новое искомое число
+                    renderPuzzle();
                 }
             } else {
                 cell.style.background = '#ff6b6b';
@@ -2224,9 +2265,8 @@
             }
         }
 
-        // --- НАЙДИ ПАРУ (МЕМОРИ) ---
+        // --- НАЙДИ ПАРУ ---
         let memoryState = {};
-
         const memoryEmojis = ['🐢', '🦊', '🐼', '🦖', '🐱', '🐶'];
 
         function initMemory() {
@@ -2369,164 +2409,238 @@
         }
 
         // ============================================
-        // === WATER SORT (Встроенная, с уровнями, анимацией и звуком) ===
+        // === WATER SORT (200 уровней, анимация, звук) ===
         // ============================================
+
+        const WATER_COLORS = [
+            '#ff6b6b', '#3ddbb0', '#6bc5ff', '#ffd23f',
+            '#b19cd9', '#ffb347', '#ff99cc', '#a8e6cf',
+            '#c0c0c0', '#ffffff', '#8b4513', '#00e5b5'
+        ];
+
+        const WATER_TUBE_CAPACITY = 4;
+
         let waterSortState = {
             tubes: [],
             selectedTube: -1,
-            colors: ['#ff6b6b', '#3ddbb0', '#6bc5ff', '#ffd23f', '#b19cd9', '#ffb347'],
-            tubeCapacity: 4,
-            level: 1
+            level: 1,
+            animating: false,
+            moves: 0,
+            capacity: 4
         };
 
-        // --- ЗВУКОВЫЕ ЭФФЕКТЫ (Web Audio API) ---
         let audioCtx = null;
-        function playSound(type) {
+        function getAudioCtx() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'select') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1);
-            } else if (type === 'pour') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.3);
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.3);
-            } else if (type === 'win') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.5);
-            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
         }
 
-        // --- ИНИЦИАЛИЗАЦИЯ ИГРЫ ---
+        function playSound(type) {
+            try {
+                const ctx = getAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'select') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(650, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+                    osc.start(); osc.stop(ctx.currentTime + 0.12);
+                } else if (type === 'pour') {
+                    const bufferSize = Math.floor(ctx.sampleRate * 0.4);
+                    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+                    }
+                    const noise = ctx.createBufferSource();
+                    noise.buffer = buffer;
+                    const noiseGain = ctx.createGain();
+                    noiseGain.gain.setValueAtTime(0.06, ctx.currentTime);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+                    noise.connect(noiseGain);
+                    noiseGain.connect(ctx.destination);
+                    noise.start();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.35);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    osc.start(); osc.stop(ctx.currentTime + 0.35);
+                } else if (type === 'win') {
+                    [523, 659, 784, 1047].forEach((freq, i) => {
+                        const o = ctx.createOscillator();
+                        const g = ctx.createGain();
+                        o.type = 'square';
+                        o.frequency.value = freq;
+                        o.connect(g); g.connect(ctx.destination);
+                        g.gain.setValueAtTime(0.0001, ctx.currentTime + i * 0.12);
+                        g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + i * 0.12 + 0.02);
+                        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i * 0.12 + 0.25);
+                        o.start(ctx.currentTime + i * 0.12);
+                        o.stop(ctx.currentTime + i * 0.12 + 0.3);
+                    });
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                    osc.start(); osc.stop(ctx.currentTime + 0.25);
+                }
+            } catch (e) { /* игнорируем ошибки аудио */ }
+        }
+
+        function getLevelConfig(level) {
+            let colors, empty, capacity = 4;
+            if (level <= 20) { colors = 3; empty = 2; }
+            else if (level <= 50) { colors = 4; empty = 2; }
+            else if (level <= 90) { colors = 5; empty = 2; }
+            else if (level <= 140) { colors = 6; empty = 2; }
+            else if (level <= 170) { colors = 7; empty = 1; }
+            else { colors = 8; empty = 1; }
+            return { colors, empty, capacity, seed: level * 1337 + 42 };
+        }
+
+        function mulberry32(seed) {
+            return function() {
+                seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+                let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function shuffleWithRng(arr, rng) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(rng() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function loadProgress() {
+            const saved = parseInt(localStorage.getItem('waterSortLevel') || '1');
+            waterSortState.level = Math.max(1, Math.min(200, saved));
+        }
+
+        function saveProgress() {
+            localStorage.setItem('waterSortLevel', waterSortState.level);
+        }
+
         function initWaterSort() {
-            // Определяем параметры уровня
-            let numColors = 4; // уровень 1 (по умолчанию)
-            if (waterSortState.level === 1) numColors = 3;
-            else if (waterSortState.level === 2) numColors = 4;
-            else if (waterSortState.level === 3) numColors = 5;
-            else if (waterSortState.level >= 4) numColors = 6;
+            loadProgress();
+            buildLevel(waterSortState.level);
+            renderWaterSort();
+            updateWaterSortHud();
+        }
 
-            document.getElementById('watersort-level').textContent = `Уровень ${waterSortState.level}`;
-
-            // Выбираем нужное количество цветов из палитры
-            const colorList = waterSortState.colors.slice(0, numColors);
+        function buildLevel(level) {
+            const cfg = getLevelConfig(level);
+            const rng = mulberry32(cfg.seed);
 
             let liquids = [];
-            // Создаем по 4 слоя каждого цвета
-            for (let i = 0; i < numColors; i++) {
-                for (let j = 0; j < 4; j++) {
-                    liquids.push(colorList[i]);
+            for (let c = 0; c < cfg.colors; c++) {
+                for (let k = 0; k < cfg.capacity; k++) {
+                    liquids.push(WATER_COLORS[c % WATER_COLORS.length]);
                 }
             }
-            
-            // Перемешиваем
-            liquids = shuffleArray(liquids);
-            
-            // Разбиваем на колбы
-            waterSortState.tubes = [];
-            // Заполненные колбы
-            for (let i = 0; i < numColors; i++) {
-                let tube = [];
-                for (let j = 0; j < 4; j++) {
+            liquids = shuffleWithRng(liquids, rng);
+
+            const tubes = [];
+            for (let i = 0; i < cfg.colors; i++) {
+                const tube = [];
+                for (let j = 0; j < cfg.capacity; j++) {
                     tube.push(liquids.pop());
                 }
-                waterSortState.tubes.push(tube);
+                tubes.push(tube);
             }
-            // Добавляем 2 пустые колбы
-            waterSortState.tubes.push([]);
-            waterSortState.tubes.push([]);
-            
+            for (let i = 0; i < cfg.empty; i++) tubes.push([]);
+
+            waterSortState.tubes = tubes;
             waterSortState.selectedTube = -1;
-            renderWaterSort();
-            document.getElementById('watersort-status').textContent = 'Нажми на колбу, чтобы выбрать';
+            waterSortState.animating = false;
+            waterSortState.moves = 0;
+            waterSortState.capacity = cfg.capacity;
         }
 
-        // --- ОТРИСОВКА ---
+        function updateWaterSortHud() {
+            const lvlEl = document.getElementById('watersort-level');
+            const movesEl = document.getElementById('watersort-moves');
+            if (lvlEl) lvlEl.textContent = `Уровень ${waterSortState.level} / 200`;
+            if (movesEl) movesEl.textContent = `Ходов: ${waterSortState.moves}`;
+        }
+
         function renderWaterSort() {
             const area = document.getElementById('watersort-area');
             if (!area) return;
             area.innerHTML = '';
+            area.style.position = 'relative';
+
+            const capacity = waterSortState.capacity || 4;
 
             waterSortState.tubes.forEach((tube, index) => {
-                // Обертка для позиционирования
                 const wrapper = document.createElement('div');
+                wrapper.className = 'watersort-tube-wrapper';
+                wrapper.dataset.index = index;
                 wrapper.style.cssText = `
                     position: relative;
-                    width: 50px;
-                    height: 180px;
+                    width: 54px;
+                    height: 190px;
                     cursor: pointer;
-                    transition: transform 0.2s, opacity 0.2s;
                     display: flex;
                     justify-content: center;
                     align-items: flex-end;
-                    opacity: 1;
+                    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
                 `;
-                
-                // Если колба выбрана, поднимаем её
+
                 if (waterSortState.selectedTube === index) {
-                    wrapper.style.transform = 'translateY(-15px)';
+                    wrapper.style.transform = 'translateY(-18px)';
                 }
 
-                // Сама колба (бутылка)
                 const tubeEl = document.createElement('div');
+                tubeEl.className = 'watersort-tube';
                 tubeEl.style.cssText = `
-                    width: 44px;
-                    height: 170px;
-                    border: 4px solid rgba(255,255,255,0.8);
+                    width: 46px;
+                    height: 180px;
+                    border: 4px solid rgba(255,255,255,0.85);
                     border-top: none;
-                    border-radius: 0 0 22px 22px;
+                    border-radius: 0 0 23px 23px;
                     display: flex;
                     flex-direction: column-reverse;
                     justify-content: flex-start;
-                    align-items: center;
+                    align-items: stretch;
                     position: relative;
-                    background: rgba(0,0,0,0.2);
-                    overflow: hidden; /* Слои не выходят за края */
+                    background: rgba(0,0,0,0.25);
+                    overflow: hidden;
                     transition: border-color 0.2s, box-shadow 0.2s;
                 `;
-                
-                // Если колба выбрана, меняем цвет границы
+
                 if (waterSortState.selectedTube === index) {
                     tubeEl.style.borderColor = '#ffd23f';
-                    tubeEl.style.boxShadow = '0 0 15px rgba(255, 210, 63, 0.8)';
+                    tubeEl.style.boxShadow = '0 0 16px rgba(255,210,63,0.9)';
                 }
 
-                // Слои жидкости (снизу вверх)
                 tube.forEach(color => {
-                    const segment = document.createElement('div');
-                    segment.style.cssText = `
+                    const seg = document.createElement('div');
+                    seg.style.cssText = `
                         width: 100%;
-                        height: 25%; /* 100% / 4 слоя */
+                        height: ${100 / capacity}%;
                         background: ${color};
                         flex-shrink: 0;
-                        border-bottom: 1px solid rgba(0,0,0,0.1);
-                        transition: height 0.3s;
+                        border-bottom: 1px solid rgba(0,0,0,0.12);
+                        transition: height 0.25s, opacity 0.25s;
                     `;
-                    tubeEl.appendChild(segment);
+                    tubeEl.appendChild(seg);
                 });
 
                 wrapper.appendChild(tubeEl);
@@ -2535,119 +2649,258 @@
             });
         }
 
-        // --- ЛОГИКА КЛИКА ---
+        function setWaterStatus(text) {
+            const el = document.getElementById('watersort-status');
+            if (el) el.textContent = text;
+        }
+
         function handleWaterSortClick(index) {
-            // Если колба уже выбрана и мы кликнули на неё же — отменяем выбор
+            if (waterSortState.animating) return;
+
+            const tubes = waterSortState.tubes;
+
             if (waterSortState.selectedTube === index) {
                 waterSortState.selectedTube = -1;
                 renderWaterSort();
-                document.getElementById('watersort-status').textContent = 'Нажми на колбу, чтобы выбрать';
+                setWaterStatus('Нажми на колбу, чтобы выбрать');
                 playSound('select');
                 return;
             }
 
-            // Если ничего не выбрано — выбираем колбу
             if (waterSortState.selectedTube === -1) {
-                if (waterSortState.tubes[index].length > 0) {
+                if (tubes[index].length > 0) {
                     waterSortState.selectedTube = index;
                     renderWaterSort();
-                    document.getElementById('watersort-status').textContent = 'Выбери колбу, куда перелить';
+                    setWaterStatus('Выбери колбу, куда перелить');
                     playSound('select');
                 }
                 return;
             }
 
-            // Если выбрана другая колба — пытаемся перелить
-            const fromTube = waterSortState.tubes[waterSortState.selectedTube];
-            const toTube = waterSortState.tubes[index];
-            
-            // Нельзя переливать в полную колбу
-            if (toTube.length >= 4) {
+            const fromIdx = waterSortState.selectedTube;
+            const fromTube = tubes[fromIdx];
+            const toTube = tubes[index];
+            const capacity = waterSortState.capacity;
+
+            if (toTube.length >= capacity) {
                 waterSortState.selectedTube = -1;
                 renderWaterSort();
-                document.getElementById('watersort-status').textContent = 'Колба полна! Выбери другую';
-                playSound('select');
+                setWaterStatus('Колба полна!');
+                playSound('error');
                 return;
             }
 
             const colorToMove = fromTube[fromTube.length - 1];
-            
-            // Можно переливать, только если колба пуста или верхний цвет совпадает
-            if (toTube.length === 0 || toTube[toTube.length - 1] === colorToMove) {
-                // Считаем сколько слоев одного цвета
-                let count = 0;
-                for (let i = fromTube.length - 1; i >= 0; i--) {
-                    if (fromTube[i] === colorToMove) count++;
-                    else break;
-                }
-                
-                // Переливаем сколько влезет
-                const space = 4 - toTube.length;
-                const amountToMove = Math.min(count, space);
+            const topColor = toTube.length > 0 ? toTube[toTube.length - 1] : null;
 
-                // Анимация: поднимаем колбу-источник
-                const area = document.getElementById('watersort-area');
-                const wrappers = area.children;
-                wrappers[waterSortState.selectedTube].style.transform = 'translateY(-30px)';
-                
-                // Звук переливания
-                playSound('pour');
-
-                setTimeout(() => {
-                    for (let i = 0; i < amountToMove; i++) {
-                        toTube.push(fromTube.pop());
-                    }
-                    
-                    waterSortState.selectedTube = -1;
-                    renderWaterSort();
-                    checkWaterSortWin();
-                }, 300); // Задержка для анимации
-            } else {
-                // Неправильный цвет — сбрасываем выбор
+            if (toTube.length > 0 && topColor !== colorToMove) {
                 waterSortState.selectedTube = -1;
                 renderWaterSort();
-                document.getElementById('watersort-status').textContent = 'Нельзя смешивать разные цвета!';
-                playSound('select');
+                setWaterStatus('Нельзя смешивать разные цвета!');
+                playSound('error');
+                return;
+            }
+
+            let count = 0;
+            for (let i = fromTube.length - 1; i >= 0; i--) {
+                if (fromTube[i] === colorToMove) count++;
+                else break;
+            }
+            const space = capacity - toTube.length;
+            const amount = Math.min(count, space);
+
+            animatePour(fromIdx, index, colorToMove, amount);
+        }
+
+        function animatePour(fromIdx, toIdx, color, amount) {
+            waterSortState.animating = true;
+            waterSortState.selectedTube = -1;
+
+            const area = document.getElementById('watersort-area');
+            if (!area) { finishPour(fromIdx, toIdx, color, amount); return; }
+
+            const wrappers = area.querySelectorAll('.watersort-tube-wrapper');
+            const fromWrapper = wrappers[fromIdx];
+            const toWrapper = wrappers[toIdx];
+
+            if (!fromWrapper || !toWrapper) {
+                finishPour(fromIdx, toIdx, color, amount);
+                return;
+            }
+
+            const fromTubeEl = fromWrapper.querySelector('.watersort-tube');
+            const toTubeEl = toWrapper.querySelector('.watersort-tube');
+
+            fromWrapper.style.transform = 'translateY(-40px) rotate(35deg)';
+            fromWrapper.style.zIndex = '10';
+            fromWrapper.style.transition = 'transform 0.3s ease-out';
+
+            const fromRect = fromTubeEl.getBoundingClientRect();
+            const toRect = toTubeEl.getBoundingClientRect();
+            const areaRect = area.getBoundingClientRect();
+
+            const startX = fromRect.right - 8;
+            const startY = fromRect.top + 20;
+            const endX = toRect.left + toRect.width / 2;
+            const endY = toRect.top;
+
+            const stream = document.createElement('div');
+            stream.style.cssText = `
+                position: absolute;
+                left: ${startX - areaRect.left}px;
+                top: ${startY - areaRect.top}px;
+                width: 8px;
+                height: 0px;
+                background: ${color};
+                border-radius: 4px;
+                pointer-events: none;
+                z-index: 20;
+                box-shadow: 0 0 8px ${color};
+                transform-origin: top center;
+                transition: height 0.35s ease-in, left 0.35s ease-in, top 0.35s ease-in;
+            `;
+            area.appendChild(stream);
+
+            requestAnimationFrame(() => {
+                stream.style.left = `${endX - areaRect.left - 4}px`;
+                stream.style.top = `${endY - areaRect.top}px`;
+                stream.style.height = `${Math.abs(endY - startY) + 20}px`;
+            });
+
+            playSound('pour');
+
+            setTimeout(() => {
+                const fromSegs = fromTubeEl.querySelectorAll('div');
+                for (let i = 0; i < amount; i++) {
+                    const seg = fromSegs[fromSegs.length - 1 - i];
+                    if (seg) {
+                        seg.style.height = '0%';
+                        seg.style.opacity = '0';
+                    }
+                }
+
+                const capacity = waterSortState.capacity;
+                const segHeight = 100 / capacity;
+                for (let i = 0; i < amount; i++) {
+                    const seg = document.createElement('div');
+                    seg.style.cssText = `
+                        width: 100%;
+                        height: 0%;
+                        background: ${color};
+                        flex-shrink: 0;
+                        border-bottom: 1px solid rgba(0,0,0,0.12);
+                        transition: height 0.3s ease-out;
+                    `;
+                    toTubeEl.appendChild(seg);
+                    requestAnimationFrame(() => {
+                        seg.style.height = `${segHeight}%`;
+                    });
+                }
+            }, 350);
+
+            setTimeout(() => {
+                if (stream.parentNode) stream.remove();
+                fromWrapper.style.transform = 'translateY(0) rotate(0deg)';
+                fromWrapper.style.zIndex = '';
+                finishPour(fromIdx, toIdx, color, amount);
+            }, 750);
+        }
+
+        function finishPour(fromIdx, toIdx, color, amount) {
+            const tubes = waterSortState.tubes;
+            const fromTube = tubes[fromIdx];
+            const toTube = tubes[toIdx];
+
+            for (let i = 0; i < amount; i++) {
+                toTube.push(fromTube.pop());
+            }
+
+            waterSortState.moves++;
+            waterSortState.animating = false;
+
+            renderWaterSort();
+            updateWaterSortHud();
+            checkWaterSortWin();
+        }
+
+        function checkWaterSortWin() {
+            const capacity = waterSortState.capacity;
+            const isWin = waterSortState.tubes.every(tube => {
+                if (tube.length === 0) return true;
+                if (tube.length !== capacity) return false;
+                return tube.every(c => c === tube[0]);
+            });
+
+            if (isWin) {
+                playSound('win');
+                setWaterStatus('🎉 Уровень пройден!');
+
+                setTimeout(() => {
+                    if (waterSortState.level >= 200) {
+                        setWaterStatus('🏆 Поздравляю! Ты прошёл все 200 уровней!');
+                        setTimeout(() => {
+                            if (confirm('Ты прошёл все 200 уровней! Начать заново?')) {
+                                waterSortState.level = 1;
+                                saveProgress();
+                                buildLevel(1);
+                                renderWaterSort();
+                                updateWaterSortHud();
+                                setWaterStatus('Нажми на колбу, чтобы выбрать');
+                            }
+                        }, 800);
+                    } else {
+                        waterSortState.level++;
+                        saveProgress();
+                        buildLevel(waterSortState.level);
+                        renderWaterSort();
+                        updateWaterSortHud();
+                        setWaterStatus('Нажми на колбу, чтобы выбрать');
+                    }
+                }, 1400);
+            } else {
+                setWaterStatus('Продолжай...');
             }
         }
 
-        // --- ПРОВЕРКА ПОБЕДЫ И ПЕРЕХОД НА НОВЫЙ УРОВЕНЬ ---
-        function checkWaterSortWin() {
-            let isWin = true;
-            for (let tube of waterSortState.tubes) {
-                // Если колба не пуста и не заполнена полностью одним цветом — это не победа
-                if (tube.length > 0 && tube.length < 4) {
-                    isWin = false; break;
-                }
-                if (tube.length === 4 && !tube.every(c => c === tube[0])) {
-                    isWin = false; break;
-                }
+        function waterSortResetLevel() {
+            buildLevel(waterSortState.level);
+            renderWaterSort();
+            updateWaterSortHud();
+            setWaterStatus('Уровень перезапущен');
+            playSound('select');
+        }
+
+        function waterSortSkipLevel() {
+            if (waterSortState.level >= 200) return;
+            waterSortState.level++;
+            saveProgress();
+            buildLevel(waterSortState.level);
+            renderWaterSort();
+            updateWaterSortHud();
+            setWaterStatus('Уровень пропущен');
+            playSound('select');
+        }
+
+        function waterSortGoToLevel() {
+            const input = prompt('Введи номер уровня (1-200):', waterSortState.level);
+            if (input === null) return;
+            const lvl = parseInt(input);
+            if (isNaN(lvl) || lvl < 1 || lvl > 200) {
+                alert('Введи число от 1 до 200');
+                return;
             }
-            
-            if (isWin) {
-                playSound('win');
-                document.getElementById('watersort-status').textContent = '🎉 Уровень пройден!';
-                
-                // Переход на следующий уровень
-                setTimeout(() => {
-                    waterSortState.level++;
-                    // Ограничим максимальный уровень 4-м (6 цветов)
-                    if (waterSortState.level > 4) {
-                        alert("Поздравляю! Ты прошёл все уровни!");
-                        waterSortState.level = 1;
-                    }
-                    initWaterSort();
-                }, 1500);
-            } else {
-                document.getElementById('watersort-status').textContent = 'Продолжай...';
-            }
+            waterSortState.level = lvl;
+            saveProgress();
+            buildLevel(lvl);
+            renderWaterSort();
+            updateWaterSortHud();
+            setWaterStatus('Нажми на колбу, чтобы выбрать');
         }
 
         // ============================================
         // === РАЗДЕЛ РИСОВАНИЯ ===
         // ============================================
 
-        // Открытие меню рисования
         document.getElementById("btn-paint").addEventListener("click", () => {
             openDrawingMenu();
         });
@@ -2696,7 +2949,6 @@
 
         function startDrawingMode(mode) {
             const isMobile = window.userDevice === 'phone' || window.userDevice === 'tablet';
-            // УВЕЛИЧЕННЫЕ ХОЛСТЫ
             const canvasWidth = isMobile ? 340 : 700; 
             const canvasHeight = isMobile ? 400 : 500;
             
@@ -2794,7 +3046,6 @@
             }
         }
 
-        // --- 1. СВОБОДНОЕ РИСОВАНИЕ ---
         let drawTool = 'brush';
         let drawColor = '#000';
         let isDrawing = false;
@@ -2849,9 +3100,7 @@
                 lastY = pos.y;
             };
 
-            const stopDraw = () => {
-                isDrawing = false;
-            };
+            const stopDraw = () => { isDrawing = false; };
 
             canvas.addEventListener('mousedown', startDraw);
             canvas.addEventListener('mousemove', draw);
@@ -2866,8 +3115,10 @@
 
         function setDrawTool(tool) {
             drawTool = tool;
-            document.getElementById('tool-brush').classList.toggle('active-tool', tool === 'brush');
-            document.getElementById('tool-eraser').classList.toggle('active-tool', tool === 'eraser');
+            const brush = document.getElementById('tool-brush');
+            const eraser = document.getElementById('tool-eraser');
+            if (brush) brush.classList.toggle('active-tool', tool === 'brush');
+            if (eraser) eraser.classList.toggle('active-tool', tool === 'eraser');
         }
 
         function setDrawColor(color, el) {
@@ -2885,7 +3136,6 @@
             }
         }
 
-        // --- 2. СДЕЛАЙ ПОХОЖИЙ РИСУНОК ---
         let copyTargetShape = '';
         function initCopyGame(w, h) {
             const refCanvas = document.getElementById('referenceCanvas');
@@ -2952,7 +3202,6 @@
             mainCanvas.addEventListener('touchend', stop);
             mainCanvas.addEventListener('touchcancel', stop);
 
-            // Сброс бота
             document.getElementById('copy-bot-face').textContent = '🤖';
             document.getElementById('copy-bot-text').textContent = 'Повтори рисунок с образца!';
             document.getElementById('copy-next-btn').style.display = 'none';
@@ -2971,7 +3220,7 @@
             const botText = document.getElementById('copy-bot-text');
             const nextBtn = document.getElementById('copy-next-btn');
 
-            if (pixels > 500) { // Если что-то нарисовано
+            if (pixels > 500) {
                 botFace.textContent = '🎉';
                 botText.textContent = 'Отлично! Похоже на образец!';
                 nextBtn.style.display = 'block';
@@ -2981,7 +3230,6 @@
             }
         }
 
-        // --- 3. ДОРИСУЙ, ЧТОБЫ ПОЛУЧИЛОСЬ ПРАВИЛЬНО ---
         let completeTask = '';
         function initCompleteGame(w, h) {
             const canvas = document.getElementById('completeCanvas');
@@ -3079,7 +3327,6 @@
             canvas.addEventListener('touchend', stop);
             canvas.addEventListener('touchcancel', stop);
 
-            // Сброс бота
             document.getElementById('complete-bot-face').textContent = '🤖';
             document.getElementById('complete-bot-text').textContent = 'Дорисуй то, чего не хватает!';
             document.getElementById('complete-next-btn').style.display = 'none';
@@ -3094,20 +3341,17 @@
             const botText = document.getElementById('complete-bot-text');
             const nextBtn = document.getElementById('complete-next-btn');
 
-            // Бот проверяет зоны (не пиксель-в-пиксель)
             let success = false;
             
             if (completeTask === 'house_no_roof') {
-                // Проверяем зону крыши (верхняя часть холста)
                 const imgData = ctx.getImageData(w/4, h/4, w/2, h/4).data;
                 let darkPixels = 0;
                 for (let i = 3; i < imgData.length; i += 4) {
                     if (imgData[i] > 0) darkPixels++;
                 }
-                if (darkPixels > 100) success = true; // Если что-то нарисовано сверху
+                if (darkPixels > 100) success = true;
             } 
             else if (completeTask === 'car_no_wheels') {
-                // Проверяем зоны колёс (низ)
                 const imgData1 = ctx.getImageData(w/4, h/2 + h/5, w/4, h/4).data;
                 const imgData2 = ctx.getImageData(w/2, h/2 + h/5, w/4, h/4).data;
                 let pixels1 = 0, pixels2 = 0;
@@ -3116,7 +3360,6 @@
                 if (pixels1 > 50 && pixels2 > 50) success = true;
             }
             else if (completeTask === 'smiley_no_eyes') {
-                // Проверяем зону глаз (центр)
                 const imgData = ctx.getImageData(w/2 - 40, h/2 - 40, 80, 40).data;
                 let darkPixels = 0;
                 for (let i = 3; i < imgData.length; i += 4) {
@@ -3135,7 +3378,6 @@
             }
         }
 
-        // --- 4. СОТРИ ЛИШНЕЕ ---
         let eraseTask = '';
         let eraseOriginalPixels = 0;
         function initEraseGame(w, h) {
@@ -3153,7 +3395,7 @@
                 ctx.fillStyle = '#ffd23f';
                 ctx.strokeStyle = '#333';
                 ctx.beginPath();
-                ctx.arc(w/2, h/2, w/6, 0, Math.PI * 2); // Центр смещен для баланса
+                ctx.arc(w/2, h/2, w/6, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
                 for (let i = 0; i < 8; i++) {
@@ -3163,7 +3405,6 @@
                     ctx.lineTo(w/2 + Math.cos(angle) * (w/6 + 25), h/2 + Math.sin(angle) * (w/6 + 25));
                     ctx.stroke();
                 }
-                // Лишняя туча
                 ctx.fillStyle = 'rgba(200, 200, 200, 0.8)';
                 ctx.beginPath();
                 ctx.arc(w/2 - 40, h/2 - 40, 30, 0, Math.PI * 2);
@@ -3186,11 +3427,9 @@
                 ctx.lineTo(w/2 + 60, h/2);
                 ctx.fill();
                 ctx.stroke();
-                // 2 нормальных колеса
                 ctx.fillStyle = '#333';
                 ctx.beginPath(); ctx.arc(w/4 + 30, h/2 + h/5, 25, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
                 ctx.beginPath(); ctx.arc(w/2 + 50, h/2 + h/5, 25, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                // Лишнее колесо посередине
                 ctx.fillStyle = '#333';
                 ctx.beginPath(); ctx.arc(w/2, h/2 + h/5, 25, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
             }
@@ -3203,7 +3442,6 @@
                 ctx.arc(w/2, h/3, w/5, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
-                // Лишняя ветка
                 ctx.strokeStyle = '#8b4513';
                 ctx.lineWidth = 10;
                 ctx.beginPath();
@@ -3212,7 +3450,6 @@
                 ctx.stroke();
             }
 
-            // Запоминаем, сколько было пикселей в зоне "лишнего"
             eraseOriginalPixels = countPixelsInZone(ctx, w, h, eraseTask);
 
             let drawing = false;
@@ -3236,8 +3473,8 @@
                 const pos = getPos(e);
                 lastX = pos.x;
                 lastY = pos.y;
-                ctx.strokeStyle = '#fff'; // Стираем белым
-                ctx.lineWidth = 25; // Увеличенный ластик
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 25;
             };
 
             const draw = (e) => {
@@ -3264,7 +3501,6 @@
             canvas.addEventListener('touchend', stop);
             canvas.addEventListener('touchcancel', stop);
 
-            // Сброс бота
             document.getElementById('erase-bot-face').textContent = '🤖';
             document.getElementById('erase-bot-text').textContent = 'Сотри то, чего не должно быть!';
             document.getElementById('erase-next-btn').style.display = 'none';
@@ -3273,7 +3509,7 @@
         function countPixelsInZone(ctx, w, h, task) {
             let imgData;
             if (task === 'sun_and_cloud') {
-                imgData = ctx.getImageData(w/2 - 70, h/2 - 70, 140, 90).data; // Чуть больше зона
+                imgData = ctx.getImageData(w/2 - 70, h/2 - 70, 140, 90).data;
             } else if (task === 'car_extra_wheel') {
                 imgData = ctx.getImageData(w/2 - 35, h/2 + h/5 - 35, 70, 70).data;
             } else if (task === 'tree_extra_branch') {
@@ -3295,10 +3531,8 @@
             const botText = document.getElementById('erase-bot-text');
             const nextBtn = document.getElementById('erase-next-btn');
 
-            // Проверяем, стёрто ли лишнее (сравниваем количество пикселей)
             const currentPixels = countPixelsInZone(ctx, w, h, eraseTask);
             
-            // Если осталось менее 20% от исходного количества — значит, стёрли
             if (currentPixels < eraseOriginalPixels * 0.2) {
                 botFace.textContent = '😄';
                 botText.textContent = 'Ура! Ты всё стёр!';
@@ -3309,7 +3543,6 @@
             }
         }
 
-        // --- ОБЩАЯ ФУНКЦИЯ ДЛЯ РИСОВАНИЯ ФИГУР ---
         function drawShape(ctx, type, cx, cy, size) {
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 4;
@@ -3361,7 +3594,6 @@
             }
         }
 
-        // Полифилл для roundRect
         if (!CanvasRenderingContext2D.prototype.roundRect) {
             CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
                 if (w < 2 * r) r = w / 2;
@@ -3377,7 +3609,6 @@
             };
         }
 
-        // --- ОСТАЛЬНЫЕ КНОПКИ ---
         document.getElementById("btn-space").addEventListener("click", () => {
             openModal(`<img src="space.gif.gif" alt="Космос" style="max-width: 100%; max-height: 100%; object-fit: contain;">`);
         });
@@ -3396,7 +3627,6 @@
             }
         });
 
-        // Кнопка "Наверх"
         const btnTop = document.getElementById("btn-top");
         window.addEventListener("scroll", () => {
             if (window.scrollY > 200) {
