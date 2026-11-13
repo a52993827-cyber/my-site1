@@ -51,6 +51,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
         .card {
             width: 100%;
             max-width: 420px;
@@ -62,6 +68,7 @@
             text-align: center;
             animation: slideUp 0.6s ease-out;
             transition: background 0.5s, border-color 0.5s;
+            margin-top: 80px;
         }
         .avatar {
             width: 110px;
@@ -189,11 +196,30 @@
             color: var(--ink);
         }
 
-        .corner-btn {
+        /* --- ШАПКА --- */
+        .top-bar {
             position: fixed;
-            top: 20px;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
             z-index: 999;
-            padding: 10px 20px;
+            pointer-events: none;
+        }
+        
+        .top-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            pointer-events: auto;
+        }
+
+        .corner-btn {
+            padding: 10px 15px;
             background: var(--mint);
             border: 3px solid var(--ink);
             border-radius: 12px;
@@ -201,6 +227,81 @@
             cursor: pointer;
             box-shadow: 3px 3px 0 var(--ink);
             color: #000000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .corner-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 var(--ink);
+        }
+
+        #btn-quests {
+            background: var(--sun);
+            position: relative;
+        }
+
+        .badge {
+            display: none;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4d4d;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--ink);
+            font-size: 13px;
+            font-weight: bold;
+            justify-content: center;
+            align-items: center;
+            animation: popIn 0.3s ease-out;
+        }
+
+        /* --- КНОПКА МОНЕТ --- */
+        .coin-balance {
+            background: var(--paper);
+            border: 3px solid var(--ink);
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--ink);
+            box-shadow: 3px 3px 0 var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .coin-icon {
+            width: 26px;
+            height: 26px;
+            background: radial-gradient(circle at 30% 30%, #fff4a3, #ffd23f 40%, #d4a000 80%);
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 0 var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #8b6500;
+            font-weight: 900;
+            position: relative;
+        }
+        .coin-icon::after {
+            content: '★';
+            font-size: 12px;
+            color: #b8860b;
+            text-shadow: 0 1px 0 #fff5cc;
+        }
+
+        @media (max-width: 550px) {
+            .card { margin-top: 110px; }
+            .corner-btn { padding: 8px 12px; font-size: 14px; }
+            .coin-balance { padding: 6px 10px; font-size: 16px; }
+            .coin-icon { width: 22px; height: 22px; }
         }
 
         #btn-top {
@@ -218,6 +319,148 @@
             z-index: 998;
         }
 
+        /* --- МЕНЮ КВЕСТОВ (СТАРАЯ СТРУКТУРА, НОВЫЕ ЦВЕТА) --- */
+        .quests-container {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: linear-gradient(180deg, #3ddbb0 0%, #2bc19a 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+        
+        .quest-header {
+            text-align: center;
+            margin-bottom: 10px;
+            background: var(--paper);
+            padding: 15px;
+            border: 4px solid var(--ink);
+            border-radius: 16px;
+            box-shadow: 5px 5px 0 var(--ink);
+        }
+        .quest-header h2 {
+            margin: 0 0 5px;
+            color: var(--ink);
+            font-size: 26px;
+        }
+        .quest-header p {
+            margin: 0;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .quest-card {
+            background: var(--paper);
+            border: 4px solid var(--ink);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 5px 5px 0 var(--ink);
+            transition: all 0.3s;
+        }
+        
+        .quest-card.completed {
+            background: #a8f0d8; /* Светло-мятный для выполненных */
+            border-color: var(--ink);
+        }
+
+        .quest-icon {
+            font-size: 35px;
+            width: 55px;
+            height: 55px;
+            display: grid;
+            place-items: center;
+            background: #fff;
+            border-radius: 12px;
+            border: 3px solid var(--ink);
+            flex-shrink: 0;
+        }
+
+        .quest-info {
+            flex: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .quest-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--ink);
+        }
+        .quest-desc {
+            font-size: 12px;
+            color: var(--text);
+            line-height: 1.2;
+        }
+        .quest-progress {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--ink);
+            margin-top: 4px;
+            background: rgba(0,0,0,0.08);
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            align-self: flex-start;
+        }
+
+        .quest-reward {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+            border-left: 2px dashed rgba(0,0,0,0.2);
+            padding-left: 10px;
+            flex-shrink: 0;
+        }
+        .quest-reward-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .quest-reward-amount .coin-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+        }
+        
+        .claim-btn {
+            background: var(--sun);
+            border: 3px solid var(--ink);
+            border-radius: 10px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--ink);
+            margin-top: 6px;
+            width: 100%;
+            color: #000;
+            text-transform: uppercase;
+        }
+        .claim-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 var(--ink);
+        }
+        .claim-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 3px 3px 0 var(--ink);
+            color: #666;
+        }
+
+        /* --- ОСТАЛЬНОЕ --- */
         .settings-panel {
             width: 100%;
             height: 100%;
@@ -387,25 +630,27 @@
             overflow-y: auto;
         }
         .game-cell {
-            width: 33%;
-            height: 50%;
+            width: 33.33%;
+            height: 25%;
             display: flex;
             justify-content: center;
             align-items: center;
             background: var(--game-cell-bg);
             cursor: pointer;
             border: 1px solid var(--game-cell-border);
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             flex-direction: column;
             color: var(--ink);
             transition: background 0.2s;
+            padding: 5px;
+            text-align: center;
         }
         .game-cell:hover {
             filter: brightness(0.9);
         }
         .game-cell span {
-            font-size: 60px;
+            font-size: 40px;
             margin-bottom: 5px;
         }
 
@@ -475,6 +720,7 @@
             padding: 20px;
             box-sizing: border-box;
             color: #fff;
+            overflow-y: auto;
         }
         .embedded-game h2 {
             color: #fff;
@@ -517,6 +763,7 @@
             margin-bottom: 15px;
             min-height: 25px;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
         .guess-input {
             padding: 10px;
@@ -541,6 +788,7 @@
             margin: 10px 0;
             min-height: 25px;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
         .guess-attempts {
             color: #aaa;
@@ -605,6 +853,7 @@
             margin: 20px 0;
             color: #fff;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
         .hangman-letters {
             display: flex;
@@ -651,12 +900,13 @@
             transform: scale(1.1);
         }
         .rps-result {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #fff;
             margin: 15px 0;
             min-height: 30px;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
         .reaction-target {
             width: 120px;
@@ -1018,8 +1268,23 @@
         </div>
     </div>
 
-    <button id="btn-settings" class="corner-btn" style="left: 20px;">⚙️</button>
-    <button id="btn-share" class="corner-btn" style="right: 20px;">🔗 Поделиться</button>
+    <!-- Шапка -->
+    <div class="top-bar">
+        <div class="top-group">
+            <button id="btn-quests" class="corner-btn" onclick="openQuests()">
+                📜 Квесты
+                <span id="quest-badge" class="badge">1</span>
+            </button>
+            <div class="coin-balance">
+                <div class="coin-icon"></div>
+                <span id="coin-display">0</span>
+            </div>
+        </div>
+        <div class="top-group">
+            <button id="btn-settings" class="corner-btn">⚙️</button>
+            <button id="btn-share" class="corner-btn">🔗 Поделиться</button>
+        </div>
+    </div>
 
     <main class="card">
         <div class="avatar" id="avatar">🐢</div>
@@ -1043,7 +1308,232 @@
     </div>
 
     <script>
-        // --- РЕГИСТРАЦИЯ / ПРИВЕТСТВИЕ ---
+        // ============================================
+        // === ОБЪЯВЛЕНИЕ ДАННЫХ (Должно быть в начале) ===
+        // ============================================
+
+        const desktopGames = [
+            'dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet',
+            'tictactoe', 'guessnumber', 'flappybird',
+            'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory'
+        ];
+        
+        const mobileGames = [
+            'blockblast', 'sudoku', 'watersort', 'onet',
+            'tictactoe', 'guessnumber', 'flappybird',
+            'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory',
+            'taptrainer', 'counter'
+        ];
+
+        const gameInfo = {
+            'dino': { icon: '🦖', name: 'Динозаврик' },
+            '2048': { icon: '🧩', name: '2048' },
+            'blockblast': { icon: '🧱', name: 'Block Blast' },
+            'sudoku': { icon: '🔢', name: 'Судоку' },
+            'watersort': { icon: '🧪', name: 'Water Sort' },
+            'onet': { icon: '🀄', name: 'Onet' },
+            'tictactoe': { icon: '⭕', name: 'Крестики-нолики' },
+            'guessnumber': { icon: '🎯', name: 'Угадай число' },
+            'flappybird': { icon: '🐦', name: 'Flappy Bird' },
+            'hangman': { icon: '🔤', name: 'Виселица' },
+            'rps': { icon: '✊', name: 'Камень-ножницы' },
+            'reaction': { icon: '⚡', name: 'Реакция' },
+            'colorgame': { icon: '🎨', name: 'Угадай цвет' },
+            'puzzle': { icon: '🔢', name: 'Пазл с числами' },
+            'memory': { icon: '🃏', name: 'Найди пару' },
+            'taptrainer': { icon: '👆', name: 'Тап-тренер' },
+            'counter': { icon: '🔘', name: 'Счётчик' }
+        };
+
+        const avatars = ["🐢", "🦊", "🐼", "🦖", "🐱", "🐶", "🦁", "🐸", "🐵", "🐧", "🦄", "🐉"];
+        const avatarColors = [
+            { name: 'Жёлтый', hex: '#ffd23f' },
+            { name: 'Мятный', hex: '#3ddbb0' },
+            { name: 'Коралловый', hex: '#ff6b6b' },
+            { name: 'Голубой', hex: '#6bc5ff' },
+            { name: 'Лавандовый', hex: '#b19cd9' },
+            { name: 'Персиковый', hex: '#ffb347' },
+            { name: 'Розовый', hex: '#ff99cc' },
+            { name: 'Салатовый', hex: '#a8e6cf' },
+            { name: 'Серый', hex: '#c0c0c0' },
+            { name: 'Белый', hex: '#ffffff' }
+        ];
+
+        // ============================================
+        // === СИСТЕМА КВЕСТОВ И МОНЕТ ===
+        // ============================================
+        
+        function generateQuests() {
+            let quests = [];
+            
+            // Общие квесты
+            quests.push({ id: 'c_1', title: 'Разминка', desc: 'Нажми кнопку «Нажми меня» 5 раз.', icon: '👆', target: 5, reward: 20 });
+            quests.push({ id: 'c_2', title: 'Кликер', desc: 'Нажми кнопку «Нажми меня» 10 раз.', icon: '👆', target: 10, reward: 50 });
+            quests.push({ id: 'c_3', title: 'Мастер клика', desc: 'Нажми кнопку «Нажми меня» 25 раз.', icon: '👆', target: 25, reward: 100 });
+            quests.push({ id: 'c_4', title: 'Геймер', desc: 'Запусти любую игру 1 раз.', icon: '🎮', target: 1, reward: 15 });
+            quests.push({ id: 'c_5', title: 'Игроман', desc: 'Запусти игры 3 раза.', icon: '🎮', target: 3, reward: 30 });
+            quests.push({ id: 'c_6', title: 'Художник', desc: 'Открой раздел Рисование 1 раз.', icon: '🖌️', target: 1, reward: 20 });
+            quests.push({ id: 'c_7', title: 'Исследователь', desc: 'Запусти игры 5 раз.', icon: '🎮', target: 5, reward: 50 });
+            quests.push({ id: 'c_8', title: 'Победитель', desc: 'Победи в Крестики-нолики 1 раз.', icon: '⭕', target: 1, reward: 80 });
+            quests.push({ id: 'c_9', title: 'Алхимик', desc: 'Пройди 1 уровень Water Sort.', icon: '🧪', target: 1, reward: 80 });
+            quests.push({ id: 'c_10', title: 'Мега-кликер', desc: 'Нажми кнопку «Нажми меня» 50 раз.', icon: '👆', target: 50, reward: 200 });
+
+            const gamesList = ['dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet', 'tictactoe', 'guessnumber', 'flappybird', 'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory', 'taptrainer', 'counter'];
+            
+            // Генерируем квесты на основе запуска игр
+            gamesList.forEach(game => {
+                if (!gameInfo[game]) return;
+                const icon = gameInfo[game].icon;
+                const name = gameInfo[game].name;
+                
+                [1, 3, 5, 10].forEach((count, idx) => {
+                    quests.push({
+                        id: `g_${game}_${count}`,
+                        title: `${name}: Уровень ${idx + 1}`,
+                        desc: `Запусти игру ${name} ${count} раз(а).`,
+                        icon: icon,
+                        target: count,
+                        reward: 15 * (idx + 1) + 10
+                    });
+                });
+            });
+
+            // Добиваем до 100
+            while(quests.length < 100) {
+                quests.push({
+                    id: `extra_${quests.length}`,
+                    title: `Испытание ${quests.length}`,
+                    desc: `Запусти любую игру ${quests.length} раз.`,
+                    icon: '🎮',
+                    target: quests.length,
+                    reward: quests.length * 5
+                });
+            }
+
+            return quests.slice(0, 100);
+        }
+
+        const questsData = generateQuests();
+
+        let playerCoins = parseInt(localStorage.getItem('playerCoins') || '0');
+        let playerQuests = JSON.parse(localStorage.getItem('playerQuests') || '{}');
+
+        questsData.forEach(q => {
+            if (!playerQuests[q.id]) {
+                playerQuests[q.id] = { progress: 0, claimed: false };
+            }
+        });
+
+        function saveQuestData() {
+            localStorage.setItem('playerCoins', playerCoins);
+            localStorage.setItem('playerQuests', JSON.stringify(playerQuests));
+            updateCoinDisplay();
+            updateQuestBadge();
+        }
+
+        function updateCoinDisplay() {
+            const el = document.getElementById('coin-display');
+            if (el) el.textContent = playerCoins;
+        }
+
+        function updateQuestBadge() {
+            const badge = document.getElementById('quest-badge');
+            if (!badge) return;
+            
+            let hasClaimable = false;
+            questsData.forEach(q => {
+                const state = playerQuests[q.id];
+                if (state.progress >= q.target && !state.claimed) {
+                    hasClaimable = true;
+                }
+            });
+            badge.style.display = hasClaimable ? 'flex' : 'none';
+        }
+
+        function addQuestProgress(questId, amount = 1) {
+            if (!playerQuests[questId]) return;
+            const quest = questsData.find(q => q.id === questId);
+            if (!quest) return;
+
+            const state = playerQuests[questId];
+            if (state.claimed || state.progress >= quest.target) return;
+
+            state.progress += amount;
+            if (state.progress > quest.target) state.progress = quest.target;
+            
+            saveQuestData();
+        }
+
+        function openQuests() {
+            const sortedQuests = [...questsData].sort((a, b) => {
+                const stateA = playerQuests[a.id];
+                const stateB = playerQuests[b.id];
+                
+                const aReady = stateA.progress >= a.target && !stateA.claimed;
+                const bReady = stateB.progress >= b.target && !stateB.claimed;
+                
+                if (aReady && !bReady) return -1;
+                if (!aReady && bReady) return 1;
+                if (stateA.claimed && !stateB.claimed) return 1;
+                if (!stateA.claimed && stateB.claimed) return -1;
+                return 0;
+            });
+
+            let html = `<div class="quests-container">
+                <div class="quest-header">
+                    <h2>📜 Квесты</h2>
+                    <p>Выполняй задания и получай монеты!</p>
+                </div>
+            `;
+
+            sortedQuests.forEach(q => {
+                const state = playerQuests[q.id];
+                const isCompleted = state.progress >= q.target;
+                const isClaimed = state.claimed;
+                const progressText = isClaimed ? 'Получено' : `${state.progress} / ${q.target}`;
+
+                html += `
+                    <div class="quest-card ${isCompleted ? 'completed' : ''}">
+                        <div class="quest-icon">${q.icon}</div>
+                        <div class="quest-info">
+                            <div class="quest-title">${q.title}</div>
+                            <div class="quest-desc">${q.desc}</div>
+                            <div class="quest-progress">${progressText}</div>
+                        </div>
+                        <div class="quest-reward">
+                            <div class="quest-reward-amount">
+                                <div class="coin-icon"></div>
+                                ${q.reward}
+                            </div>
+                            ${isCompleted && !isClaimed 
+                                ? `<button class="claim-btn" onclick="claimQuest('${q.id}')">Забрать</button>` 
+                                : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            openModal(html);
+        }
+
+        function claimQuest(questId) {
+            const quest = questsData.find(q => q.id === questId);
+            const state = playerQuests[questId];
+            
+            if (!quest || !state || state.claimed || state.progress < quest.target) return;
+
+            state.claimed = true;
+            playerCoins += quest.reward;
+            saveQuestData();
+            
+            openQuests();
+        }
+
+        // ============================================
+        // === ОСТАЛЬНОЙ КОД ПРИЛОЖЕНИЯ ===
+        // ============================================
+
         const welcomeScreen = document.getElementById("welcomeScreen");
         const deviceScreen = document.getElementById("deviceScreen");
         const inputName = document.getElementById("inputName");
@@ -1103,19 +1593,6 @@
             }
         }
 
-        const desktopGames = [
-            'dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet',
-            'tictactoe', 'guessnumber', 'flappybird',
-            'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory'
-        ];
-        
-        const mobileGames = [
-            'blockblast', 'sudoku', 'watersort', 'onet',
-            'tictactoe', 'guessnumber', 'flappybird',
-            'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory',
-            'taptrainer', 'counter'
-        ];
-
         function getAvailableGames() {
             const device = localStorage.getItem("userDevice");
             if (device === 'phone' || device === 'tablet') {
@@ -1123,41 +1600,6 @@
             }
             return desktopGames;
         }
-
-        const gameInfo = {
-            'dino': { icon: '🦖', name: 'Динозаврик' },
-            '2048': { icon: '🧩', name: '2048' },
-            'blockblast': { icon: '🧱', name: 'Block Blast' },
-            'sudoku': { icon: '🔢', name: 'Судоку' },
-            'watersort': { icon: '🧪', name: 'Water Sort' },
-            'onet': { icon: '🀄', name: 'Onet' },
-            'tictactoe': { icon: '⭕', name: 'Крестики-нолики' },
-            'guessnumber': { icon: '🎯', name: 'Угадай число' },
-            'flappybird': { icon: '🐦', name: 'Flappy Bird' },
-            'hangman': { icon: '🔤', name: 'Виселица' },
-            'rps': { icon: '✊', name: 'Камень-ножницы' },
-            'reaction': { icon: '⚡', name: 'Реакция' },
-            'colorgame': { icon: '🎨', name: 'Угадай цвет' },
-            'puzzle': { icon: '🔢', name: 'Пазл с числами' },
-            'memory': { icon: '🃏', name: 'Найди пару' },
-            'taptrainer': { icon: '👆', name: 'Тап-тренер' },
-            'counter': { icon: '🔘', name: 'Счётчик' }
-        };
-
-        const avatars = ["🐢", "🦊", "🐼", "🦖", "🐱", "🐶", "🦁", "🐸", "🐵", "🐧", "🦄", "🐉"];
-
-        const avatarColors = [
-            { name: 'Жёлтый', hex: '#ffd23f' },
-            { name: 'Мятный', hex: '#3ddbb0' },
-            { name: 'Коралловый', hex: '#ff6b6b' },
-            { name: 'Голубой', hex: '#6bc5ff' },
-            { name: 'Лавандовый', hex: '#b19cd9' },
-            { name: 'Персиковый', hex: '#ffb347' },
-            { name: 'Розовый', hex: '#ff99cc' },
-            { name: 'Салатовый', hex: '#a8e6cf' },
-            { name: 'Серый', hex: '#c0c0c0' },
-            { name: 'Белый', hex: '#ffffff' }
-        ];
 
         const body = document.body;
         if (localStorage.getItem("theme") === "dark") {
@@ -1178,6 +1620,7 @@
         function openModal(htmlContent) {
             modalContent.innerHTML = htmlContent;
             modal.style.display = "flex";
+            updateQuestBadge();
         }
 
         closeBtn.addEventListener("click", () => {
@@ -1195,6 +1638,11 @@
         document.getElementById("btn").addEventListener("click", function () {
             document.getElementById("hello").textContent = phrases[n % phrases.length];
             n++;
+            
+            addQuestProgress('c_1', 1);
+            addQuestProgress('c_2', 1);
+            addQuestProgress('c_3', 1);
+            addQuestProgress('c_10', 1);
         });
 
         document.getElementById("btn-settings").addEventListener("click", () => {
@@ -1275,7 +1723,8 @@
                     
                     <div class="settings-section" style="border-color: #ff4d4d;">
                         <h3 style="color: #ff4d4d;">Опасная зона</h3>
-                        <button class="btn-danger" onclick="resetAllSettings()">🗑️ Сбросить всё</button>
+                        <button class="btn-danger" onclick="resetQuests()">📜 Сбросить квесты</button>
+                        <button class="btn-danger" onclick="resetAllSettings()" style="margin-top: 10px;">🗑️ Сбросить всё</button>
                     </div>
                 </div>
             `);
@@ -1317,8 +1766,16 @@
             document.getElementById("btn-settings").click();
         }
 
+        function resetQuests() {
+            if (confirm("Сбросить прогресс всех квестов и монеты?")) {
+                localStorage.removeItem('playerQuests');
+                localStorage.removeItem('playerCoins');
+                location.reload();
+            }
+        }
+
         function resetAllSettings() {
-            if (confirm("Сбросить ВСЕ настройки, имя и статистику?")) {
+            if (confirm("Сбросить ВСЕ настройки, имя, статистику, квесты и монеты?")) {
                 localStorage.clear();
                 location.reload();
             }
@@ -1331,6 +1788,14 @@
         function saveGameResult(game) {
             let count = parseInt(localStorage.getItem("playCount_" + game) || "0") + 1;
             localStorage.setItem("playCount_" + game, count);
+            
+            addQuestProgress('c_4', 1);
+            addQuestProgress('c_5', 1);
+            addQuestProgress('c_7', 1);
+            
+            [1, 3, 5, 10].forEach(c => {
+                addQuestProgress(`g_${game}_${c}`, 1);
+            });
         }
 
         document.getElementById("btn-games").addEventListener("click", () => {
@@ -1379,7 +1844,7 @@
                 'onet': { text: "Находи одинаковые картинки и соединяй их линией, которая не пересекает другие картинки.", warn: "Перед началом игры нажми левой кнопкой мыши по полю!" },
                 'tictactoe': { text: "Классические крестики-нолики. Выбери уровень сложности бота и играй за ❌. Собери три своих знака в ряд!", warn: "" },
                 'guessnumber': { text: "Я загадал число от 1 до 100. Попробуй угадать его за минимальное количество попыток!", warn: "" },
-                'flappybird': { text: "Нажимай ПРОБЕЛ, кликай мышкой или тапай по экрану, чтобы птичка летела вверх. Пролетай между трубами! Игра замедленная и плавная.", warn: "" },
+                'flappybird': { text: "Нажимай ПРОБЕЛ, кликай мышкой или тапай по экрану, чтобы птичка летела вверх. Пролетай между трубами! Первая труба — лёгкая, чтобы ты освоился.", warn: "" },
                 'hangman': { text: "Угадай слово по буквам. У тебя есть 6 попыток. Каждая неверная буква приближает поражение!", warn: "" },
                 'rps': { text: "Камень побеждает ножницы, ножницы побеждают бумагу, бумага побеждает камень. Выбери свой ход!", warn: "" },
                 'reaction': { text: "Нажми на круг как можно быстрее, когда он появится! Чем быстрее реакция — тем больше очков.", warn: "" },
@@ -1686,6 +2151,7 @@
             if (checkTicTacToeWin('X')) {
                 document.getElementById('ttt-status').textContent = '🎉 Ты победил!';
                 tttGameActive = false;
+                addQuestProgress('c_8', 1);
                 return;
             }
             if (tttBoard.every(cell => cell !== '')) {
@@ -1825,22 +2291,23 @@
         }
 
         // ============================================
-        // === FLAPPY BIRD (замедленная, плавная физика) ===
+        // === FLAPPY BIRD ===
         // ============================================
         let flappyState = {
             birdY: 250, birdV: 0, pipes: [], score: 0, running: false,
-            gameOver: false, animId: null, frame: 0
+            gameOver: false, animId: null, frame: 0,
+            lastTime: 0, pipeSpawnTimer: 0, startDelayTimer: 0
         };
 
-        // Все параметры сложности в одном месте — легко крутить баланс
         const FLAPPY_CFG = {
-            gravity: 0.32,          // было 0.5 — птица падает медленнее
-            jumpVelocity: -5.2,     // было -6 — прыжок мягче
-            pipeSpeed: 1.8,         // было 3 — трубы плывут медленнее
-            pipeInterval: 110,      // было 80 — трубы появляются реже
-            pipeGap: 170,           // было 150 — проход между трубами шире
-            maxFallSpeed: 6,        // ограничение скорости падения
-            startDelay: 60          // кадров до первой трубы, чтобы игрок освоился
+            gravity: 520,
+            jumpVelocity: -320,
+            pipeSpeed: 110,
+            pipeInterval: 1.85,
+            pipeGap: 170,
+            maxFallSpeed: 340,
+            startDelay: 2.0,
+            firstJumpVelocity: -260
         };
 
         function initFlappy() {
@@ -1849,17 +2316,16 @@
             const ctx = canvas.getContext('2d');
             flappyState = {
                 birdY: 250, birdV: 0, pipes: [], score: 0, running: false,
-                gameOver: false, animId: null, frame: 0
+                gameOver: false, animId: null, frame: 0,
+                lastTime: 0, pipeSpawnTimer: 0, startDelayTimer: 0
             };
             drawFlappy(ctx);
 
-            // Клик по канвасу
             canvas.onclick = () => {
                 if (!flappyState.running && !flappyState.gameOver) startFlappy();
                 else if (flappyState.running) flappyState.birdV = FLAPPY_CFG.jumpVelocity;
             };
 
-            // Пробел / стрелка вверх на клавиатуре
             document.onkeydown = (e) => {
                 if (e.code === 'Space' || e.code === 'ArrowUp') {
                     e.preventDefault();
@@ -1868,7 +2334,6 @@
                 }
             };
 
-            // Тап по экрану для мобильных
             canvas.ontouchstart = (e) => {
                 e.preventDefault();
                 if (!flappyState.running && !flappyState.gameOver) startFlappy();
@@ -1881,32 +2346,34 @@
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 0, w, h);
 
-            // Трубы
             flappyState.pipes.forEach(p => {
-                ctx.fillStyle = '#3ddbb0';
+                const gap = FLAPPY_CFG.pipeGap;
+                ctx.fillStyle = '#4dffcc'; 
                 ctx.fillRect(p.x, 0, 60, p.top);
-                ctx.fillRect(p.x, p.top + FLAPPY_CFG.pipeGap, 60, h - p.top - FLAPPY_CFG.pipeGap);
-                // Блик для объёма
-                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.fillRect(p.x, p.top + gap, 60, h - p.top - gap);
+                
+                ctx.strokeStyle = '#1a1a2e';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(p.x, 0, 60, p.top);
+                ctx.strokeRect(p.x, p.top + gap, 60, h - p.top - gap);
+
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
                 ctx.fillRect(p.x + 8, 0, 10, p.top);
-                ctx.fillRect(p.x + 8, p.top + FLAPPY_CFG.pipeGap, 10, h - p.top - FLAPPY_CFG.pipeGap);
+                ctx.fillRect(p.x + 8, p.top + gap, 10, h - p.top - gap);
             });
 
-            // Птичка с наклоном по скорости
             ctx.save();
             ctx.translate(80, flappyState.birdY);
-            const angle = Math.max(-0.5, Math.min(0.9, flappyState.birdV * 0.08));
+            const angle = Math.max(-0.5, Math.min(0.9, flappyState.birdV * 0.0015));
             ctx.rotate(angle);
             ctx.fillStyle = '#ffd23f';
             ctx.beginPath();
             ctx.arc(0, 0, 15, 0, Math.PI * 2);
             ctx.fill();
-            // Глаз
             ctx.fillStyle = '#1d1b4d';
             ctx.beginPath();
             ctx.arc(5, -5, 3, 0, Math.PI * 2);
             ctx.fill();
-            // Клюв
             ctx.fillStyle = '#ff6b6b';
             ctx.beginPath();
             ctx.moveTo(12, 2);
@@ -1916,13 +2383,11 @@
             ctx.fill();
             ctx.restore();
 
-            // Счёт
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 24px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Счёт: ' + flappyState.score, w / 2, 40);
 
-            // Экран проигрыша
             if (flappyState.gameOver) {
                 ctx.fillStyle = 'rgba(0,0,0,0.7)';
                 ctx.fillRect(0, 0, w, h);
@@ -1937,7 +2402,6 @@
                 ctx.fillText('Нажми, чтобы начать заново', w / 2, h / 2 + 60);
             }
 
-            // Подсказка перед стартом
             if (!flappyState.running && !flappyState.gameOver && flappyState.frame === 0) {
                 ctx.fillStyle = 'rgba(255,255,255,0.85)';
                 ctx.font = 'bold 18px sans-serif';
@@ -1954,25 +2418,30 @@
             const ctx = canvas.getContext('2d');
             flappyState = {
                 birdY: 250, birdV: 0, pipes: [], score: 0, running: true,
-                gameOver: false, animId: null, frame: 0
+                gameOver: false, animId: null, frame: 0,
+                lastTime: performance.now(), pipeSpawnTimer: 0,
+                startDelayTimer: FLAPPY_CFG.startDelay
             };
-            // Даём птичке стартовый импульс, чтобы не падала сразу
-            flappyState.birdV = FLAPPY_CFG.jumpVelocity;
-            flappyLoop(ctx);
+            flappyState.birdV = FLAPPY_CFG.firstJumpVelocity;
+            flappyState.animId = requestAnimationFrame((t) => flappyLoop(t, ctx));
         }
 
-        function flappyLoop(ctx) {
+        function flappyLoop(now, ctx) {
             if (!flappyState.running) return;
+
+            let dt = (now - flappyState.lastTime) / 1000;
+            flappyState.lastTime = now;
+            if (dt > 0.05) dt = 0.05;
+            if (dt <= 0) dt = 0.016;
+
             flappyState.frame++;
 
-            // --- ФИЗИКА ---
-            flappyState.birdV += FLAPPY_CFG.gravity;
+            flappyState.birdV += FLAPPY_CFG.gravity * dt;
             if (flappyState.birdV > FLAPPY_CFG.maxFallSpeed) {
                 flappyState.birdV = FLAPPY_CFG.maxFallSpeed;
             }
-            flappyState.birdY += flappyState.birdV;
+            flappyState.birdY += flappyState.birdV * dt;
 
-            // Столкновение с полом/потолком
             if (flappyState.birdY > 485 || flappyState.birdY < 15) {
                 flappyState.running = false;
                 flappyState.gameOver = true;
@@ -1980,23 +2449,26 @@
                 return;
             }
 
-            // --- ГЕНЕРАЦИЯ ТРУБ ---
-            const spawnFrame = flappyState.frame - FLAPPY_CFG.startDelay;
-            if (spawnFrame > 0 && spawnFrame % FLAPPY_CFG.pipeInterval === 0) {
-                const minTop = 60;
-                const maxTop = 500 - FLAPPY_CFG.pipeGap - 60;
-                const top = minTop + Math.random() * (maxTop - minTop);
-                flappyState.pipes.push({ x: 400, top: top });
+            if (flappyState.startDelayTimer > 0) {
+                flappyState.startDelayTimer -= dt;
+            } else {
+                flappyState.pipeSpawnTimer += dt;
+                if (flappyState.pipeSpawnTimer >= FLAPPY_CFG.pipeInterval) {
+                    flappyState.pipeSpawnTimer -= FLAPPY_CFG.pipeInterval;
+                    const minTop = 60;
+                    const maxTop = 500 - FLAPPY_CFG.pipeGap - 60;
+                    const top = minTop + Math.random() * (maxTop - minTop);
+                    flappyState.pipes.push({ x: 400, top: top });
+                }
             }
 
-            // --- ДВИЖЕНИЕ ТРУБ ---
-            flappyState.pipes.forEach(p => p.x -= FLAPPY_CFG.pipeSpeed);
+            flappyState.pipes.forEach(p => p.x -= FLAPPY_CFG.pipeSpeed * dt);
             flappyState.pipes = flappyState.pipes.filter(p => p.x > -60);
 
-            // --- КОЛЛИЗИИ И ОЧКИ ---
             for (let p of flappyState.pipes) {
+                const gap = FLAPPY_CFG.pipeGap;
                 if (80 + 15 > p.x && 80 - 15 < p.x + 60) {
-                    if (flappyState.birdY - 15 < p.top || flappyState.birdY + 15 > p.top + FLAPPY_CFG.pipeGap) {
+                    if (flappyState.birdY - 15 < p.top || flappyState.birdY + 15 > p.top + gap) {
                         flappyState.running = false;
                         flappyState.gameOver = true;
                         drawFlappy(ctx);
@@ -2010,7 +2482,7 @@
             }
 
             drawFlappy(ctx);
-            flappyState.animId = requestAnimationFrame(() => flappyLoop(ctx));
+            flappyState.animId = requestAnimationFrame((t) => flappyLoop(t, ctx));
         }
 
         // --- ВИСЕЛИЦА ---
@@ -2834,6 +3306,7 @@
             if (isWin) {
                 playSound('win');
                 setWaterStatus('🎉 Уровень пройден!');
+                addQuestProgress('c_9', 1);
 
                 setTimeout(() => {
                     if (waterSortState.level >= 200) {
@@ -2902,6 +3375,7 @@
         // ============================================
 
         document.getElementById("btn-paint").addEventListener("click", () => {
+            addQuestProgress('c_6', 1);
             openDrawingMenu();
         });
 
@@ -3638,6 +4112,10 @@
         btnTop.addEventListener("click", () => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
+
+        // Инициализация при запуске
+        updateCoinDisplay();
+        updateQuestBadge();
     </script>
 </body>
 </html>
