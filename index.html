@@ -56,6 +56,11 @@
             80% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
+        
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+        }
 
         .card {
             width: 100%;
@@ -296,6 +301,15 @@
             color: #b8860b;
             text-shadow: 0 1px 0 #fff5cc;
         }
+        
+        .coin-icon-svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 0 rgba(0,0,0,0.3));
+            display: inline-block;
+            vertical-align: middle;
+        }
 
         @media (max-width: 550px) {
             .card { margin-top: 110px; }
@@ -319,7 +333,7 @@
             z-index: 998;
         }
 
-        /* --- МЕНЮ КВЕСТОВ (СТАРАЯ СТРУКТУРА, НОВЫЕ ЦВЕТА) --- */
+        /* --- МЕНЮ КВЕСТОВ --- */
         .quests-container {
             width: 100%;
             height: 100%;
@@ -365,7 +379,7 @@
         }
         
         .quest-card.completed {
-            background: #a8f0d8; /* Светло-мятный для выполненных */
+            background: #a8f0d8;
             border-color: var(--ink);
         }
 
@@ -1088,6 +1102,7 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+            cursor: crosshair;
         }
         .drawing-side-panel {
             display: flex;
@@ -1237,6 +1252,505 @@
                 height: 100%;
             }
         }
+
+        /* === КОСМОС СТИЛИ === */
+        .space-container {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0f0c29 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            position: relative;
+        }
+        .space-header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .space-header h2 {
+            margin: 0 0 10px;
+            font-size: 24px;
+            text-shadow: 0 0 10px #fff;
+        }
+        .space-motivation {
+            font-size: 14px;
+            color: #ffd23f;
+            font-weight: bold;
+            min-height: 20px;
+        }
+        .space-fact-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.5;
+            box-shadow: 0 0 15px rgba(0,255,255,0.2);
+        }
+        .space-question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .space-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .space-option {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s, transform 0.1s;
+            color: #fff;
+            text-align: center;
+        }
+        .space-option:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .space-option.correct {
+            background: #3ddbb0;
+            border-color: #3ddbb0;
+            color: #000;
+        }
+        .space-option.wrong {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            color: #fff;
+        }
+        .space-objects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            width: 100%;
+        }
+        .space-object {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .space-object:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.2);
+        }
+        .space-object span {
+            font-size: 40px;
+        }
+        .space-object-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* === КОТИК-КЛИКЕР СТИЛИ === */
+        .cat-clicker-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            background: #1a1a2e;
+            color: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .cat-sidebar {
+            width: 250px;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            padding-top: 60px; 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            border-right: 2px solid rgba(255,255,255,0.1);
+            z-index: 1;
+        }
+        .cat-upgrade-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: background 0.2s;
+        }
+        .cat-upgrade-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .cat-upgrade-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .cat-upgrade-icon {
+            font-size: 30px;
+            width: 40px;
+            text-align: center;
+        }
+        .cat-upgrade-info {
+            flex: 1;
+            text-align: left;
+        }
+        .cat-upgrade-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .cat-upgrade-cost {
+            font-size: 12px;
+            color: #ffd23f;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cat-upgrade-amount {
+            font-size: 12px;
+            color: #aaa;
+        }
+        .cat-main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle, #2a2a4a 0%, #1a1a2e 100%);
+        }
+        .cat-top-bar {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 80px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .cat-coins {
+            color: #ffd23f;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .cat-passive {
+            color: #3ddbb0;
+            font-size: 14px;
+        }
+        .cat-prestige-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffd23f);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+        }
+        .cat-prestige-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        .cat-character-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            margin-top: 50px;
+        }
+        .cat-character-svg {
+            width: 250px;
+            height: 250px;
+            filter: drop-shadow(0 0 30px rgba(255, 210, 63, 0.6));
+            transition: transform 0.1s;
+        }
+        .cat-character-container:active .cat-character-svg {
+            transform: scale(0.95);
+        }
+        .cat-click-anim {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd23f;
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+            z-index: 10;
+        }
+        .cat-character-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        .cat-unlock-text {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        .btn-withdraw {
+            background: linear-gradient(45deg, #3ddbb0, #00e5b5);
+            border: 2px solid #1d1b4d;
+            border-radius: 12px;
+            padding: 15px;
+            font-weight: bold;
+            color: #000;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+            margin-top: 10px;
+        }
+        .btn-withdraw:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* Стили для нового окна вывода */
+        .withdraw-modal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            background: var(--paper);
+            border: 4px solid var(--ink);
+            border-radius: 20px;
+            box-shadow: 10px 10px 0 var(--ink);
+            max-width: 400px;
+            width: 90%;
+            margin: auto;
+        }
+        .withdraw-modal h2 {
+            color: var(--ink);
+            margin-top: 0;
+        }
+        .withdraw-modal .warning-text {
+            font-size: 16px;
+            color: var(--coral);
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        .withdraw-modal .amount-display {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .withdraw-modal .amount-display .coin-icon-svg {
+            width: 40px;
+            height: 40px;
+        }
+        .withdraw-modal .btn-group {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+        .withdraw-modal .btn-group button {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .withdraw-modal .btn-cancel {
+            background: #ccc;
+            border-color: #999;
+            box-shadow: none;
+            color: #333;
+        }
+        .withdraw-modal .btn-cancel:hover {
+            background: #bbb;
+        }
+        .withdraw-modal .btn-confirm {
+            background: var(--coral);
+            color: white;
+            border-color: var(--ink);
+        }
+
+        /* --- МАГАЗИН --- */
+        .shop-container {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: var(--paper);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .shop-tab-btn {
+            padding: 10px 20px;
+            background: var(--settings-bg);
+            border: 3px solid var(--ink);
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--ink);
+            transition: all 0.2s;
+            color: var(--ink);
+        }
+        .shop-tab-btn.active {
+            background: var(--sun);
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 var(--ink);
+        }
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .shop-item {
+            background: var(--settings-bg);
+            border: 3px solid var(--ink);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 5px 5px 0 var(--ink);
+            transition: transform 0.2s;
+        }
+        .shop-item:hover {
+            transform: translateY(-3px);
+        }
+        .shop-item-icon {
+            font-size: 50px;
+            line-height: 1;
+        }
+        .shop-item-name {
+            font-weight: bold;
+            color: var(--ink);
+            font-size: 16px;
+        }
+        .shop-item-price {
+            font-weight: bold;
+            color: #b8860b;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 18px;
+        }
+        .shop-buy-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--mint);
+            border: 3px solid var(--ink);
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--ink);
+            color: #000;
+            font-size: 14px;
+        }
+        .shop-buy-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+        .shop-buy-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 3px 3px 0 var(--ink);
+            color: #666;
+        }
+        .shop-buy-btn.owned {
+            background: #a8f0d8;
+            color: var(--ink);
+            cursor: default;
+        }
+
+        /* Стили для встроенных новых игр */
+        .minesweeper-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            background: #555;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .minesweeper-cell {
+            width: 30px;
+            height: 30px;
+            background: #aaa;
+            border: 2px solid #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            user-select: none;
+        }
+        .minesweeper-cell.revealed {
+            background: #ddd;
+            border: 1px solid #bbb;
+        }
+        .minesweeper-cell.mine {
+            background: #ff6b6b;
+        }
+        .minesweeper-cell.flag {
+            background: #ffd23f;
+        }
+        .snake-canvas {
+            background: #1a1a2e;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            touch-action: none;
+        }
+        .breakout-canvas {
+            background: #1a1a2e;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            touch-action: none;
+        }
     </style>
 </head>
 <body>
@@ -1295,6 +1809,7 @@
             <li id="btn-paint">🎨 Рисование</li>
             <li id="btn-space">🚀 Космос</li>
             <li id="btn-cats">🐱 Котики</li>
+            <li id="btn-shop" style="background: var(--sun);" onclick="openShop()">🛒 Магазин</li>
         </ul>
         <button id="btn">Нажми меня</button>
         <p id="hello"></p>
@@ -1309,16 +1824,19 @@
 
     <script>
         // ============================================
-        // === ОБЪЯВЛЕНИЕ ДАННЫХ (Должно быть в начале) ===
+        // === ОБЪЯВЛЕНИЕ ДАННЫХ ===
         // ============================================
 
-        const desktopGames = [
+        const defaultGames = [
             'dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet',
             'tictactoe', 'guessnumber', 'flappybird',
-            'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory'
+            'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory',
+            'minesweeper', 'snake', 'breakout', '15puzzle', 'simon', 'tetris',
+            'pacman', 'invaders', 'asteroids', 'pong', 'frogger', 'maze', 'slidingpuzzle'
         ];
         
-        const mobileGames = [
+        // Строго мобильные игры (без клавиатуры)
+        const defaultMobileGames = [
             'blockblast', 'sudoku', 'watersort', 'onet',
             'tictactoe', 'guessnumber', 'flappybird',
             'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory',
@@ -1326,26 +1844,98 @@
         ];
 
         const gameInfo = {
-            'dino': { icon: '🦖', name: 'Динозаврик' },
-            '2048': { icon: '🧩', name: '2048' },
-            'blockblast': { icon: '🧱', name: 'Block Blast' },
-            'sudoku': { icon: '🔢', name: 'Судоку' },
-            'watersort': { icon: '🧪', name: 'Water Sort' },
-            'onet': { icon: '🀄', name: 'Onet' },
-            'tictactoe': { icon: '⭕', name: 'Крестики-нолики' },
-            'guessnumber': { icon: '🎯', name: 'Угадай число' },
-            'flappybird': { icon: '🐦', name: 'Flappy Bird' },
-            'hangman': { icon: '🔤', name: 'Виселица' },
-            'rps': { icon: '✊', name: 'Камень-ножницы' },
-            'reaction': { icon: '⚡', name: 'Реакция' },
-            'colorgame': { icon: '🎨', name: 'Угадай цвет' },
-            'puzzle': { icon: '🔢', name: 'Пазл с числами' },
-            'memory': { icon: '🃏', name: 'Найди пару' },
-            'taptrainer': { icon: '👆', name: 'Тап-тренер' },
-            'counter': { icon: '🔘', name: 'Счётчик' }
+            'dino': { icon: '🦖', name: 'Динозаврик', price: 0 },
+            '2048': { icon: '🧩', name: '2048', price: 0 },
+            'blockblast': { icon: '🧱', name: 'Block Blast', price: 0 },
+            'sudoku': { icon: '🔢', name: 'Судоку', price: 0 },
+            'watersort': { icon: '🧪', name: 'Water Sort', price: 0 },
+            'onet': { icon: '🀄', name: 'Onet', price: 0 },
+            'tictactoe': { icon: '⭕', name: 'Крестики-нолики', price: 0 },
+            'guessnumber': { icon: '🎯', name: 'Угадай число', price: 0 },
+            'flappybird': { icon: '🐦', name: 'Flappy Bird', price: 0 },
+            'hangman': { icon: '🔤', name: 'Виселица', price: 0 },
+            'rps': { icon: '✊', name: 'Камень-ножницы', price: 0 },
+            'reaction': { icon: '⚡', name: 'Реакция', price: 0 },
+            'colorgame': { icon: '🎨', name: 'Угадай цвет', price: 0 },
+            'puzzle': { icon: '🔢', name: 'Пазл с числами', price: 0 },
+            'memory': { icon: '🃏', name: 'Найди пару', price: 0 },
+            'taptrainer': { icon: '👆', name: 'Тап-тренер', price: 0 },
+            'counter': { icon: '🔘', name: 'Счётчик', price: 0 },
+            // Новые игры для магазина
+            'minesweeper': { icon: '💣', name: 'Сапёр', price: 500 },
+            'snake': { icon: '🐍', name: 'Змейка', price: 700 },
+            'breakout': { icon: '🧱', name: 'Арканоид', price: 1000 },
+            '15puzzle': { icon: '🔢', name: 'Пятнашки', price: 300 },
+            'simon': { icon: '🔴', name: 'Саймон', price: 400 },
+            'tetris': { icon: '🟦', name: 'Тетрис', price: 1200 },
+            'pacman': { icon: '🟡', name: 'Пакман', price: 1500 },
+            'invaders': { icon: '👾', name: 'Космические захватчики', price: 1300 },
+            'asteroids': { icon: '☄️', name: 'Астероиды', price: 1100 },
+            'pong': { icon: '🏓', name: 'Понг', price: 200 },
+            'frogger': { icon: '🐸', name: 'Фроггер', price: 800 },
+            'maze': { icon: '🌽', name: 'Лабиринт', price: 600 },
+            'slidingpuzzle': { icon: '🧩', name: 'Слайд-пазл', price: 900 }
         };
 
-        const avatars = ["🐢", "🦊", "🐼", "🦖", "🐱", "🐶", "🦁", "🐸", "🐵", "🐧", "🦄", "🐉"];
+        const defaultAvatars = ["🐢", "🦊", "🐼", "🦖", "🐱", "🐶", "🦁", "🐸", "🐵", "🐧", "🦄", "🐉"];
+        
+        // Генерация 50 аватаров для магазина
+        const shopAvatars = [];
+        const emojisList = ['👽', '🤖', '👻', '🦸', '🧙', '🐺', '🦝', '🐹', '🐰', '🦔', '🦇', '🐲', '🦅', '🦉', '🐌', '🐞', '🦋', '🐜', '🕷️', '🦂', '🦑', '🐙', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑'];
+        for (let i = 0; i < 50; i++) {
+            shopAvatars.push({
+                emoji: emojisList[i % emojisList.length],
+                price: 100 + (i * 50)
+            });
+        }
+
+        const defaultSpaceObjects = [
+            { icon: "☀️", name: "Солнце", fact: "Солнце — это звезда, которая находится в центре нашей Солнечной системы. Оно имеет диаметр около 1,4 миллиона километров." },
+            { icon: "🌕", name: "Луна", fact: "Луна — единственный естественный спутник Земли. Она всегда повернута к нам одной и той же стороной." },
+            { icon: "🔴", name: "Марс", fact: "На Марсе находятся самые высокие вулканы в Солнечной системе. Гора Олимп имеет высоту около 22 км." },
+            { icon: "🪐", name: "Сатурн", fact: "Сатурн знаменит своими кольцами, состоящими изо льда и камней. Плотность планеты настолько мала, что она могла бы плавать в воде." },
+            { icon: "🕳️", name: "Черная дыра", fact: "Черная дыра — это область пространства с настолько сильным гравитационным притяжением, что ничто, даже свет, не может её покинуть." },
+            { icon: "🌌", name: "Галактика", fact: "Млечный Путь — это спиральная галактика, в которой находится наша Солнечная система. Её диаметр — около 100 000 световых лет." },
+            { icon: "☄️", name: "Комета", fact: "Кометы состоят из льда, пыли и газа. Когда они приближаются к Солнцу, лед тает, образуя светящийся хвост." },
+            { icon: "🚀", name: "Ракета", fact: "Первая ракета, достигшая космоса, была запущена в 1944 году. А первым человеком в космосе стал Юрий Гагарин в 1961 году." }
+        ];
+
+        // Генерация 50 космических объектов для магазина
+        const shopSpaceObjects = [];
+        const spaceIcons = ['🌠', '🌑', '☀️', '💫', '🌟', '🌌', '🪐', '🌕', '🌙', '☄️', '🌍', '🌎', '🌏', '🪨', '💥', '🌀', '🔭', '🛸', '👽', '🛰️'];
+        const spaceNames = ['Туманность', 'Астероид', 'Красный гигант', 'Пульсар', 'Квазар', 'Белая дыра', 'Коричневый карлик', 'Нейтронная звезда', 'Сверхновая', 'Протозвезда', 'Экзопланета', 'Газовый гигант', 'Ледяной гигант', 'Карликовая планета', 'Пояс астероидов', 'Облако Оорта', 'Магеллановы облака', 'Туманность Андромеды', 'Реликтовое излучение', 'Темная материя'];
+        const spaceFacts = [
+            "Туманность — это облако газа и пыли в космосе. Некоторые туманности являются местами рождения новых звезд.",
+            "Астероиды — это небольшие каменистые тела, вращающиеся вокруг Солнца. Большинство из них находятся в поясе астероидов между Марсом и Юпитером.",
+            "Красный гигант — это звезда на поздней стадии эволюции. Когда наше Солнце станет красным гигантом, оно поглотит Меркурий и Венеру.",
+            "Пульсар — это быстро вращающаяся нейтронная звезда, излучающая узкие пучки электромагнитного излучения.",
+            "Квазар — это сверхмассивная черная дыра, активно поглощающая материю. Они являются одними из самых ярких объектов во Вселенной.",
+            "Белая дыра — это гипотетический объект, противоположный черной дыре. В неё ничего не может попасть, но она может выбрасывать материю.",
+            "Коричневый карлик — это объект, который слишком массивен, чтобы быть планетой, но недостаточно массивен, чтобы стать звездой.",
+            "Нейтронная звезда — это очень плотное ядро массивной звезды, состоящее в основном из нейтронов.",
+            "Сверхновая — это взрыв массивной звезды в конце её жизненного цикла, который на короткое время может затмить целую галактику.",
+            "Протозвезда — это облако газа и пыли, которое сжимается под действием гравитации и готовится стать звездой.",
+            "Экзопланета — это планета, которая находится за пределами нашей Солнечной системы, вращающаяся вокруг другой звезды.",
+            "Газовый гигант — это массивная планета, состоящая в основном из водорода и гелия, например, Юпитер и Сатурн.",
+            "Ледяной гигант — это планета, состоящая из льда и газа, например, Уран и Нептун.",
+            "Карликовая планета — это небесное тело, которое вращается вокруг Солнца, но не является доминирующим на своей орбите, например, Плутон.",
+            "Пояс астероидов — это область между орбитами Марса и Юпитера, где находится множество астероидов.",
+            "Облако Оорта — это гипотетическая сферическая область на окраине Солнечной системы, содержащая множество ледяных тел.",
+            "Магеллановы облака — это две карликовые галактики, которые являются спутниками Млечного Пути.",
+            "Туманность Андромеды — это ближайшая к нам спиральная галактика, которая находится на расстоянии около 2,5 миллионов световых лет.",
+            "Реликтовое излучение — это тепловое излучение, оставшееся от эпохи ранней Вселенной.",
+            "Темная материя — это гипотетическая форма материи, которая не излучает и не поглощает свет, но влияет на гравитацию."
+        ];
+
+        for (let i = 0; i < 50; i++) {
+            shopSpaceObjects.push({
+                icon: spaceIcons[i % spaceIcons.length],
+                name: spaceNames[i % spaceNames.length] + (i >= 20 ? ' ' + (i+1) : ''),
+                fact: spaceFacts[i % spaceFacts.length],
+                price: 200 + (i * 100)
+            });
+        }
+
         const avatarColors = [
             { name: 'Жёлтый', hex: '#ffd23f' },
             { name: 'Мятный', hex: '#3ddbb0' },
@@ -1358,6 +1948,15 @@
             { name: 'Серый', hex: '#c0c0c0' },
             { name: 'Белый', hex: '#ffffff' }
         ];
+        
+        // Универсальная SVG иконка монеты
+        const coinSvg = `
+            <svg class="coin-icon-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="#ffd23f" stroke="#1d1b4d" stroke-width="6"/>
+                <circle cx="50" cy="50" r="35" fill="#ffea70" stroke="#d4a000" stroke-width="4"/>
+                <text x="50" y="65" font-family="Arial" font-weight="bold" font-size="40" fill="#b8860b" text-anchor="middle">★</text>
+            </svg>
+        `;
 
         // ============================================
         // === СИСТЕМА КВЕСТОВ И МОНЕТ ===
@@ -1366,7 +1965,6 @@
         function generateQuests() {
             let quests = [];
             
-            // Общие квесты
             quests.push({ id: 'c_1', title: 'Разминка', desc: 'Нажми кнопку «Нажми меня» 5 раз.', icon: '👆', target: 5, reward: 20 });
             quests.push({ id: 'c_2', title: 'Кликер', desc: 'Нажми кнопку «Нажми меня» 10 раз.', icon: '👆', target: 10, reward: 50 });
             quests.push({ id: 'c_3', title: 'Мастер клика', desc: 'Нажми кнопку «Нажми меня» 25 раз.', icon: '👆', target: 25, reward: 100 });
@@ -1380,7 +1978,6 @@
 
             const gamesList = ['dino', '2048', 'blockblast', 'sudoku', 'watersort', 'onet', 'tictactoe', 'guessnumber', 'flappybird', 'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory', 'taptrainer', 'counter'];
             
-            // Генерируем квесты на основе запуска игр
             gamesList.forEach(game => {
                 if (!gameInfo[game]) return;
                 const icon = gameInfo[game].icon;
@@ -1398,7 +1995,6 @@
                 });
             });
 
-            // Добиваем до 100
             while(quests.length < 100) {
                 quests.push({
                     id: `extra_${quests.length}`,
@@ -1418,6 +2014,25 @@
         let playerCoins = parseInt(localStorage.getItem('playerCoins') || '0');
         let playerQuests = JSON.parse(localStorage.getItem('playerQuests') || '{}');
 
+        // Данные магазина
+        let ownedAvatars = JSON.parse(localStorage.getItem('ownedAvatars') || '[]');
+        let ownedSpaceObjects = JSON.parse(localStorage.getItem('ownedSpaceObjects') || '[]');
+        let ownedGames = JSON.parse(localStorage.getItem('ownedGames') || '[]');
+
+        // Инициализация дефолтных покупок с учетом устройства
+        const initialDevice = localStorage.getItem("userDevice");
+        if (ownedAvatars.length === 0) ownedAvatars = [...defaultAvatars];
+        if (ownedSpaceObjects.length === 0) ownedSpaceObjects = [...defaultSpaceObjects];
+        
+        // Если игр нет, даем базовый набор для устройства
+        if (ownedGames.length === 0) {
+            if (initialDevice === 'phone' || initialDevice === 'tablet') {
+                ownedGames = [...defaultMobileGames];
+            } else {
+                ownedGames = [...defaultGames];
+            }
+        }
+
         questsData.forEach(q => {
             if (!playerQuests[q.id]) {
                 playerQuests[q.id] = { progress: 0, claimed: false };
@@ -1429,6 +2044,12 @@
             localStorage.setItem('playerQuests', JSON.stringify(playerQuests));
             updateCoinDisplay();
             updateQuestBadge();
+        }
+        
+        function saveShopData() {
+            localStorage.setItem('ownedAvatars', JSON.stringify(ownedAvatars));
+            localStorage.setItem('ownedSpaceObjects', JSON.stringify(ownedSpaceObjects));
+            localStorage.setItem('ownedGames', JSON.stringify(ownedGames));
         }
 
         function updateCoinDisplay() {
@@ -1531,6 +2152,168 @@
         }
 
         // ============================================
+        // === МАГАЗИН ===
+        // ============================================
+
+        function openShop() {
+            openModal(`
+                <div class="shop-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0; color: var(--ink);">🛒 Магазин</h2>
+                        <div class="coin-balance" style="font-size: 20px;">
+                            ${coinSvg} <span id="shop-coin-display">${playerCoins}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="shop-tabs">
+                        <button class="shop-tab-btn active" onclick="switchShopTab('avatars', this)">👤 Аватарки</button>
+                        <button class="shop-tab-btn" onclick="switchShopTab('space', this)">🚀 Космос</button>
+                        <button class="shop-tab-btn" onclick="switchShopTab('games', this)">🎮 Игры</button>
+                    </div>
+
+                    <div id="shop-content" class="shop-grid">
+                        <!-- Контент будет здесь -->
+                    </div>
+                </div>
+            `);
+            renderShopTab('avatars');
+        }
+
+        function switchShopTab(tab, btn) {
+            document.querySelectorAll('.shop-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderShopTab(tab);
+        }
+
+        function renderShopTab(tab) {
+            const container = document.getElementById('shop-content');
+            if (!container) return;
+
+            let html = '';
+
+            if (tab === 'avatars') {
+                // Показываем только те, которых нет в ownedAvatars
+                shopAvatars.forEach(item => {
+                    const isOwned = ownedAvatars.includes(item.emoji);
+                    const canAfford = playerCoins >= item.price;
+                    
+                    if (!isOwned) {
+                        html += `
+                            <div class="shop-item">
+                                <div class="shop-item-icon">${item.emoji}</div>
+                                <div class="shop-item-price">${coinSvg} ${item.price}</div>
+                                <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="buyShopItem('avatar', '${item.emoji}', ${item.price})" ${canAfford ? '' : 'disabled'}>
+                                    Купить
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="shop-item">
+                                <div class="shop-item-icon">${item.emoji}</div>
+                                <button class="shop-buy-btn owned" disabled>Куплено</button>
+                            </div>
+                        `;
+                    }
+                });
+            } 
+            else if (tab === 'space') {
+                shopSpaceObjects.forEach(item => {
+                    const isOwned = ownedSpaceObjects.some(o => o.name === item.name);
+                    const canAfford = playerCoins >= item.price;
+                    
+                    if (!isOwned) {
+                        html += `
+                            <div class="shop-item">
+                                <div class="shop-item-icon">${item.icon}</div>
+                                <div class="shop-item-name">${item.name}</div>
+                                <div class="shop-item-price">${coinSvg} ${item.price}</div>
+                                <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="buyShopItem('space', '${item.name}', ${item.price})" ${canAfford ? '' : 'disabled'}>
+                                    Купить
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="shop-item">
+                                <div class="shop-item-icon">${item.icon}</div>
+                                <div class="shop-item-name">${item.name}</div>
+                                <button class="shop-buy-btn owned" disabled>Куплено</button>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            else if (tab === 'games') {
+                // Список платных игр
+                const shopGames = Object.keys(gameInfo).filter(key => gameInfo[key].price > 0);
+                
+                shopGames.forEach(gameKey => {
+                    const game = gameInfo[gameKey];
+                    const isOwned = ownedGames.includes(gameKey);
+                    const canAfford = playerCoins >= game.price;
+                    
+                    if (!isOwned) {
+                        html += `
+                            <div class="shop-item">
+                                <div class="shop-item-icon">${game.icon}</div>
+                                <div class="shop-item-name">${game.name}</div>
+                                <div class="shop-item-price">${coinSvg} ${game.price}</div>
+                                <button class="shop-buy-btn ${canAfford ? '' : 'disabled'}" onclick="buyShopItem('game', '${gameKey}', ${game.price})" ${canAfford ? '' : 'disabled'}>
+                                    Купить
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="shop-item">
+                                <div class="shop-item-icon">${game.icon}</div>
+                                <div class="shop-item-name">${game.name}</div>
+                                <button class="shop-buy-btn owned" disabled>Куплено</button>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            if (html === '') {
+                html = '<p style="text-align: center; color: var(--text); grid-column: 1 / -1;">Все товары в этой категории уже куплены!</p>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function buyShopItem(type, id, price) {
+            if (playerCoins < price) return;
+
+            if (type === 'avatar') {
+                if (!ownedAvatars.includes(id)) {
+                    ownedAvatars.push(id);
+                    playerCoins -= price;
+                }
+            } else if (type === 'space') {
+                const item = shopSpaceObjects.find(o => o.name === id);
+                if (item && !ownedSpaceObjects.some(o => o.name === id)) {
+                    ownedSpaceObjects.push(item);
+                    playerCoins -= price;
+                }
+            } else if (type === 'game') {
+                if (!ownedGames.includes(id)) {
+                    ownedGames.push(id);
+                    playerCoins -= price;
+                }
+            }
+
+            saveQuestData();
+            saveShopData();
+            renderShopTab(type === 'avatar' ? 'avatars' : type === 'space' ? 'space' : 'games');
+            
+            // Обновляем баланс в шапке магазина
+            const shopCoinDisplay = document.getElementById('shop-coin-display');
+            if (shopCoinDisplay) shopCoinDisplay.textContent = playerCoins;
+        }
+
+        // ============================================
         // === ОСТАЛЬНОЙ КОД ПРИЛОЖЕНИЯ ===
         // ============================================
 
@@ -1582,6 +2365,16 @@
             localStorage.setItem("userDevice", device);
             deviceScreen.style.display = "none";
             applyDeviceSettings(device);
+            
+            // Пересобираем список игр в зависимости от устройства при первом входе
+            if (ownedGames.length === 0 || (ownedGames.length === defaultGames.length && (device === 'phone' || device === 'tablet'))) {
+                if (device === 'phone' || device === 'tablet') {
+                    ownedGames = [...defaultMobileGames];
+                } else {
+                    ownedGames = [...defaultGames];
+                }
+                saveShopData();
+            }
         }
 
         function applyDeviceSettings(device) {
@@ -1593,12 +2386,9 @@
             }
         }
 
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Берет все игры из ownedGames
         function getAvailableGames() {
-            const device = localStorage.getItem("userDevice");
-            if (device === 'phone' || device === 'tablet') {
-                return mobileGames;
-            }
-            return desktopGames;
+            return ownedGames.filter(game => gameInfo[game]);
         }
 
         const body = document.body;
@@ -1626,11 +2416,13 @@
         closeBtn.addEventListener("click", () => {
             modal.style.display = "none";
             modalContent.innerHTML = "";
+            if (window.catClickerInterval) clearInterval(window.catClickerInterval);
         });
 
         function closeModalFunc() {
             modal.style.display = "none";
             modalContent.innerHTML = "";
+            if (window.catClickerInterval) clearInterval(window.catClickerInterval);
         }
 
         const phrases = ["Ура, я это сделал!"];
@@ -1652,7 +2444,7 @@
             const currentColor = localStorage.getItem("savedAvatarColor") || "#ffd23f";
             const currentDevice = localStorage.getItem("userDevice") || "desktop";
 
-            const allUniqueGames = [...new Set([...desktopGames, ...mobileGames])];
+            const allUniqueGames = [...new Set([...defaultGames, ...defaultMobileGames])];
             let statsHtml = '';
             allUniqueGames.forEach(game => {
                 let count = parseInt(localStorage.getItem("playCount_" + game) || "0");
@@ -1667,6 +2459,12 @@
                      title="${color.name}"
                      onclick="selectAvatarColor('${color.hex}')">
                 </div>
+            `).join('');
+
+            // Показываем только купленные аватарки
+            let avatarOptionsHtml = ownedAvatars.map(emoji => `
+                <span class="avatar-option ${emoji === currentAvatar ? 'selected' : ''}" 
+                      onclick="selectAvatar('${emoji}')">${emoji}</span>
             `).join('');
 
             openModal(`
@@ -1695,10 +2493,7 @@
                     <div class="settings-section">
                         <h3>Выбери аватар</h3>
                         <div class="avatar-list">
-                            ${avatars.map(emoji => `
-                                <span class="avatar-option ${emoji === currentAvatar ? 'selected' : ''}" 
-                                      onclick="selectAvatar('${emoji}')">${emoji}</span>
-                            `).join('')}
+                            ${avatarOptionsHtml}
                         </div>
                     </div>
 
@@ -1715,6 +2510,11 @@
                             ${isDark ? '☀️ Включить светлую тему' : '🌙 Включить тёмную тему'}
                         </button>
                     </div>
+
+                    <div class="settings-section" style="border-color: #ffd23f;">
+                        <h3 style="color: #1d1b4d;">Обратная связь</h3>
+                        <button onclick="openSupport()" style="width: 100%; padding: 10px; background: var(--mint);">📬 Поддержка</button>
+                    </div>
                     
                     <div class="settings-section">
                         <h3>Статистика игр</h3>
@@ -1729,6 +2529,90 @@
                 </div>
             `);
         });
+
+        function openSupport() {
+            openModal(`
+                <div class="settings-panel" style="background: var(--paper);">
+                    <h2 style="text-align: center; margin-top: 0;">📬 Поддержка</h2>
+                    <p style="text-align: center; color: var(--text);">Чем мы можем помочь?</p>
+                    
+                    <div class="settings-section" onclick="openFeedbackForm('bug')" style="cursor: pointer; display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 40px;">🐞</span>
+                        <div>
+                            <h3 style="margin: 0;">Пожаловаться на ошибку</h3>
+                            <p style="margin: 0; font-size: 14px; color: var(--text);">Что-то не работает или вылетает?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section" onclick="openFeedbackForm('idea')" style="cursor: pointer; display: flex; align-items: center; gap: 15px; margin-top: 15px;">
+                        <span style="font-size: 40px;">💡</span>
+                        <div>
+                            <h3 style="margin: 0;">Предложить идею</h3>
+                            <p style="margin: 0; font-size: 14px; color: var(--text);">Есть мысль, как улучшить приложение?</p>
+                        </div>
+                    </div>
+                    
+                    <button onclick="document.getElementById('btn-settings').click()" style="width: 100%; margin-top: 20px; padding: 15px; background: #ccc; border-color: #999; box-shadow: none;">← Назад</button>
+                </div>
+            `);
+        }
+
+        function openFeedbackForm(type) {
+            const title = type === 'bug' ? '🐞 Пожаловаться на ошибку' : '💡 Предложить идею';
+            const placeholder = type === 'bug' ? 'Опишите, что случилось (что вы делали, что пошло не так)...' : 'Опишите вашу идею (что добавить, как это поможет)...';
+            
+            openModal(`
+                <div class="settings-panel" style="background: var(--paper);">
+                    <h2 style="text-align: center; margin-top: 0;">${title}</h2>
+                    
+                    <div class="settings-section" style="padding: 20px;">
+                        <textarea id="feedback-text" placeholder="${placeholder}" style="width: 100%; height: 200px; padding: 15px; font-family: inherit; font-size: 16px; border: 3px solid var(--ink); border-radius: 12px; resize: none; background: #fff;"></textarea>
+                        
+                        <button onclick="sendFeedback('${type}')" style="width: 100%; margin-top: 15px; padding: 15px; background: var(--sun);">📨 Отправить</button>
+                        <button onclick="openSupport()" style="width: 100%; margin-top: 10px; padding: 15px; background: #ccc; border-color: #999; box-shadow: none;">← Назад</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        function sendFeedback(type) {
+            const textEl = document.getElementById('feedback-text');
+            if (!textEl) return;
+
+            const text = textEl.value.trim();
+            if (!text) {
+                alert("Пожалуйста, напишите текст сообщения.");
+                return;
+            }
+
+            const name = localStorage.getItem("userName") || "Гость";
+            const device = localStorage.getItem("userDevice") || "Неизвестно";
+            const typeLabel = type === 'bug' ? 'Ошибка' : 'Идея';
+
+            const formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeLcipq8pTnDjZsK5aOMMOkIS9_bTjAE28HvGSVFKucLQKzxA/viewform";
+
+            const params = new URLSearchParams();
+            params.append('usp', 'pp_url');
+            params.append('entry.1302605088', typeLabel);
+            params.append('entry.620523727', name);
+            params.append('entry.1325147107', device);
+            params.append('entry.1590167629', text);
+
+            const finalUrl = `${formBaseUrl}?${params.toString()}`;
+
+            const newWin = window.open(finalUrl, '_blank');
+
+            openModal(`
+                <div class="settings-panel" style="background: var(--paper); justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: 80px; margin-bottom: 20px;">✅</div>
+                    <h2>Почти готово!</h2>
+                    <p style="font-size: 18px;">Мы открыли форму в новой вкладке.</p>
+                    <p style="font-size: 14px; color: var(--text); margin-bottom: 20px;">Пожалуйста, нажмите кнопку <b>«Отправить»</b> в открывшейся форме, чтобы сообщение дошло до разработчика.</p>
+                    ${!newWin ? `<p style="font-size: 14px; color: #ff6b6b; margin-bottom: 15px;">Похоже, браузер заблокировал новую вкладку. <a href="${finalUrl}" target="_blank" rel="noopener">Откройте форму вручную</a>.</p>` : ''}
+                    <button onclick="document.getElementById('btn-settings').click()" style="width: 100%; padding: 15px; background: var(--mint);">Вернуться в настройки</button>
+                </div>
+            `);
+        }
 
         function changeName() {
             const newName = prompt("Введи новое имя:", localStorage.getItem("userName") || "");
@@ -1775,7 +2659,7 @@
         }
 
         function resetAllSettings() {
-            if (confirm("Сбросить ВСЕ настройки, имя, статистику, квесты и монеты?")) {
+            if (confirm("Сбросить ВСЕ настройки, имя, статистику, квесты, магазин и монеты?")) {
                 localStorage.clear();
                 location.reload();
             }
@@ -1827,6 +2711,10 @@
 
         function startRandomGame() {
             const availableGames = getAvailableGames();
+            if (availableGames.length === 0) {
+                alert("У вас нет доступных игр. Купите их в магазине!");
+                return;
+            }
             const randomGame = availableGames[Math.floor(Math.random() * availableGames.length)];
             showRules(randomGame);
         }
@@ -1852,7 +2740,20 @@
                 'puzzle': { text: "Найди число, которое просит игра. Числа каждый раз новые! После прохождения игра начнётся заново.", warn: "" },
                 'memory': { text: "Найди все пары одинаковых картинок. Переворачивай по две карточки за ход.", warn: "" },
                 'taptrainer': { text: "Нажимай на появляющиеся круги как можно быстрее! Тренируй скорость и точность.", warn: "" },
-                'counter': { text: "Нажимай на кнопку как можно быстрее за 10 секунд! Побей свой рекорд!", warn: "" }
+                'counter': { text: "Нажимай на кнопку как можно быстрее за 10 секунд! Побей свой рекорд!", warn: "" },
+                'minesweeper': { text: "Классический Сапёр. Открывай клетки, но не наткнись на мину! Правый клик ставит флажок.", warn: "Игра встроена, но пока не доделана до конца. Скоро будет полностью рабочей!" },
+                'snake': { text: "Управляй змейкой стрелками, собирай еду и не врезайся в стены или себя!", warn: "Игра встроена, но пока не доделана до конца. Скоро будет полностью рабочей!" },
+                'breakout': { text: "Разбивай кирпичи, отбивая мяч платформой. Не урони мяч!", warn: "Игра встроена, но пока не доделана до конца. Скоро будет полностью рабочей!" },
+                '15puzzle': { text: "Перемещай костяшки, чтобы расставить числа по порядку от 1 до 15.", warn: "Игра в разработке!" },
+                'simon': { text: "Повторяй последовательность цветов. С каждым разом она становится длиннее!", warn: "Игра в разработке!" },
+                'tetris': { text: "Складывай падающие фигуры, чтобы заполнить линии и очистить поле.", warn: "Игра в разработке!" },
+                'pacman': { text: "Собирай точки, избегая призраков. Съешь большое яблоко, чтобы победить их!", warn: "Игра в разработке!" },
+                'invaders': { text: "Стреляй по инопланетянам, не дай им добраться до земли.", warn: "Игра в разработке!" },
+                'asteroids': { text: "Управляй кораблём и стреляй по астероидам. Не столкнись с ними!", warn: "Игра в разработке!" },
+                'pong': { text: "Классический Понг. Отбивай мяч ракеткой, не дай ему упасть.", warn: "Игра в разработке!" },
+                'frogger': { text: "Переведи лягушку через дорогу и реку, избегая машин и воды.", warn: "Игра в разработке!" },
+                'maze': { text: "Найди выход из лабиринта, собирая бонусы.", warn: "Игра в разработке!" },
+                'slidingpuzzle': { text: "Передвигай плитки, чтобы собрать картинку или последовательность.", warn: "Игра в разработке!" }
             };
 
             if (rules[gameType]) {
@@ -1875,6 +2776,51 @@
 
         function startGame(gameType) {
             saveGameResult(gameType);
+
+            if (gameType === 'minesweeper') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <div class="embedded-game">
+                            <h2>Сапёр</h2>
+                            <div id="minesweeper-container" style="display: flex; flex-direction: column; align-items: center;"></div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initMinesweeper(), 50);
+                return;
+            }
+
+            if (gameType === 'snake') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <div class="embedded-game">
+                            <h2>Змейка</h2>
+                            <canvas id="snakeCanvas" width="300" height="300" class="snake-canvas"></canvas>
+                            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                <button onclick="startSnake()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initSnake(), 50);
+                return;
+            }
+
+            if (gameType === 'breakout') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <div class="embedded-game">
+                            <h2>Арканоид</h2>
+                            <canvas id="breakoutCanvas" width="300" height="400" class="breakout-canvas"></canvas>
+                            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                <button onclick="startBreakout()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initBreakout(), 50);
+                return;
+            }
 
             if (gameType === 'tictactoe') {
                 openModal(`
@@ -2878,6 +3824,418 @@
                     btn.onclick = startCounter;
                 }
             }, 1000);
+        }
+
+        // ============================================
+        // === ВСТРОЕННЫЕ НОВЫЕ ИГРЫ ===
+        // ============================================
+
+        // --- САПЁР ---
+        let minesweeperState = {};
+        function initMinesweeper() {
+            const cols = 8;
+            const rows = 8;
+            const minesCount = 10;
+            
+            let board = [];
+            let mines = new Set();
+            
+            // Расставляем мины
+            while (mines.size < minesCount) {
+                mines.add(Math.floor(Math.random() * rows * cols));
+            }
+            
+            for (let i = 0; i < rows * cols; i++) {
+                board.push({
+                    isMine: mines.has(i),
+                    isRevealed: false,
+                    isFlagged: false,
+                    neighborMines: 0
+                });
+            }
+            
+            // Считаем соседей
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (board[i * cols + j].isMine) continue;
+                    let count = 0;
+                    for (let dx = -1; dx <= 1; dx++) {
+                        for (let dy = -1; dy <= 1; dy++) {
+                            if (dx === 0 && dy === 0) continue;
+                            const nx = i + dx;
+                            const ny = j + dy;
+                            if (nx >= 0 && nx < rows && ny >= 0 && ny < cols) {
+                                if (board[nx * cols + ny].isMine) count++;
+                            }
+                        }
+                    }
+                    board[i * cols + j].neighborMines = count;
+                }
+            }
+            
+            minesweeperState = { board, cols, rows, gameOver: false };
+            renderMinesweeper();
+        }
+
+        function renderMinesweeper() {
+            const container = document.getElementById('minesweeper-container');
+            if (!container) return;
+            
+            let html = '<div class="minesweeper-grid">';
+            minesweeperState.board.forEach((cell, idx) => {
+                let content = '';
+                let className = 'minesweeper-cell';
+                
+                if (cell.isRevealed) {
+                    className += ' revealed';
+                    if (cell.isMine) {
+                        content = '💣';
+                        className += ' mine';
+                    } else if (cell.neighborMines > 0) {
+                        content = cell.neighborMines;
+                    }
+                } else if (cell.isFlagged) {
+                    content = '🚩';
+                    className += ' flag';
+                }
+                
+                html += `<div class="${className}" onclick="revealMinesweeperCell(${idx})" oncontextmenu="flagMinesweeperCell(event, ${idx})">${content}</div>`;
+            });
+            html += '</div>';
+            
+            if (minesweeperState.gameOver) {
+                html += '<button onclick="initMinesweeper()" style="margin-top:10px; background: #3ddbb0; color: #000;">Заново</button>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function revealMinesweeperCell(idx) {
+            if (minesweeperState.gameOver) return;
+            const cell = minesweeperState.board[idx];
+            if (cell.isRevealed || cell.isFlagged) return;
+            
+            if (cell.isMine) {
+                // Проигрыш
+                minesweeperState.gameOver = true;
+                minesweeperState.board.forEach(c => c.isRevealed = true);
+                renderMinesweeper();
+                setTimeout(() => alert('💥 Ты подорвался на мине!'), 100);
+                return;
+            }
+            
+            cell.isRevealed = true;
+            
+            // Если пустая, открываем соседей
+            if (cell.neighborMines === 0) {
+                const r = Math.floor(idx / minesweeperState.cols);
+                const c = idx % minesweeperState.cols;
+                for (let dx = -1; dx <= 1; dx++) {
+                    for (let dy = -1; dy <= 1; dy++) {
+                        if (dx === 0 && dy === 0) continue;
+                        const nr = r + dx;
+                        const nc = c + dy;
+                        if (nr >= 0 && nr < minesweeperState.rows && nc >= 0 && nc < minesweeperState.cols) {
+                            revealMinesweeperCell(nr * minesweeperState.cols + nc);
+                        }
+                    }
+                }
+            }
+            
+            renderMinesweeper();
+            checkMinesweeperWin();
+        }
+
+        function flagMinesweeperCell(e, idx) {
+            e.preventDefault();
+            if (minesweeperState.gameOver) return;
+            const cell = minesweeperState.board[idx];
+            if (cell.isRevealed) return;
+            cell.isFlagged = !cell.isFlagged;
+            renderMinesweeper();
+        }
+
+        function checkMinesweeperWin() {
+            const allRevealed = minesweeperState.board.every(c => c.isRevealed || c.isFlagged);
+            if (allRevealed) {
+                minesweeperState.gameOver = true;
+                renderMinesweeper();
+                setTimeout(() => alert('🎉 Ты выиграл!'), 100);
+            }
+        }
+
+        // --- ЗМЕЙКА ---
+        let snakeState = {};
+        function initSnake() {
+            const canvas = document.getElementById('snakeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            snakeState = {
+                snake: [{x: 10, y: 10}],
+                direction: {x: 0, y: 0},
+                food: {x: 15, y: 15},
+                score: 0,
+                gameOver: false,
+                animId: null,
+                lastTime: 0
+            };
+            
+            // Первая еда
+            placeSnakeFood();
+            
+            document.onkeydown = (e) => {
+                if (snakeState.gameOver) return;
+                switch(e.key) {
+                    case 'ArrowUp': if (snakeState.direction.y === 0) snakeState.direction = {x: 0, y: -1}; break;
+                    case 'ArrowDown': if (snakeState.direction.y === 0) snakeState.direction = {x: 0, y: 1}; break;
+                    case 'ArrowLeft': if (snakeState.direction.x === 0) snakeState.direction = {x: -1, y: 0}; break;
+                    case 'ArrowRight': if (snakeState.direction.x === 0) snakeState.direction = {x: 1, y: 0}; break;
+                }
+            };
+            
+            drawSnake(ctx);
+        }
+
+        function placeSnakeFood() {
+            let newFood;
+            do {
+                newFood = {x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20)};
+            } while (snakeState.snake.some(s => s.x === newFood.x && s.y === newFood.y));
+            snakeState.food = newFood;
+        }
+
+        function drawSnake(ctx) {
+            const w = 300, h = 300;
+            const cellSize = 15;
+            
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, w, h);
+            
+            // Еда
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(snakeState.food.x * cellSize, snakeState.food.y * cellSize, cellSize, cellSize);
+            
+            // Змейка
+            snakeState.snake.forEach((s, i) => {
+                ctx.fillStyle = i === 0 ? '#3ddbb0' : '#2e8b57';
+                ctx.fillRect(s.x * cellSize, s.y * cellSize, cellSize, cellSize);
+            });
+            
+            // Счёт
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + snakeState.score, 10, 25);
+            
+            if (snakeState.gameOver) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = '#ff6b6b';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Игра окончена!', w/2, h/2 - 20);
+                ctx.fillStyle = '#fff';
+                ctx.font = '20px Arial';
+                ctx.fillText('Счёт: ' + snakeState.score, w/2, h/2 + 20);
+            }
+        }
+
+        function startSnake() {
+            const canvas = document.getElementById('snakeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            initSnake();
+            snakeState.direction = {x: 1, y: 0};
+            snakeState.lastTime = performance.now();
+            snakeState.animId = requestAnimationFrame((t) => snakeLoop(t, ctx));
+        }
+
+        function snakeLoop(now, ctx) {
+            if (!snakeState.gameOver) {
+                const dt = now - snakeState.lastTime;
+                if (dt > 150) {
+                    snakeState.lastTime = now;
+                    
+                    const head = {...snakeState.snake[0]};
+                    head.x += snakeState.direction.x;
+                    head.y += snakeState.direction.y;
+                    
+                    // Проверка выхода за границы
+                    if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
+                        snakeState.gameOver = true;
+                        drawSnake(ctx);
+                        return;
+                    }
+                    
+                    // Проверка на себя
+                    if (snakeState.snake.some(s => s.x === head.x && s.y === head.y)) {
+                        snakeState.gameOver = true;
+                        drawSnake(ctx);
+                        return;
+                    }
+                    
+                    snakeState.snake.unshift(head);
+                    
+                    if (head.x === snakeState.food.x && head.y === snakeState.food.y) {
+                        snakeState.score++;
+                        placeSnakeFood();
+                    } else {
+                        snakeState.snake.pop();
+                    }
+                    
+                    drawSnake(ctx);
+                }
+            }
+            
+            if (!snakeState.gameOver) {
+                snakeState.animId = requestAnimationFrame((t) => snakeLoop(t, ctx));
+            }
+        }
+
+        // --- АРКАНОИД ---
+        let breakoutState = {};
+        function initBreakout() {
+            const canvas = document.getElementById('breakoutCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            breakoutState = {
+                paddleX: 120,
+                ballX: 150,
+                ballY: 300,
+                ballDX: 3,
+                ballDY: -3,
+                bricks: [],
+                score: 0,
+                gameOver: false,
+                animId: null
+            };
+            
+            // Создаём кирпичи
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 5; c++) {
+                    breakoutState.bricks.push({
+                        x: c * 60,
+                        y: r * 20 + 30,
+                        width: 60,
+                        height: 20,
+                        active: true
+                    });
+                }
+            }
+            
+            document.onkeydown = (e) => {
+                if (e.key === 'ArrowLeft') breakoutState.paddleX = Math.max(0, breakoutState.paddleX - 20);
+                if (e.key === 'ArrowRight') breakoutState.paddleX = Math.min(240, breakoutState.paddleX + 20);
+            };
+            
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                breakoutState.paddleX = Math.max(0, Math.min(240, x - 30));
+            };
+            
+            drawBreakout(ctx);
+        }
+
+        function drawBreakout(ctx) {
+            const w = 300, h = 400;
+            
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, w, h);
+            
+            // Кирпичи
+            breakoutState.bricks.forEach(b => {
+                if (b.active) {
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.fillRect(b.x, b.y, b.width, b.height);
+                    ctx.strokeStyle = '#fff';
+                    ctx.strokeRect(b.x, b.y, b.width, b.height);
+                }
+            });
+            
+            // Платформа
+            ctx.fillStyle = '#3ddbb0';
+            ctx.fillRect(breakoutState.paddleX, 370, 60, 10);
+            
+            // Мяч
+            ctx.beginPath();
+            ctx.arc(breakoutState.ballX, breakoutState.ballY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffd23f';
+            ctx.fill();
+            
+            // Счёт
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + breakoutState.score, 10, 25);
+            
+            if (breakoutState.gameOver) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = '#ff6b6b';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Игра окончена!', w/2, h/2 - 20);
+                ctx.fillStyle = '#fff';
+                ctx.font = '20px Arial';
+                ctx.fillText('Счёт: ' + breakoutState.score, w/2, h/2 + 20);
+            }
+        }
+
+        function startBreakout() {
+            const canvas = document.getElementById('breakoutCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            initBreakout();
+            breakoutState.animId = requestAnimationFrame((t) => breakoutLoop(t, ctx));
+        }
+
+        function breakoutLoop(now, ctx) {
+            if (breakoutState.gameOver) return;
+            
+            breakoutState.ballX += breakoutState.ballDX;
+            breakoutState.ballY += breakoutState.ballDY;
+            
+            // Отскок от стен
+            if (breakoutState.ballX <= 5 || breakoutState.ballX >= 295) breakoutState.ballDX *= -1;
+            if (breakoutState.ballY <= 5) breakoutState.ballDY *= -1;
+            
+            // Отскок от платформы
+            if (breakoutState.ballY >= 360 && breakoutState.ballY <= 375 &&
+                breakoutState.ballX >= breakoutState.paddleX && breakoutState.ballX <= breakoutState.paddleX + 60) {
+                breakoutState.ballDY = -Math.abs(breakoutState.ballDY);
+            }
+            
+            // Проигрыш
+            if (breakoutState.ballY > 400) {
+                breakoutState.gameOver = true;
+                drawBreakout(ctx);
+                return;
+            }
+            
+            // Проверка столкновений с кирпичами
+            breakoutState.bricks.forEach(b => {
+                if (b.active) {
+                    if (breakoutState.ballX > b.x && breakoutState.ballX < b.x + b.width &&
+                        breakoutState.ballY > b.y && breakoutState.ballY < b.y + b.height) {
+                        b.active = false;
+                        breakoutState.ballDY *= -1;
+                        breakoutState.score++;
+                    }
+                }
+            });
+            
+            // Победа
+            if (breakoutState.bricks.every(b => !b.active)) {
+                breakoutState.gameOver = true;
+                drawBreakout(ctx);
+                return;
+            }
+            
+            drawBreakout(ctx);
+            breakoutState.animId = requestAnimationFrame((t) => breakoutLoop(t, ctx));
         }
 
         // ============================================
@@ -3948,7 +5306,13 @@
                 lastX = pos.x;
                 lastY = pos.y;
                 ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 25;
+                ctx.lineWidth = 40; // УВЕЛИЧЕННЫЙ ЛАСТИК
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
             };
 
             const draw = (e) => {
@@ -4007,13 +5371,18 @@
 
             const currentPixels = countPixelsInZone(ctx, w, h, eraseTask);
             
-            if (currentPixels < eraseOriginalPixels * 0.2) {
+            // ДОБРЫЙ БОТ: Достаточно стереть 30% лишнего (было 20%)
+            if (currentPixels < eraseOriginalPixels * 0.3) {
                 botFace.textContent = '😄';
-                botText.textContent = 'Ура! Ты всё стёр!';
+                botText.textContent = 'Отлично! Ты справился!';
                 nextBtn.style.display = 'block';
+            } else if (currentPixels < eraseOriginalPixels * 0.6) {
+                // Подбадриваем, если стёрто больше половины
+                botFace.textContent = '🙂';
+                botText.textContent = 'Хорошо! Осталось совсем чуть-чуть!';
             } else {
-                botFace.textContent = '😢';
-                botText.textContent = 'Ещё не всё стёрто. Попробуй ещё!';
+                botFace.textContent = '🤔';
+                botText.textContent = 'Давай ещё! Сотри лишние детали.';
             }
         }
 
@@ -4083,14 +5452,448 @@
             };
         }
 
+        // ============================================
+        // === КОСМОС (Тест + Факты) ===
+        // ============================================
+
+        const spaceData = [
+            { fact: "Солнце составляет 99,86% массы всей Солнечной системы.", question: "Какой процент массы Солнечной системы занимает Солнце?", answers: ["50%", "99,86%", "75%", "10%"], correct: 1 },
+            { fact: "В космосе нет звука, потому что там нет воздуха для распространения звуковых волн.", question: "Почему в космосе не слышно звуков?", answers: ["Слишком тихо", "Нет воздуха", "Звук замерзает", "Космос поглощает звук"], correct: 1 },
+            { fact: "На Венере день длится дольше, чем год. Венера вращается вокруг своей оси 243 земных дня, а вокруг Солнца — 225 дней.", question: "На какой планете день длиннее года?", answers: ["Марс", "Венера", "Юпитер", "Меркурий"], correct: 1 },
+            { fact: "Следы на Луне останутся на миллионы лет, так как там нет ветра и воды для их разрушения.", question: "Сколько могут сохраняться следы на Луне?", answers: ["100 лет", "1000 лет", "Миллионы лет", "Они исчезают сразу"], correct: 2 },
+            { fact: "Юпитер — самая большая планета. Внутри него может поместиться 1300 таких планет, как Земля.", question: "Сколько планет Земля поместится внутри Юпитера?", answers: ["10", "100", "1300", "5000"], correct: 2 },
+            { fact: "Свет от Солнца до Земли доходит примерно за 8 минут и 20 секунд.", question: "Сколько времени летит свет от Солнца до Земли?", answers: ["1 секунду", "8 минут", "1 час", "24 часа"], correct: 1 },
+            { fact: "В нашей галактике Млечный Путь более 100 миллиардов звезд.", question: "Сколько примерно звезд в Млечном Пути?", answers: ["1 миллион", "100 миллионов", "Более 100 миллиардов", "1000"], correct: 2 },
+            { fact: "Нейтронная звезда настолько плотная, что чайная ложка её вещества весила бы около 6 миллиардов тонн на Земле.", question: "Сколько весила бы чайная ложка нейтронной звезды?", answers: ["1 кг", "100 тонн", "6 миллиардов тонн", "Совсем ничего"], correct: 2 },
+            { fact: "Марс называют «Красной планетой» из-за оксида железа (ржавчины) в его почве.", question: "Почему Марс красный?", answers: ["Из-за крови", "Из-за ржавчины", "Из-за жары", "Из-за краски"], correct: 1 },
+            { fact: "Если бы вы оказались в открытом космосе без скафандра, вы не замерзли бы мгновенно, так как в вакууме нет теплопроводности.", question: "Что произойдет с вами в открытом космосе без скафандра?", answers: ["Мгновенно замерзнете", "Взорветесь", "Не замерзнете мгновенно", "Станете супергероем"], correct: 2 }
+        ];
+
+        let spaceTestPassed = localStorage.getItem('spaceTestPassed') === 'true';
+        let currentSpaceQuestion = 0;
+
         document.getElementById("btn-space").addEventListener("click", () => {
-            openModal(`<img src="space.gif.gif" alt="Космос" style="max-width: 100%; max-height: 100%; object-fit: contain;">`);
+            if (spaceTestPassed) {
+                openSpaceObjectsMenu();
+            } else {
+                startSpaceTest();
+            }
         });
+
+        function startSpaceTest() {
+            currentSpaceQuestion = 0;
+            showSpaceFact();
+        }
+
+        function showSpaceFact() {
+            if (currentSpaceQuestion >= spaceData.length) {
+                spaceTestPassed = true;
+                localStorage.setItem('spaceTestPassed', 'true');
+                openSpaceObjectsMenu();
+                return;
+            }
+
+            const data = spaceData[currentSpaceQuestion];
+            const motivations = ["Ты на правильном пути!", "Отличная работа!", "Космос ждет тебя!", "Продолжай в том же духе!", "Ты почти у цели!"];
+            const motivation = motivations[Math.floor(Math.random() * motivations.length)];
+
+            openModal(`
+                <div class="space-container">
+                    <div class="space-header">
+                        <h2>🚀 Космический квест</h2>
+                        <div class="space-motivation">${motivation}</div>
+                        <div style="font-size: 14px; margin-top: 5px;">Вопрос ${currentSpaceQuestion + 1} из ${spaceData.length}</div>
+                    </div>
+                    <div class="space-fact-card">
+                        <span style="font-size: 40px; display: block; margin-bottom: 10px;">💡</span>
+                        ${data.fact}
+                    </div>
+                    <button onclick="showSpaceQuestion()" style="width: 100%; max-width: 300px; margin: 0 auto; display: block; background: #3ddbb0; color: #000; border: none; padding: 15px; font-size: 18px; border-radius: 12px; cursor: pointer;">Понятно, дальше ▶</button>
+                </div>
+            `);
+        }
+
+        function showSpaceQuestion() {
+            const data = spaceData[currentSpaceQuestion];
+            
+            let optionsHtml = data.answers.map((ans, idx) => `
+                <div class="space-option" id="space-opt-${idx}" onclick="checkSpaceAnswer(${idx})">${ans}</div>
+            `).join('');
+
+            openModal(`
+                <div class="space-container">
+                    <div class="space-header">
+                        <h2>🚀 Вопрос ${currentSpaceQuestion + 1}</h2>
+                    </div>
+                    <div class="space-question">${data.question}</div>
+                    <div class="space-options" id="space-options">
+                        ${optionsHtml}
+                    </div>
+                    <div id="space-next-btn-container" style="text-align: center; margin-top: 20px;"></div>
+                </div>
+            `);
+        }
+
+        function checkSpaceAnswer(idx) {
+            const data = spaceData[currentSpaceQuestion];
+            const options = document.querySelectorAll('.space-option');
+            
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === data.correct) {
+                    opt.classList.add('correct');
+                } else if (i === idx && idx !== data.correct) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            const nextBtnContainer = document.getElementById('space-next-btn-container');
+            
+            if (idx === data.correct) {
+                nextBtnContainer.innerHTML = `
+                    <p style="color: #3ddbb0; font-weight: bold; margin-bottom: 10px;">✅ Правильно!</p>
+                    <button onclick="nextSpaceQuestion()" style="background: #3ddbb0; color: #000; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; cursor: pointer; width: 100%;">Следующий факт ▶</button>
+                `;
+            } else {
+                nextBtnContainer.innerHTML = `
+                    <p style="color: #ff6b6b; font-weight: bold; margin-bottom: 10px;">❌ Неправильно. Правильный ответ выделен зеленым.</p>
+                    <button onclick="nextSpaceQuestion()" style="background: #ffd23f; color: #000; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; cursor: pointer; width: 100%;">Дальше ▶</button>
+                `;
+            }
+        }
+
+        function nextSpaceQuestion() {
+            currentSpaceQuestion++;
+            if (currentSpaceQuestion >= spaceData.length) {
+                spaceTestPassed = true;
+                localStorage.setItem('spaceTestPassed', 'true');
+                openModal(`
+                    <div class="space-container" style="justify-content: center; align-items: center; text-align: center;">
+                        <div style="font-size: 80px; margin-bottom: 20px;">🏆</div>
+                        <h2 style="font-size: 32px;">Поздравляем!</h2>
+                        <p style="font-size: 20px; margin-bottom: 30px;">Ты прошел космический квест!</p>
+                        <button onclick="openSpaceObjectsMenu()" style="background: #3ddbb0; color: #000; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; cursor: pointer;">Перейти к объектам 🚀</button>
+                    </div>
+                `);
+            } else {
+                showSpaceFact();
+            }
+        }
+
+        function openSpaceObjectsMenu() {
+            let objectsHtml = ownedSpaceObjects.map((obj, idx) => `
+                <div class="space-object" onclick="showSpaceObjectFact(${idx})">
+                    <span>${obj.icon}</span>
+                    <div class="space-object-name">${obj.name}</div>
+                </div>
+            `).join('');
+
+            openModal(`
+                <div class="space-container">
+                    <div class="space-header">
+                        <h2>🌌 Космические объекты</h2>
+                        <div style="font-size: 14px;">Нажми на любой объект, чтобы узнать факт</div>
+                    </div>
+                    <div class="space-objects-grid">
+                        ${objectsHtml}
+                    </div>
+                </div>
+            `);
+        }
+
+        function showSpaceObjectFact(index) {
+            const obj = ownedSpaceObjects[index];
+            openModal(`
+                <div class="space-container" style="justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: 80px; margin-bottom: 20px;">${obj.icon}</div>
+                    <h2 style="font-size: 28px;">${obj.name}</h2>
+                    <div class="space-fact-card" style="margin-top: 20px; width: 100%; max-width: 400px;">
+                        ${obj.fact}
+                    </div>
+                    <button onclick="openSpaceObjectsMenu()" style="background: #3ddbb0; color: #000; border: none; padding: 15px 30px; font-size: 18px; border-radius: 12px; cursor: pointer; margin-top: 20px; width: 100%; max-width: 300px;">← Назад к объектам</button>
+                </div>
+            `);
+        }
+
+        // ============================================
+        // === КОТИК-КЛИКЕР ===
+        // ============================================
+
+        let catGameState = {
+            coins: parseFloat(localStorage.getItem('catCoins') || '0'),
+            totalCoins: parseFloat(localStorage.getItem('catTotalCoins') || '0'),
+            upgrades: JSON.parse(localStorage.getItem('catUpgrades') || '{"food":0,"treat":0,"toy":0,"litter":0,"accessory":0}'),
+            prestigeMultiplier: parseFloat(localStorage.getItem('catPrestigeMult') || '1')
+        };
+
+        const catUpgradesInfo = [
+            { id: 'food', name: 'Food', icon: '🍖', baseCost: 10, baseIncome: 0.1 },
+            { id: 'treat', name: 'Treat', icon: '🍬', baseCost: 100, baseIncome: 1 },
+            { id: 'toy', name: 'Toy', icon: '🧸', baseCost: 1000, baseIncome: 10 },
+            { id: 'litter', name: 'Litter', icon: '🧹', baseCost: 10000, baseIncome: 100 },
+            { id: 'accessory', name: 'Accessory', icon: '🎀', baseCost: 100000, baseIncome: 1000 }
+        ];
+
+        function saveCatGame() {
+            localStorage.setItem('catCoins', catGameState.coins);
+            localStorage.setItem('catTotalCoins', catGameState.totalCoins);
+            localStorage.setItem('catUpgrades', JSON.stringify(catGameState.upgrades));
+            localStorage.setItem('catPrestigeMult', catGameState.prestigeMultiplier);
+        }
+
+        function getCatUpgradeCost(id) {
+            const info = catUpgradesInfo.find(u => u.id === id);
+            const level = catGameState.upgrades[id];
+            return Math.floor(info.baseCost * Math.pow(1.15, level));
+        }
+
+        function getCatIncomePerSec() {
+            let total = 0;
+            catUpgradesInfo.forEach(info => {
+                total += catGameState.upgrades[info.id] * info.baseIncome;
+            });
+            return total * catGameState.prestigeMultiplier;
+        }
 
         document.getElementById("btn-cats").addEventListener("click", () => {
-            openModal(`<img src="cat.jpeg.JPEG" alt="Котик" style="max-width: 100%; max-height: 100%; object-fit: contain;">`);
+            openCatClicker();
         });
 
+        function openCatClicker() {
+            openModal(`
+                <div class="cat-clicker-container">
+                    <div class="cat-sidebar" id="cat-sidebar">
+                        <!-- Upgrades will be rendered here -->
+                    </div>
+                    <div class="cat-main-area" id="cat-main-area">
+                        <div class="cat-top-bar">
+                            <div class="cat-coins">${coinSvg} <span id="cat-coins-display">0</span></div>
+                            <div class="cat-passive">+<span id="cat-passive-display">0</span>/s</div>
+                            <button class="cat-prestige-btn" onclick="prestigeCatGame()" id="cat-prestige-btn">Prestige</button>
+                        </div>
+                        <div class="cat-character-container" onclick="clickCat(event)">
+                            <!-- Новая ровная и большая SVG иконка кота -->
+                            <svg class="cat-character-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Уши -->
+                                <path d="M 25 40 L 35 10 L 50 35 Z" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M 95 40 L 85 10 L 70 35 Z" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2" stroke-linejoin="round"/>
+                                <!-- Внутренние уши -->
+                                <path d="M 30 35 L 37 18 L 45 33 Z" fill="#ffb366" />
+                                <path d="M 90 35 L 83 18 L 75 33 Z" fill="#ffb366" />
+                                <!-- Тело -->
+                                <ellipse cx="60" cy="80" rx="40" ry="30" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2"/>
+                                <!-- Голова -->
+                                <circle cx="60" cy="55" r="35" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2"/>
+                                <!-- Мордочка -->
+                                <ellipse cx="60" cy="65" rx="22" ry="15" fill="#ffb366" />
+                                <!-- Глаза -->
+                                <ellipse cx="45" cy="55" rx="5" ry="7" fill="#fff" />
+                                <ellipse cx="75" cy="55" rx="5" ry="7" fill="#fff" />
+                                <circle cx="45" cy="55" r="3" fill="#000" />
+                                <circle cx="75" cy="55" r="3" fill="#000" />
+                                <circle cx="46" cy="54" r="1" fill="#fff" />
+                                <circle cx="76" cy="54" r="1" fill="#fff" />
+                                <!-- Нос -->
+                                <path d="M 57 65 L 63 65 L 60 68 Z" fill="#ff6b6b" stroke="#1d1b4d" stroke-width="1"/>
+                                <!-- Рот -->
+                                <path d="M 55 70 Q 60 74 65 70" stroke="#1d1b4d" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                <!-- Усы -->
+                                <line x1="35" y1="68" x2="20" y2="65" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="35" y1="72" x2="20" y2="73" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="85" y1="68" x2="100" y2="65" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="85" y1="72" x2="100" y2="73" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
+                                <!-- Пятна -->
+                                <circle cx="45" cy="35" r="5" fill="#ff6b00" opacity="0.5"/>
+                                <circle cx="75" cy="35" r="5" fill="#ff6b00" opacity="0.5"/>
+                                <!-- Лапки -->
+                                <ellipse cx="35" cy="100" rx="10" ry="8" fill="#ffb366" stroke="#1d1b4d" stroke-width="2"/>
+                                <ellipse cx="85" cy="100" rx="10" ry="8" fill="#ffb366" stroke="#1d1b4d" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="cat-character-name">Orange Cat</div>
+                        <div class="cat-unlock-text">Get 120K ${coinSvg} to unlock next cat!</div>
+                    </div>
+                </div>
+            `);
+
+            renderCatSidebar();
+            updateCatUI();
+
+            if (window.catClickerInterval) clearInterval(window.catClickerInterval);
+            window.catClickerInterval = setInterval(() => {
+                const income = getCatIncomePerSec();
+                if (income > 0) {
+                    catGameState.coins += income;
+                    catGameState.totalCoins += income;
+                    updateCatUI();
+                }
+            }, 100);
+        }
+
+        function renderCatSidebar() {
+            const sidebar = document.getElementById('cat-sidebar');
+            if (!sidebar) return;
+
+            // Проверяем, есть ли уже элементы. Если нет — создаем их один раз.
+            if (sidebar.children.length === 0) {
+                let html = '';
+                catUpgradesInfo.forEach(info => {
+                    html += `
+                        <div class="cat-upgrade-item" id="upg-${info.id}" onclick="buyCatUpgrade('${info.id}')">
+                            <div class="cat-upgrade-icon">${info.icon}</div>
+                            <div class="cat-upgrade-info">
+                                <div class="cat-upgrade-name">${info.name}</div>
+                                <div class="cat-upgrade-cost" id="cost-${info.id}">${coinSvg} 0</div>
+                                <div class="cat-upgrade-amount" id="amount-${info.id}">+0/s • x0</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <button class="btn-withdraw" onclick="withdrawCatCoins()">
+                        💸 Вывести в реальные монеты
+                    </button>
+                `;
+                sidebar.innerHTML = html;
+            }
+
+            // Обновляем только текст внутри (цена, доход), чтобы не сбивать hover-эффект
+            catUpgradesInfo.forEach(info => {
+                const cost = getCatUpgradeCost(info.id);
+                const level = catGameState.upgrades[info.id];
+                const canAfford = catGameState.coins >= cost;
+                const income = (info.baseIncome * catGameState.prestigeMultiplier).toFixed(1);
+
+                const itemEl = document.getElementById(`upg-${info.id}`);
+                if (itemEl) {
+                    itemEl.classList.toggle('disabled', !canAfford);
+                }
+
+                const costEl = document.getElementById(`cost-${info.id}`);
+                if (costEl) {
+                    costEl.innerHTML = `${coinSvg} ${cost.toLocaleString()}`;
+                }
+                
+                const amountEl = document.getElementById(`amount-${info.id}`);
+                if (amountEl) {
+                    amountEl.textContent = `+${income}/s • x${level}`;
+                }
+            });
+        }
+
+        function updateCatUI() {
+            const coinsEl = document.getElementById('cat-coins-display');
+            const passiveEl = document.getElementById('cat-passive-display');
+            if (coinsEl) coinsEl.textContent = Math.floor(catGameState.coins).toLocaleString();
+            if (passiveEl) passiveEl.textContent = getCatIncomePerSec().toFixed(1);
+            
+            renderCatSidebar();
+        }
+
+        function clickCat(e) {
+            const income = 1 * catGameState.prestigeMultiplier;
+            catGameState.coins += income;
+            catGameState.totalCoins += income;
+            
+            const charEl = document.querySelector('.cat-character-svg');
+            if (charEl) {
+                charEl.style.transform = 'scale(0.9)';
+                setTimeout(() => charEl.style.transform = 'scale(1)', 100);
+            }
+
+            const floatEl = document.createElement('div');
+            floatEl.className = 'cat-click-anim';
+            floatEl.textContent = '+' + income;
+            
+            const mainArea = document.getElementById('cat-main-area');
+            const mainAreaRect = mainArea.getBoundingClientRect();
+            
+            floatEl.style.left = (e.clientX - mainAreaRect.left - 20) + 'px';
+            floatEl.style.top = (e.clientY - mainAreaRect.top - 20) + 'px';
+            
+            mainArea.appendChild(floatEl);
+            setTimeout(() => floatEl.remove(), 800);
+
+            updateCatUI();
+            saveCatGame();
+        }
+
+        function buyCatUpgrade(id) {
+            const cost = getCatUpgradeCost(id);
+            if (catGameState.coins >= cost) {
+                catGameState.coins -= cost;
+                catGameState.upgrades[id]++;
+                updateCatUI();
+                saveCatGame();
+            }
+        }
+
+        function prestigeCatGame() {
+            if (catGameState.totalCoins < 120000) {
+                alert("Для престижа нужно заработать минимум 120,000 монет за всё время!");
+                return;
+            }
+            if (confirm("Престиж сбросит ваш прогресс, но даст множитель дохода. Продолжить?")) {
+                const newMult = catGameState.prestigeMultiplier + 0.5;
+                catGameState = {
+                    coins: 0,
+                    totalCoins: 0,
+                    upgrades: {food:0,treat:0,toy:0,litter:0,accessory:0},
+                    prestigeMultiplier: newMult
+                };
+                updateCatUI();
+                saveCatGame();
+                alert(`Престиж выполнен! Ваш новый множитель: x${newMult}`);
+            }
+        }
+
+        // Кастомное окно для вывода
+        function withdrawCatCoins() {
+            const amountToWithdraw = Math.floor(catGameState.coins);
+            if (amountToWithdraw <= 0) {
+                alert("У вас нет монет для вывода!");
+                return;
+            }
+
+            // Заменяем стандартный confirm на красивое модальное окно
+            openModal(`
+                <div class="withdraw-modal">
+                    <div style="font-size: 60px; margin-bottom: 15px;">⚠️</div>
+                    <h2>Внимание!</h2>
+                    <p class="warning-text">При выводе в реальные монеты, сумма вашего кликера будет разделена на 3.</p>
+                    
+                    <div class="amount-display">
+                        ${coinSvg} <span>${amountToWithdraw.toLocaleString()}</span>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn-cancel" onclick="openCatClicker()">Отмена</button>
+                        <button class="btn-confirm" onclick="confirmWithdraw()">Вывести</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        function confirmWithdraw() {
+            const amountToWithdraw = Math.floor(catGameState.coins);
+            const converted = Math.floor(amountToWithdraw / 3);
+            
+            // Обнуляем баланс кликера
+            catGameState.coins = 0;
+            saveCatGame();
+            
+            // Начисляем в основной кошелек
+            playerCoins += converted;
+            saveQuestData();
+            
+            // Возвращаемся в кликер и обновляем UI
+            openCatClicker();
+            
+            alert(`Успешно выведено!\nВаш баланс кликера обнулен.\nНа основной счет зачислено: ${converted.toLocaleString()} монет (сумма была поделена на 3).`);
+        }
+
+        // --- КНОПКА ПОДЕЛИТЬСЯ ---
         document.getElementById("btn-share").addEventListener("click", async () => {
             const url = "https://a52993827-cyber.github.io/my-site/html/";
             try {
