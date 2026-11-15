@@ -723,6 +723,8 @@
             background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
             border-radius: 20px;
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
         }
         .embedded-game {
             width: 100%;
@@ -1215,6 +1217,7 @@
                 gap: 10px;
                 height: auto;
                 max-height: 40vh;
+                padding-top: 50px; 
             }
             .bot-container {
                 flex-direction: row;
@@ -1751,6 +1754,59 @@
             border-radius: 10px;
             touch-action: none;
         }
+
+        /* Кнопка выхода в меню игр внутри игры */
+        .game-exit-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 16px;
+            background: #ff4d4d;
+            color: #fff;
+            border: 3px solid #1d1b4d;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #1d1b4d;
+            z-index: 10;
+            transition: transform 0.1s;
+        }
+        .game-exit-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        /* Исправление для кликера на телефоне */
+        @media (max-width: 768px) {
+            .cat-clicker-container {
+                flex-direction: column;
+            }
+            .cat-sidebar {
+                width: 100%;
+                max-height: 40vh; 
+                padding-top: 50px; 
+                border-right: none;
+                border-bottom: 2px solid rgba(255,255,255,0.1);
+            }
+            .cat-main-area {
+                min-height: 60vh; 
+            }
+            .cat-top-bar {
+                right: 15px; 
+                top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+            .cat-character-svg {
+                width: 180px;
+                height: 180px;
+            }
+            .btn-withdraw {
+                margin: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1787,7 +1843,7 @@
         <div class="top-group">
             <button id="btn-quests" class="corner-btn" onclick="openQuests()">
                 📜 Квесты
-                <span id="quest-badge" class="badge">1</span>
+                <span id="quest-badge" class="badge">0</span>
             </button>
             <div class="coin-balance">
                 <div class="coin-icon"></div>
@@ -1832,7 +1888,9 @@
             'tictactoe', 'guessnumber', 'flappybird',
             'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory',
             'minesweeper', 'snake', 'breakout', '15puzzle', 'simon', 'tetris',
-            'pacman', 'invaders', 'asteroids', 'pong', 'frogger', 'maze', 'slidingpuzzle'
+            'pacman', 'invaders', 'asteroids', 'pong', 'frogger', 'maze', 'slidingpuzzle',
+            'whackamole', 'simondice', 'memorynumbers', 'reactioncolor', 'mathgame',
+            'wordscramble', 'numbersequence', 'findthedifference', 'typingtest'
         ];
         
         // Строго мобильные игры (без клавиатуры)
@@ -1840,7 +1898,8 @@
             'blockblast', 'sudoku', 'watersort', 'onet',
             'tictactoe', 'guessnumber', 'flappybird',
             'hangman', 'rps', 'reaction', 'colorgame', 'puzzle', 'memory',
-            'taptrainer', 'counter'
+            'taptrainer', 'counter', 'whackamole', 'simondice', 'memorynumbers', 'reactioncolor',
+            'snake', 'tetris', 'wordscramble', 'numbersequence', 'typingtest'
         ];
 
         const gameInfo = {
@@ -1874,20 +1933,71 @@
             'pong': { icon: '🏓', name: 'Понг', price: 200 },
             'frogger': { icon: '🐸', name: 'Фроггер', price: 800 },
             'maze': { icon: '🌽', name: 'Лабиринт', price: 600 },
-            'slidingpuzzle': { icon: '🧩', name: 'Слайд-пазл', price: 900 }
+            'slidingpuzzle': { icon: '🧩', name: 'Слайд-пазл', price: 400 },
+            // Новые игры
+            'whackamole': { icon: '🔨', name: 'Ударь крота', price: 250 },
+            'simondice': { icon: '🎲', name: 'Кубики Саймона', price: 200 },
+            'memorynumbers': { icon: '🔢', name: 'Память чисел', price: 300 },
+            'reactioncolor': { icon: '🌈', name: 'Цветовая реакция', price: 550 },
+            'mathgame': { icon: '➗', name: 'Математика', price: 650 },
+            'wordscramble': { icon: '🔤', name: 'Слова', price: 750 },
+            'numbersequence': { icon: '📊', name: 'Последовательность', price: 850 },
+            'findthedifference': { icon: '🔍', name: 'Найди отличие', price: 950 },
+            'typingtest': { icon: '⌨️', name: 'Скорость печати', price: 1050 }
         };
 
+        // === МАГАЗИН АВАТАРОК (ПЕРЕРАБОТАН) ===
         const defaultAvatars = ["🐢", "🦊", "🐼", "🦖", "🐱", "🐶", "🦁", "🐸", "🐵", "🐧", "🦄", "🐉"];
         
-        // Генерация 50 аватаров для магазина
         const shopAvatars = [];
-        const emojisList = ['👽', '🤖', '👻', '🦸', '🧙', '🐺', '🦝', '🐹', '🐰', '🦔', '🦇', '🐲', '🦅', '🦉', '🐌', '🐞', '🦋', '🐜', '🕷️', '🦂', '🦑', '🐙', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑'];
-        for (let i = 0; i < 50; i++) {
+        const emojisList = [
+            { emoji: '🐜', rarity: 1 }, { emoji: '🐞', rarity: 1 }, { emoji: '🐝', rarity: 1 }, 
+            { emoji: '🐌', rarity: 1 }, { emoji: '🦋', rarity: 1 }, { emoji: '🕷️', rarity: 2 },
+            { emoji: '🦂', rarity: 2 }, { emoji: '🦀', rarity: 2 }, { emoji: '🐙', rarity: 2 },
+            { emoji: '🦑', rarity: 2 }, { emoji: '🐬', rarity: 3 }, { emoji: '🐳', rarity: 3 },
+            { emoji: '🦈', rarity: 3 }, { emoji: '🐊', rarity: 3 }, { emoji: '🐅', rarity: 4 },
+            { emoji: '🐆', rarity: 4 }, { emoji: '🦓', rarity: 4 }, { emoji: '🦍', rarity: 4 },
+            { emoji: '🐘', rarity: 4 }, { emoji: '🦏', rarity: 4 }, { emoji: '🐪', rarity: 4 },
+            { emoji: '🦒', rarity: 4 }, { emoji: '🐉', rarity: 5 }, { emoji: '🦄', rarity: 5 },
+            { emoji: '👽', rarity: 5 }, { emoji: '🤖', rarity: 5 }, { emoji: '👻', rarity: 5 },
+            { emoji: '🦸', rarity: 5 }, { emoji: '🧙', rarity: 5 }, { emoji: '🐲', rarity: 5 }
+        ];
+
+        emojisList.forEach(item => {
+            let basePrice = 0;
+            switch(item.rarity) {
+                case 1: basePrice = 100; break;
+                case 2: basePrice = 500; break;
+                case 3: basePrice = 1500; break;
+                case 4: basePrice = 5000; break;
+                case 5: basePrice = 15000; break;
+            }
             shopAvatars.push({
-                emoji: emojisList[i % emojisList.length],
-                price: 100 + (i * 50)
+                emoji: item.emoji,
+                price: basePrice,
+                rarity: item.rarity
             });
-        }
+        });
+
+        const legendaryAvatars = [
+            { emoji: '🐉', price: 50000 },
+            { emoji: '🦄', price: 50000 },
+            { emoji: '👽', price: 75000 },
+            { emoji: '🤖', price: 100000 },
+            { emoji: '👻', price: 100000 }
+        ];
+        legendaryAvatars.forEach(item => {
+            shopAvatars.push({ emoji: item.emoji, price: item.price, rarity: 5 });
+        });
+
+        const uniqueAvatars = [];
+        const seenEmojis = new Set();
+        shopAvatars.forEach(item => {
+            if (!seenEmojis.has(item.emoji)) {
+                seenEmojis.add(item.emoji);
+                uniqueAvatars.push(item);
+            }
+        });
 
         const defaultSpaceObjects = [
             { icon: "☀️", name: "Солнце", fact: "Солнце — это звезда, которая находится в центре нашей Солнечной системы. Оно имеет диаметр около 1,4 миллиона километров." },
@@ -1900,7 +2010,6 @@
             { icon: "🚀", name: "Ракета", fact: "Первая ракета, достигшая космоса, была запущена в 1944 году. А первым человеком в космосе стал Юрий Гагарин в 1961 году." }
         ];
 
-        // Генерация 50 космических объектов для магазина
         const shopSpaceObjects = [];
         const spaceIcons = ['🌠', '🌑', '☀️', '💫', '🌟', '🌌', '🪐', '🌕', '🌙', '☄️', '🌍', '🌎', '🌏', '🪨', '💥', '🌀', '🔭', '🛸', '👽', '🛰️'];
         const spaceNames = ['Туманность', 'Астероид', 'Красный гигант', 'Пульсар', 'Квазар', 'Белая дыра', 'Коричневый карлик', 'Нейтронная звезда', 'Сверхновая', 'Протозвезда', 'Экзопланета', 'Газовый гигант', 'Ледяной гигант', 'Карликовая планета', 'Пояс астероидов', 'Облако Оорта', 'Магеллановы облака', 'Туманность Андромеды', 'Реликтовое излучение', 'Темная материя'];
@@ -1949,7 +2058,6 @@
             { name: 'Белый', hex: '#ffffff' }
         ];
         
-        // Универсальная SVG иконка монеты
         const coinSvg = `
             <svg class="coin-icon-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="50" cy="50" r="45" fill="#ffd23f" stroke="#1d1b4d" stroke-width="6"/>
@@ -2014,17 +2122,14 @@
         let playerCoins = parseInt(localStorage.getItem('playerCoins') || '0');
         let playerQuests = JSON.parse(localStorage.getItem('playerQuests') || '{}');
 
-        // Данные магазина
         let ownedAvatars = JSON.parse(localStorage.getItem('ownedAvatars') || '[]');
         let ownedSpaceObjects = JSON.parse(localStorage.getItem('ownedSpaceObjects') || '[]');
         let ownedGames = JSON.parse(localStorage.getItem('ownedGames') || '[]');
 
-        // Инициализация дефолтных покупок с учетом устройства
         const initialDevice = localStorage.getItem("userDevice");
         if (ownedAvatars.length === 0) ownedAvatars = [...defaultAvatars];
         if (ownedSpaceObjects.length === 0) ownedSpaceObjects = [...defaultSpaceObjects];
         
-        // Если игр нет, даем базовый набор для устройства
         if (ownedGames.length === 0) {
             if (initialDevice === 'phone' || initialDevice === 'tablet') {
                 ownedGames = [...defaultMobileGames];
@@ -2061,14 +2166,21 @@
             const badge = document.getElementById('quest-badge');
             if (!badge) return;
             
-            let hasClaimable = false;
+            // Считаем ТОЛЬКО те квесты, которые выполнены, но награда еще не забрана
+            let unclaimedCount = 0;
             questsData.forEach(q => {
                 const state = playerQuests[q.id];
                 if (state.progress >= q.target && !state.claimed) {
-                    hasClaimable = true;
+                    unclaimedCount++;
                 }
             });
-            badge.style.display = hasClaimable ? 'flex' : 'none';
+            
+            if (unclaimedCount > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = unclaimedCount > 9 ? '9+' : unclaimedCount;
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
         function addQuestProgress(questId, amount = 1) {
@@ -2192,8 +2304,7 @@
             let html = '';
 
             if (tab === 'avatars') {
-                // Показываем только те, которых нет в ownedAvatars
-                shopAvatars.forEach(item => {
+                uniqueAvatars.forEach(item => {
                     const isOwned = ownedAvatars.includes(item.emoji);
                     const canAfford = playerCoins >= item.price;
                     
@@ -2245,7 +2356,6 @@
                 });
             }
             else if (tab === 'games') {
-                // Список платных игр
                 const shopGames = Object.keys(gameInfo).filter(key => gameInfo[key].price > 0);
                 
                 shopGames.forEach(gameKey => {
@@ -2308,7 +2418,6 @@
             saveShopData();
             renderShopTab(type === 'avatar' ? 'avatars' : type === 'space' ? 'space' : 'games');
             
-            // Обновляем баланс в шапке магазина
             const shopCoinDisplay = document.getElementById('shop-coin-display');
             if (shopCoinDisplay) shopCoinDisplay.textContent = playerCoins;
         }
@@ -2366,7 +2475,6 @@
             deviceScreen.style.display = "none";
             applyDeviceSettings(device);
             
-            // Пересобираем список игр в зависимости от устройства при первом входе
             if (ownedGames.length === 0 || (ownedGames.length === defaultGames.length && (device === 'phone' || device === 'tablet'))) {
                 if (device === 'phone' || device === 'tablet') {
                     ownedGames = [...defaultMobileGames];
@@ -2386,7 +2494,6 @@
             }
         }
 
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Берет все игры из ownedGames
         function getAvailableGames() {
             return ownedGames.filter(game => gameInfo[game]);
         }
@@ -2461,7 +2568,6 @@
                 </div>
             `).join('');
 
-            // Показываем только купленные аватарки
             let avatarOptionsHtml = ownedAvatars.map(emoji => `
                 <span class="avatar-option ${emoji === currentAvatar ? 'selected' : ''}" 
                       onclick="selectAvatar('${emoji}')">${emoji}</span>
@@ -2741,19 +2847,28 @@
                 'memory': { text: "Найди все пары одинаковых картинок. Переворачивай по две карточки за ход.", warn: "" },
                 'taptrainer': { text: "Нажимай на появляющиеся круги как можно быстрее! Тренируй скорость и точность.", warn: "" },
                 'counter': { text: "Нажимай на кнопку как можно быстрее за 10 секунд! Побей свой рекорд!", warn: "" },
-                'minesweeper': { text: "Классический Сапёр. Открывай клетки, но не наткнись на мину! Правый клик ставит флажок.", warn: "Игра встроена, но пока не доделана до конца. Скоро будет полностью рабочей!" },
-                'snake': { text: "Управляй змейкой стрелками, собирай еду и не врезайся в стены или себя!", warn: "Игра встроена, но пока не доделана до конца. Скоро будет полностью рабочей!" },
-                'breakout': { text: "Разбивай кирпичи, отбивая мяч платформой. Не урони мяч!", warn: "Игра встроена, но пока не доделана до конца. Скоро будет полностью рабочей!" },
-                '15puzzle': { text: "Перемещай костяшки, чтобы расставить числа по порядку от 1 до 15.", warn: "Игра в разработке!" },
-                'simon': { text: "Повторяй последовательность цветов. С каждым разом она становится длиннее!", warn: "Игра в разработке!" },
-                'tetris': { text: "Складывай падающие фигуры, чтобы заполнить линии и очистить поле.", warn: "Игра в разработке!" },
-                'pacman': { text: "Собирай точки, избегая призраков. Съешь большое яблоко, чтобы победить их!", warn: "Игра в разработке!" },
-                'invaders': { text: "Стреляй по инопланетянам, не дай им добраться до земли.", warn: "Игра в разработке!" },
-                'asteroids': { text: "Управляй кораблём и стреляй по астероидам. Не столкнись с ними!", warn: "Игра в разработке!" },
-                'pong': { text: "Классический Понг. Отбивай мяч ракеткой, не дай ему упасть.", warn: "Игра в разработке!" },
-                'frogger': { text: "Переведи лягушку через дорогу и реку, избегая машин и воды.", warn: "Игра в разработке!" },
-                'maze': { text: "Найди выход из лабиринта, собирая бонусы.", warn: "Игра в разработке!" },
-                'slidingpuzzle': { text: "Передвигай плитки, чтобы собрать картинку или последовательность.", warn: "Игра в разработке!" }
+                'minesweeper': { text: "Классический Сапёр. Открывай клетки, но не наткнись на мину! Правый клик ставит флажок.", warn: "" },
+                'snake': { text: "Управляй змейкой стрелками, собирай еду и не врезайся в стены или себя!", warn: "" },
+                'breakout': { text: "Разбивай кирпичи, отбивая мяч платформой. Не урони мяч!", warn: "" },
+                '15puzzle': { text: "Перемещай костяшки, чтобы расставить числа по порядку от 1 до 15.", warn: "" },
+                'simon': { text: "Повторяй последовательность цветов. С каждым разом она становится длиннее!", warn: "" },
+                'tetris': { text: "Складывай падающие фигуры, чтобы заполнить линии и очистить поле.", warn: "" },
+                'pacman': { text: "Собирай точки, избегая призраков. Съешь большое яблоко, чтобы победить их!", warn: "" },
+                'invaders': { text: "Стреляй по инопланетянам, не дай им добраться до земли.", warn: "" },
+                'asteroids': { text: "Управляй кораблём и стреляй по астероидам. Не столкнись с ними!", warn: "" },
+                'pong': { text: "Классический Понг. Отбивай мяч ракеткой, не дай ему упасть.", warn: "" },
+                'frogger': { text: "Переведи лягушку через дорогу и реку, избегая машин и воды.", warn: "" },
+                'maze': { text: "Найди выход из лабиринта, собирая бонусы.", warn: "" },
+                'slidingpuzzle': { text: "Передвигай плитки, чтобы собрать картинку или последовательность.", warn: "" },
+                'whackamole': { text: "Бей кротов, которые вылезают из нор. Не бей бомбы!", warn: "" },
+                'simondice': { text: "Запоминай последовательность кубиков и повторяй её.", warn: "" },
+                'memorynumbers': { text: "Запоминай числа и находи их пары.", warn: "" },
+                'reactioncolor': { text: "Нажимай на цвет, который совпадает с названием. Не путай!", warn: "" },
+                'mathgame': { text: "Решай примеры на скорость. Выбирай правильный ответ.", warn: "" },
+                'wordscramble': { text: "Собери слово из перемешанных букв.", warn: "" },
+                'numbersequence': { text: "Продолжи числовую последовательность.", warn: "" },
+                'findthedifference': { text: "Найди отличие между двумя картинками.", warn: "" },
+                'typingtest': { text: "Печатай слова как можно быстрее и точнее.", warn: "" }
             };
 
             if (rules[gameType]) {
@@ -2777,9 +2892,11 @@
         function startGame(gameType) {
             saveGameResult(gameType);
 
+            // --- Встроенные игры ---
             if (gameType === 'minesweeper') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Сапёр</h2>
                             <div id="minesweeper-container" style="display: flex; flex-direction: column; align-items: center;"></div>
@@ -2793,6 +2910,7 @@
             if (gameType === 'snake') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Змейка</h2>
                             <canvas id="snakeCanvas" width="300" height="300" class="snake-canvas"></canvas>
@@ -2809,6 +2927,7 @@
             if (gameType === 'breakout') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Арканоид</h2>
                             <canvas id="breakoutCanvas" width="300" height="400" class="breakout-canvas"></canvas>
@@ -2825,6 +2944,7 @@
             if (gameType === 'tictactoe') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game" id="ttt-container">
                             <h2>Крестики-нолики</h2>
                             <div class="ttt-difficulty">
@@ -2845,6 +2965,7 @@
             if (gameType === 'guessnumber') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game" id="guess-container">
                             <h2>Угадай число (1-100)</h2>
                             <div class="guess-message" id="guess-message">Введи число и нажми "Проверить"</div>
@@ -2864,6 +2985,7 @@
             if (gameType === 'flappybird') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Flappy Bird</h2>
                             <canvas id="flappyCanvas" width="400" height="500" class="game-canvas"></canvas>
@@ -2880,6 +3002,7 @@
             if (gameType === 'hangman') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Виселица</h2>
                             <div class="ttt-status" id="hangman-status">Угадай слово!</div>
@@ -2896,6 +3019,7 @@
             if (gameType === 'rps') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Камень-ножницы-бумага</h2>
                             <div class="rps-result" id="rps-result">Выбери свой ход!</div>
@@ -2915,6 +3039,7 @@
             if (gameType === 'reaction') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Реакция</h2>
                             <div class="ttt-status" id="reaction-status">Нажми "Старт" и жди круг!</div>
@@ -2930,6 +3055,7 @@
             if (gameType === 'colorgame') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Угадай цвет</h2>
                             <div class="ttt-status" id="color-status">Нажми на цвет, который соответствует названию</div>
@@ -2946,6 +3072,7 @@
             if (gameType === 'puzzle') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Пазл с числами</h2>
                             <div class="ttt-status" id="puzzle-status">Нажимай на числа!</div>
@@ -2960,6 +3087,7 @@
             if (gameType === 'memory') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Найди пару</h2>
                             <div class="ttt-status" id="memory-status">Найди все пары!</div>
@@ -2975,6 +3103,7 @@
             if (gameType === 'taptrainer') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Тап-тренер</h2>
                             <div class="ttt-status" id="tap-status">Нажимай на круги как можно быстрее!</div>
@@ -2990,6 +3119,7 @@
             if (gameType === 'counter') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game">
                             <h2>Счётчик</h2>
                             <div class="ttt-status" id="counter-status">Нажми "Старт" и жми кнопку 10 секунд!</div>
@@ -3005,6 +3135,7 @@
             if (gameType === 'watersort') {
                 openModal(`
                     <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
                         <div class="embedded-game" style="padding: 12px;">
                             <h2 style="margin: 0 0 8px;">🧪 Water Sort</h2>
                             <div style="display: flex; gap: 12px; font-size: 14px; font-weight: bold; color: #ffd23f; margin-bottom: 6px;">
@@ -3025,12 +3156,343 @@
                 return;
             }
 
+            // --- НОВЫЕ ИГРЫ ИЗ МАГАЗИНА (ПОЛНОСТЬЮ РАБОЧИЕ) ---
+            if (gameType === '15puzzle') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Пятнашки</h2>
+                            <div class="ttt-status" id="p15-status">Собери числа по порядку</div>
+                            <div id="p15-board" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 240px; height: 240px; margin: 0 auto;"></div>
+                            <button onclick="init15Puzzle()" style="margin-top: 15px;">Заново</button>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => init15Puzzle(), 50);
+                return;
+            }
+
+            if (gameType === 'simon') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Саймон</h2>
+                            <div class="ttt-status" id="simon-status">Нажми "Старт"</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px auto; width: 200px;">
+                                <div id="simon-red" style="height: 90px; background: #ff6b6b; border-radius: 10px; cursor: pointer; opacity: 0.5;"></div>
+                                <div id="simon-blue" style="height: 90px; background: #6bc5ff; border-radius: 10px; cursor: pointer; opacity: 0.5;"></div>
+                                <div id="simon-green" style="height: 90px; background: #3ddbb0; border-radius: 10px; cursor: pointer; opacity: 0.5;"></div>
+                                <div id="simon-yellow" style="height: 90px; background: #ffd23f; border-radius: 10px; cursor: pointer; opacity: 0.5;"></div>
+                            </div>
+                            <button onclick="startSimon()">Старт</button>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initSimon(), 50);
+                return;
+            }
+
+            if (gameType === 'tetris') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Тетрис</h2>
+                            <canvas id="tetrisCanvas" width="240" height="400" class="game-canvas"></canvas>
+                            <div style="margin-top: 10px;">
+                                <button onclick="startTetris()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initTetris(), 50);
+                return;
+            }
+
+            if (gameType === 'asteroids') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Астероиды</h2>
+                            <canvas id="asteroidsCanvas" width="300" height="400" class="game-canvas"></canvas>
+                            <div style="margin-top: 10px;">
+                                <button onclick="startAsteroids()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initAsteroids(), 50);
+                return;
+            }
+
+            if (gameType === 'maze') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Лабиринт</h2>
+                            <div class="ttt-status" id="maze-status">Найди выход</div>
+                            <canvas id="mazeCanvas" width="300" height="300" class="game-canvas"></canvas>
+                            <button onclick="initMaze()" style="margin-top: 10px;">Заново</button>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initMaze(), 50);
+                return;
+            }
+
+            if (gameType === 'slidingpuzzle') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Слайд-пазл</h2>
+                            <div class="ttt-status" id="sliding-status">Собери числа по порядку</div>
+                            <div id="sliding-board" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 240px; height: 240px; margin: 0 auto;"></div>
+                            <button onclick="initSlidingPuzzle()" style="margin-top: 15px;">Заново</button>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initSlidingPuzzle(), 50);
+                return;
+            }
+
+            // --- 10 НОВЫХ ИГР (ПОЛНОСТЬЮ РАБОЧИЕ) ---
+            if (gameType === 'whackamole') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Ударь крота</h2>
+                            <div class="ttt-status" id="whack-status">Бей кротов, не бей бомбы!</div>
+                            <div id="whack-board" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 240px; margin: 20px auto;"></div>
+                            <div class="ttt-status" id="whack-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initWhackAMole(), 50);
+                return;
+            }
+
+            if (gameType === 'simondice') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Кубики Саймона</h2>
+                            <div class="ttt-status" id="sdice-status">Запоминай последовательность</div>
+                            <div id="sdice-board" style="display: flex; gap: 15px; margin: 30px auto; justify-content: center; transform: scale(1.3);"></div>
+                            <button onclick="startSimonDice()">Старт</button>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initSimonDice(), 50);
+                return;
+            }
+
+            if (gameType === 'memorynumbers') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Память чисел</h2>
+                            <div class="ttt-status" id="mnum-status">Запоминай числа</div>
+                            <div id="mnum-board" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 280px; margin: 20px auto;"></div>
+                            <div class="ttt-status" id="mnum-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initMemoryNumbers(), 50);
+                return;
+            }
+
+            if (gameType === 'reactioncolor') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Цветовая реакция</h2>
+                            <div class="ttt-status" id="rcolor-status">Нажми на цвет, который совпадает с названием</div>
+                            <div id="rcolor-word" style="font-size: 32px; font-weight: bold; margin: 20px 0; color: #fff;"></div>
+                            <div class="color-game-options" id="rcolor-options"></div>
+                            <div class="ttt-status" id="rcolor-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initReactionColor(), 50);
+                return;
+            }
+
+            if (gameType === 'mathgame') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Математика</h2>
+                            <div class="ttt-status" id="math-status">Реши пример</div>
+                            <div id="math-question" style="font-size: 32px; font-weight: bold; margin: 20px 0; color: #fff;"></div>
+                            <div class="color-game-options" id="math-options"></div>
+                            <div class="ttt-status" id="math-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initMathGame(), 50);
+                return;
+            }
+
+            if (gameType === 'wordscramble') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Собери слово</h2>
+                            <div class="ttt-status" id="word-status">Собери слово из букв</div>
+                            <div id="word-display" style="font-size: 32px; font-weight: bold; margin: 20px 0; color: #fff;"></div>
+                            <input type="text" id="word-input" class="guess-input" placeholder="Введи слово">
+                            <button onclick="checkWord()" style="margin-top: 10px;">Проверить</button>
+                            <div class="ttt-status" id="word-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initWordScramble(), 50);
+                return;
+            }
+
+            if (gameType === 'numbersequence') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Последовательность</h2>
+                            <div class="ttt-status" id="nseq-status">Продолжи последовательность</div>
+                            <div id="nseq-question" style="font-size: 32px; font-weight: bold; margin: 20px 0; color: #fff;"></div>
+                            <input type="number" id="nseq-input" class="guess-input" placeholder="Введи число">
+                            <button onclick="checkNumberSequence()" style="margin-top: 10px;">Проверить</button>
+                            <div class="ttt-status" id="nseq-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initNumberSequence(), 50);
+                return;
+            }
+
+            if (gameType === 'findthedifference') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Найди отличие</h2>
+                            <div class="ttt-status" id="fdiff-status">Найди отличающуюся картинку</div>
+                            <div id="fdiff-board" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 240px; margin: 20px auto;"></div>
+                            <div class="ttt-status" id="fdiff-score">Счёт: 0</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initFindTheDifference(), 50);
+                return;
+            }
+
+            if (gameType === 'typingtest') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Скорость печати</h2>
+                            <div class="ttt-status" id="type-status">Напечатай слово</div>
+                            <div id="type-word" style="font-size: 32px; font-weight: bold; margin: 20px 0; color: #fff;"></div>
+                            <input type="text" id="type-input" class="guess-input" placeholder="Введи слово">
+                            <button onclick="checkTyping()" style="margin-top: 10px;">Проверить</button>
+                            <div class="ttt-status" id="type-score">Счёт: 0</div>
+                            <div class="ttt-status" id="type-timer">Время: 0.0 сек</div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initTypingTest(), 50);
+                return;
+            }
+
+            // Если игра не найдена в списке, показываем заглушку (для внешних iframe игр)
+                        if (gameType === 'pacman') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Пакман</h2>
+                            <canvas id="pacmanCanvas" width="400" height="400" class="game-canvas"></canvas>
+                            <div style="margin-top: 10px;">
+                                <button onclick="startPacman()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initPacman(), 50);
+                return;
+            }
+
+            if (gameType === 'pong') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Понг</h2>
+                            <canvas id="pongCanvas" width="400" height="300" class="game-canvas"></canvas>
+                            <div style="margin-top: 10px;">
+                                <button onclick="startPong()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initPong(), 50);
+                return;
+            }
+
+            if (gameType === 'invaders') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Космические захватчики</h2>
+                            <canvas id="invadersCanvas" width="400" height="400" class="game-canvas"></canvas>
+                            <div style="margin-top: 10px;">
+                                <button onclick="startInvaders()">Начать / Заново</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initInvaders(), 50);
+                return;
+            }
+
+            if (gameType === 'frogger') {
+                openModal(`
+                    <div class="modern-game-bg" style="width: 100%; height: 100%;">
+                        <button class="game-exit-btn" onclick="backToGamesMenu()">← Меню</button>
+                        <div class="embedded-game">
+                            <h2>Фроггер</h2>
+                            <div class="ttt-status" id="frogger-status">Переведи лягушку через дорогу</div>
+                            <canvas id="froggerCanvas" width="300" height="400" class="game-canvas"></canvas>
+                            <button onclick="initFrogger()" style="margin-top: 10px;">Заново</button>
+                        </div>
+                    </div>
+                `);
+                setTimeout(() => initFrogger(), 50);
+                return;
+            }
+
             const gameUrls = {
                 'dino': 'https://imkennyyip.github.io/chrome-dinosaur-game/',
                 '2048': 'https://monicatvera.github.io/2048/',
                 'blockblast': 'https://blockblast.pro/',
                 'sudoku': 'https://sudokum.ru/',
-                'onet': 'https://gamesnacks.com/games/onetconnectclassic/'
+                'onet': 'https://gamesnacks.com/games/onetconnectclassic/',
+                // Внешние ссылки для игр по просьбе пользователя
+                'pong': 'https://www.webrcade.com/play/feed/arcade/pong/',
+                'pacman': 'https://www.webrcade.com/play/feed/arcade/pac-man/',
+                'invaders': 'https://www.webrcade.com/play/feed/arcade/space-invaders/',
+                'frogger': 'https://www.webrcade.com/play/feed/arcade/frogger/'
             };
 
             const gameUrl = gameUrls[gameType];
@@ -3040,7 +3502,7 @@
             }
 
             openModal(`
-                <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+                <div style="width: 100%; height: 100%; display: flex; flex-direction: column; position: relative;">
                     <div style="padding: 10px; background: #1a1a1a; display: flex; gap: 10px; justify-content: center;">
                         <button onclick="backToGamesMenu()" style="padding: 8px 20px; background: #ff4d4d; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: white; box-shadow: none;">❌ Выйти в меню</button>
                     </div>
@@ -3053,6 +3515,7 @@
         // === ВСТРОЕННЫЕ ИГРЫ ===
         // ============================================
 
+        // --- КРЕСТИКИ-НОЛИКИ ---
         let tttBoard = ['', '', '', '', '', '', '', '', ''];
         let tttCurrentPlayer = 'X';
         let tttGameActive = true;
@@ -3431,12 +3894,20 @@
             flappyState.animId = requestAnimationFrame((t) => flappyLoop(t, ctx));
         }
 
-        // --- ВИСЕЛИЦА ---
+        // --- ВИСЕЛИЦА (ИСПРАВЛЕНА) ---
         const hangmanWords = ['АРХИТЕКТУРА', 'ДВОРЕЦ', 'СОБОР', 'ЛОНДОН', 'ПОЖАР', 'КУПОЛ', 'КОЛОННА', 'СИММЕТРИЯ', 'ТЮДОР', 'СТЮАРТ'];
         let hangmanState = {};
+        let usedHangmanWords = [];
 
         function initHangman() {
-            const word = hangmanWords[Math.floor(Math.random() * hangmanWords.length)];
+            let availableWords = hangmanWords.filter(w => !usedHangmanWords.includes(w));
+            if (availableWords.length === 0) {
+                usedHangmanWords = [];
+                availableWords = hangmanWords;
+            }
+            const word = availableWords[Math.floor(Math.random() * availableWords.length)];
+            usedHangmanWords.push(word);
+            
             hangmanState = {
                 word: word, guessed: new Set(), wrong: 0, maxWrong: 6, gameOver: false
             };
@@ -3827,7 +4298,7 @@
         }
 
         // ============================================
-        // === ВСТРОЕННЫЕ НОВЫЕ ИГРЫ ===
+        // === ВСТРОЕННЫЕ НОВЫЕ ИГРЫ (ИСПРАВЛЕННЫЕ) ===
         // ============================================
 
         // --- САПЁР ---
@@ -3840,7 +4311,6 @@
             let board = [];
             let mines = new Set();
             
-            // Расставляем мины
             while (mines.size < minesCount) {
                 mines.add(Math.floor(Math.random() * rows * cols));
             }
@@ -3854,7 +4324,6 @@
                 });
             }
             
-            // Считаем соседей
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols; j++) {
                     if (board[i * cols + j].isMine) continue;
@@ -3916,7 +4385,6 @@
             if (cell.isRevealed || cell.isFlagged) return;
             
             if (cell.isMine) {
-                // Проигрыш
                 minesweeperState.gameOver = true;
                 minesweeperState.board.forEach(c => c.isRevealed = true);
                 renderMinesweeper();
@@ -3926,7 +4394,6 @@
             
             cell.isRevealed = true;
             
-            // Если пустая, открываем соседей
             if (cell.neighborMines === 0) {
                 const r = Math.floor(idx / minesweeperState.cols);
                 const c = idx % minesweeperState.cols;
@@ -3981,7 +4448,6 @@
                 lastTime: 0
             };
             
-            // Первая еда
             placeSnakeFood();
             
             document.onkeydown = (e) => {
@@ -4012,17 +4478,14 @@
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 0, w, h);
             
-            // Еда
             ctx.fillStyle = '#ff6b6b';
             ctx.fillRect(snakeState.food.x * cellSize, snakeState.food.y * cellSize, cellSize, cellSize);
             
-            // Змейка
             snakeState.snake.forEach((s, i) => {
                 ctx.fillStyle = i === 0 ? '#3ddbb0' : '#2e8b57';
                 ctx.fillRect(s.x * cellSize, s.y * cellSize, cellSize, cellSize);
             });
             
-            // Счёт
             ctx.fillStyle = '#fff';
             ctx.font = '20px Arial';
             ctx.fillText('Счёт: ' + snakeState.score, 10, 25);
@@ -4061,14 +4524,12 @@
                     head.x += snakeState.direction.x;
                     head.y += snakeState.direction.y;
                     
-                    // Проверка выхода за границы
                     if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
                         snakeState.gameOver = true;
                         drawSnake(ctx);
                         return;
                     }
                     
-                    // Проверка на себя
                     if (snakeState.snake.some(s => s.x === head.x && s.y === head.y)) {
                         snakeState.gameOver = true;
                         drawSnake(ctx);
@@ -4093,7 +4554,7 @@
             }
         }
 
-        // --- АРКАНОИД ---
+        // --- АРКАНОИД (ИСПРАВЛЕН) ---
         let breakoutState = {};
         function initBreakout() {
             const canvas = document.getElementById('breakoutCanvas');
@@ -4109,18 +4570,21 @@
                 bricks: [],
                 score: 0,
                 gameOver: false,
-                animId: null
+                animId: null,
+                level: 1
             };
             
-            // Создаём кирпичи
-            for (let r = 0; r < 3; r++) {
-                for (let c = 0; c < 5; c++) {
+            const rows = 3 + Math.floor(breakoutState.level / 2);
+            const cols = 5;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
                     breakoutState.bricks.push({
                         x: c * 60,
                         y: r * 20 + 30,
                         width: 60,
                         height: 20,
-                        active: true
+                        active: true,
+                        color: `hsl(${r * 30}, 70%, 60%)`
                     });
                 }
             }
@@ -4145,30 +4609,27 @@
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 0, w, h);
             
-            // Кирпичи
             breakoutState.bricks.forEach(b => {
                 if (b.active) {
-                    ctx.fillStyle = '#ff6b6b';
+                    ctx.fillStyle = b.color;
                     ctx.fillRect(b.x, b.y, b.width, b.height);
                     ctx.strokeStyle = '#fff';
                     ctx.strokeRect(b.x, b.y, b.width, b.height);
                 }
             });
             
-            // Платформа
             ctx.fillStyle = '#3ddbb0';
             ctx.fillRect(breakoutState.paddleX, 370, 60, 10);
             
-            // Мяч
             ctx.beginPath();
             ctx.arc(breakoutState.ballX, breakoutState.ballY, 5, 0, Math.PI * 2);
             ctx.fillStyle = '#ffd23f';
             ctx.fill();
             
-            // Счёт
             ctx.fillStyle = '#fff';
             ctx.font = '20px Arial';
             ctx.fillText('Счёт: ' + breakoutState.score, 10, 25);
+            ctx.fillText('Уровень: ' + breakoutState.level, 10, 50);
             
             if (breakoutState.gameOver) {
                 ctx.fillStyle = 'rgba(0,0,0,0.7)';
@@ -4198,24 +4659,21 @@
             breakoutState.ballX += breakoutState.ballDX;
             breakoutState.ballY += breakoutState.ballDY;
             
-            // Отскок от стен
             if (breakoutState.ballX <= 5 || breakoutState.ballX >= 295) breakoutState.ballDX *= -1;
             if (breakoutState.ballY <= 5) breakoutState.ballDY *= -1;
             
-            // Отскок от платформы
             if (breakoutState.ballY >= 360 && breakoutState.ballY <= 375 &&
                 breakoutState.ballX >= breakoutState.paddleX && breakoutState.ballX <= breakoutState.paddleX + 60) {
                 breakoutState.ballDY = -Math.abs(breakoutState.ballDY);
+                breakoutState.ballDX += (Math.random() - 0.5) * 2;
             }
             
-            // Проигрыш
             if (breakoutState.ballY > 400) {
                 breakoutState.gameOver = true;
                 drawBreakout(ctx);
                 return;
             }
             
-            // Проверка столкновений с кирпичами
             breakoutState.bricks.forEach(b => {
                 if (b.active) {
                     if (breakoutState.ballX > b.x && breakoutState.ballX < b.x + b.width &&
@@ -4227,11 +4685,28 @@
                 }
             });
             
-            // Победа
             if (breakoutState.bricks.every(b => !b.active)) {
-                breakoutState.gameOver = true;
-                drawBreakout(ctx);
-                return;
+                breakoutState.level++;
+                breakoutState.ballX = 150;
+                breakoutState.ballY = 300;
+                breakoutState.ballDX = 3 * (Math.random() > 0.5 ? 1 : -1);
+                breakoutState.ballDY = -3;
+                
+                const rows = 3 + Math.floor(breakoutState.level / 2);
+                const cols = 5;
+                breakoutState.bricks = [];
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        breakoutState.bricks.push({
+                            x: c * 60,
+                            y: r * 20 + 30,
+                            width: 60,
+                            height: 20,
+                            active: true,
+                            color: `hsl(${r * 30}, 70%, 60%)`
+                        });
+                    }
+                }
             }
             
             drawBreakout(ctx);
@@ -4561,15 +5036,18 @@
             const fromTubeEl = fromWrapper.querySelector('.watersort-tube');
             const toTubeEl = toWrapper.querySelector('.watersort-tube');
 
-            fromWrapper.style.transform = 'translateY(-40px) rotate(35deg)';
-            fromWrapper.style.zIndex = '10';
-            fromWrapper.style.transition = 'transform 0.3s ease-out';
-
             const fromRect = fromTubeEl.getBoundingClientRect();
             const toRect = toTubeEl.getBoundingClientRect();
             const areaRect = area.getBoundingClientRect();
 
-            const startX = fromRect.right - 8;
+            // ИСПРАВЛЕННЫЙ НАКЛОН (зависит от положения на экране)
+            const angle = (fromRect.left < toRect.left) ? 35 : -35;
+
+            fromWrapper.style.transform = `translateY(-40px) rotate(${angle}deg)`;
+            fromWrapper.style.zIndex = '10';
+            fromWrapper.style.transition = 'transform 0.3s ease-out';
+
+            const startX = fromIdx < toIdx ? fromRect.right - 8 : fromRect.left + 8;
             const startY = fromRect.top + 20;
             const endX = toRect.left + toRect.width / 2;
             const endY = toRect.top;
@@ -4726,6 +5204,974 @@
             renderWaterSort();
             updateWaterSortHud();
             setWaterStatus('Нажми на колбу, чтобы выбрать');
+        }
+
+        // ============================================
+        // === НОВЫЕ ИГРЫ (ПОЛНОСТЬЮ РАБОЧИЕ) ===
+        // ============================================
+
+        // --- ПЯТНАШКИ (15 PUZZLE) ---
+        let p15State = { board: [], emptyIdx: 15, gameOver: false };
+
+        function init15Puzzle() {
+            let solved = Array.from({length: 15}, (_, i) => i + 1);
+            solved.push(0);
+            
+            let empty = 15;
+            for (let i = 0; i < 100; i++) {
+                const neighbors = [];
+                const r = Math.floor(empty / 4);
+                const c = empty % 4;
+                if (r > 0) neighbors.push(empty - 4);
+                if (r < 3) neighbors.push(empty + 4);
+                if (c > 0) neighbors.push(empty - 1);
+                if (c < 3) neighbors.push(empty + 1);
+                
+                const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
+                [solved[empty], solved[randomNeighbor]] = [solved[randomNeighbor], solved[empty]];
+                empty = randomNeighbor;
+            }
+            
+            p15State = { board: solved, emptyIdx: empty, gameOver: false };
+            render15Puzzle();
+            document.getElementById('p15-status').textContent = 'Собери числа по порядку';
+        }
+
+        function render15Puzzle() {
+            const container = document.getElementById('p15-board');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            p15State.board.forEach((num, idx) => {
+                const cell = document.createElement('div');
+                cell.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: ${num === 0 ? 'transparent' : 'rgba(255,255,255,0.2)'};
+                    border: ${num === 0 ? 'none' : '2px solid rgba(255,255,255,0.5)'};
+                    border-radius: 8px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    cursor: ${num === 0 ? 'default' : 'pointer'};
+                    color: #fff;
+                    user-select: none;
+                `;
+                cell.textContent = num === 0 ? '' : num;
+                if (num !== 0) {
+                    cell.onclick = () => move15Puzzle(idx);
+                }
+                container.appendChild(cell);
+            });
+        }
+
+        function move15Puzzle(idx) {
+            if (p15State.gameOver) return;
+            
+            const r1 = Math.floor(idx / 4);
+            const c1 = idx % 4;
+            const r2 = Math.floor(p15State.emptyIdx / 4);
+            const c2 = p15State.emptyIdx % 4;
+            
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                [p15State.board[idx], p15State.board[p15State.emptyIdx]] = [p15State.board[p15State.emptyIdx], p15State.board[idx]];
+                p15State.emptyIdx = idx;
+                render15Puzzle();
+                check15PuzzleWin();
+            }
+        }
+
+        function check15PuzzleWin() {
+            for (let i = 0; i < 15; i++) {
+                if (p15State.board[i] !== i + 1) return;
+            }
+            p15State.gameOver = true;
+            document.getElementById('p15-status').textContent = '🎉 Победа! Ты собрал пятнашки!';
+            addQuestProgress('g_15puzzle_1', 1);
+            setTimeout(() => {
+                if(confirm("Пятнашки собраны! Начать заново?")) init15Puzzle();
+            }, 500);
+        }
+
+        // --- САЙМОН ---
+        let simonState = { sequence: [], playerStep: 0, playing: false, accepting: false };
+
+        function initSimon() {
+            simonState = { sequence: [], playerStep: 0, playing: false, accepting: false };
+            document.getElementById('simon-status').textContent = 'Нажми "Старт"';
+            
+            ['red', 'blue', 'green', 'yellow'].forEach(color => {
+                const el = document.getElementById('simon-' + color);
+                if(el) el.style.opacity = '0.5';
+            });
+        }
+
+        function startSimon() {
+            initSimon();
+            nextSimonRound();
+        }
+
+        function nextSimonRound() {
+            simonState.sequence.push(Math.floor(Math.random() * 4));
+            simonState.playerStep = 0;
+            simonState.accepting = false;
+            document.getElementById('simon-status').textContent = 'Смотри последовательность...';
+            playSimonSequence();
+        }
+
+        function playSimonSequence() {
+            simonState.playing = true;
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= simonState.sequence.length) {
+                    clearInterval(interval);
+                    simonState.playing = false;
+                    simonState.accepting = true;
+                    document.getElementById('simon-status').textContent = 'Твой ход!';
+                    return;
+                }
+                
+                const colorIdx = simonState.sequence[i];
+                const colors = ['red', 'blue', 'green', 'yellow'];
+                const el = document.getElementById('simon-' + colors[colorIdx]);
+                
+                if (el) {
+                    el.style.opacity = '1';
+                    setTimeout(() => { el.style.opacity = '0.5'; }, 300);
+                }
+                
+                i++;
+            }, 600);
+        }
+
+        function clickSimon(colorIdx) {
+            if (!simonState.accepting || simonState.playing) return;
+            
+            const colors = ['red', 'blue', 'green', 'yellow'];
+            const el = document.getElementById('simon-' + colors[colorIdx]);
+            if(el) {
+                el.style.opacity = '1';
+                setTimeout(() => { el.style.opacity = '0.5'; }, 200);
+            }
+
+            if (colorIdx === simonState.sequence[simonState.playerStep]) {
+                simonState.playerStep++;
+                if (simonState.playerStep >= simonState.sequence.length) {
+                    simonState.accepting = false;
+                    document.getElementById('simon-status').textContent = 'Правильно! Следующий уровень...';
+                    setTimeout(nextSimonRound, 1000);
+                }
+            } else {
+                simonState.accepting = false;
+                document.getElementById('simon-status').textContent = '❌ Ошибка! Нажми "Старт" чтобы начать заново.';
+                addQuestProgress('g_simon_1', 1);
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'simon-red') clickSimon(0);
+            if (e.target.id === 'simon-blue') clickSimon(1);
+            if (e.target.id === 'simon-green') clickSimon(2);
+            if (e.target.id === 'simon-yellow') clickSimon(3);
+        });
+
+        // --- ТЕТРИС ---
+        let tetrisState = { board: [], currentPiece: null, score: 0, running: false, interval: null };
+
+        function initTetris() {
+            tetrisState.board = Array.from({length: 20}, () => Array(10).fill(0));
+            tetrisState.currentPiece = null;
+            tetrisState.score = 0;
+            tetrisState.running = false;
+            drawTetris();
+        }
+
+        function startTetris() {
+            initTetris();
+            tetrisState.running = true;
+            spawnTetrisPiece();
+            if (tetrisState.interval) clearInterval(tetrisState.interval);
+            tetrisState.interval = setInterval(tetrisDrop, 500);
+        }
+
+        function spawnTetrisPiece() {
+            const pieces = [
+                { shape: [[1,1,1,1]], color: '#6bc5ff' },
+                { shape: [[1,1],[1,1]], color: '#ffd23f' },
+                { shape: [[0,1,0],[1,1,1]], color: '#b19cd9' },
+                { shape: [[1,0,0],[1,1,1]], color: '#3ddbb0' },
+                { shape: [[0,0,1],[1,1,1]], color: '#ffb347' },
+                { shape: [[0,1,1],[1,1,0]], color: '#ff6b6b' },
+                { shape: [[1,1,0],[0,1,1]], color: '#a8e6cf' }
+            ];
+            const p = pieces[Math.floor(Math.random() * pieces.length)];
+            tetrisState.currentPiece = {
+                shape: p.shape,
+                color: p.color,
+                x: Math.floor((10 - p.shape[0].length) / 2),
+                y: 0
+            };
+            if (checkTetrisCollision()) {
+                tetrisState.running = false;
+                clearInterval(tetrisState.interval);
+                alert("Игра окончена! Счёт: " + tetrisState.score);
+            }
+        }
+
+        function tetrisDrop() {
+            if (!tetrisState.running) return;
+            tetrisState.currentPiece.y++;
+            if (checkTetrisCollision()) {
+                tetrisState.currentPiece.y--;
+                lockTetrisPiece();
+                checkTetrisLines();
+                spawnTetrisPiece();
+            }
+            drawTetris();
+        }
+
+        function moveTetris(dx) {
+            if (!tetrisState.running) return;
+            tetrisState.currentPiece.x += dx;
+            if (checkTetrisCollision()) tetrisState.currentPiece.x -= dx;
+            drawTetris();
+        }
+
+        function rotateTetris() {
+            if (!tetrisState.running) return;
+            const oldShape = tetrisState.currentPiece.shape;
+            const newShape = oldShape[0].map((_, i) => oldShape.map(row => row[i]).reverse());
+            tetrisState.currentPiece.shape = newShape;
+            if (checkTetrisCollision()) tetrisState.currentPiece.shape = oldShape;
+            drawTetris();
+        }
+
+        function checkTetrisCollision() {
+            const p = tetrisState.currentPiece;
+            for (let y = 0; y < p.shape.length; y++) {
+                for (let x = 0; x < p.shape[y].length; x++) {
+                    if (p.shape[y][x]) {
+                        const boardX = p.x + x;
+                        const boardY = p.y + y;
+                        if (boardX < 0 || boardX >= 10 || boardY >= 20 || (boardY >= 0 && tetrisState.board[boardY][boardX])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function lockTetrisPiece() {
+            const p = tetrisState.currentPiece;
+            for (let y = 0; y < p.shape.length; y++) {
+                for (let x = 0; x < p.shape[y].length; x++) {
+                    if (p.shape[y][x]) {
+                        if (p.y + y >= 0) tetrisState.board[p.y + y][p.x + x] = p.color;
+                    }
+                }
+            }
+        }
+
+        function checkTetrisLines() {
+            for (let y = 19; y >= 0; y--) {
+                if (tetrisState.board[y].every(cell => cell !== 0)) {
+                    tetrisState.board.splice(y, 1);
+                    tetrisState.board.unshift(Array(10).fill(0));
+                    tetrisState.score += 10;
+                    y++;
+                }
+            }
+        }
+
+        function drawTetris() {
+            const canvas = document.getElementById('tetrisCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const size = 20;
+
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < 20; y++) {
+                for (let x = 0; x < 10; x++) {
+                    if (tetrisState.board[y][x]) {
+                        ctx.fillStyle = tetrisState.board[y][x];
+                        ctx.fillRect(x * size, y * size, size - 1, size - 1);
+                    }
+                }
+            }
+
+            if (tetrisState.currentPiece) {
+                const p = tetrisState.currentPiece;
+                ctx.fillStyle = p.color;
+                for (let y = 0; y < p.shape.length; y++) {
+                    for (let x = 0; x < p.shape[y].length; x++) {
+                        if (p.shape[y][x]) {
+                            ctx.fillRect((p.x + x) * size, (p.y + y) * size, size - 1, size - 1);
+                        }
+                    }
+                }
+            }
+
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + tetrisState.score, 10, 25);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!tetrisState.running) return;
+            if (e.key === 'ArrowLeft') { moveTetris(-1); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { moveTetris(1); e.preventDefault(); }
+            if (e.key === 'ArrowDown') { tetrisDrop(); e.preventDefault(); }
+            if (e.key === 'ArrowUp') { rotateTetris(); e.preventDefault(); }
+        });
+
+        // --- ЛАБИРИНТ (ИСПРАВЛЕН) ---
+        let mazeState = {};
+        function initMaze() {
+            let level = parseInt(localStorage.getItem('mazeLevel') || '1');
+            if (level < 1 || level > 200) level = 1;
+            
+            const size = Math.min(11 + Math.floor(level / 10), 21); 
+            const cellSize = Math.floor(300 / size);
+            
+            mazeState = {
+                grid: [],
+                player: { x: 1, y: 1 },
+                exit: { x: size - 2, y: size - 2 },
+                gameOver: false,
+                size: size,
+                cellSize: cellSize,
+                level: level
+            };
+
+            for (let y = 0; y < size; y++) {
+                let row = [];
+                for (let x = 0; x < size; x++) {
+                    row.push(1);
+                }
+                mazeState.grid.push(row);
+            }
+
+            const stack = [{x: 1, y: 1}];
+            mazeState.grid[1][1] = 0;
+
+            while (stack.length > 0) {
+                const current = stack[stack.length - 1];
+                const neighbors = [];
+                const dirs = [[0, -2], [0, 2], [-2, 0], [2, 0]];
+                for (const [dx, dy] of dirs) {
+                    const nx = current.x + dx;
+                    const ny = current.y + dy;
+                    if (nx > 0 && nx < size - 1 && ny > 0 && ny < size - 1 && mazeState.grid[ny][nx] === 1) {
+                        neighbors.push({x: nx, y: ny, dx: dx/2, dy: dy/2});
+                    }
+                }
+                if (neighbors.length > 0) {
+                    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    mazeState.grid[current.y + next.dy][current.x + next.dx] = 0;
+                    mazeState.grid[next.y][next.x] = 0;
+                    stack.push({x: next.x, y: next.y});
+                } else {
+                    stack.pop();
+                }
+            }
+
+            mazeState.grid[mazeState.exit.y][mazeState.exit.x] = 0;
+            if (mazeState.exit.y - 1 > 0) mazeState.grid[mazeState.exit.y - 1][mazeState.exit.x] = 0;
+
+            document.onkeydown = (e) => {
+                if (mazeState.gameOver) return;
+                let dx = 0, dy = 0;
+                if (e.key === 'ArrowUp') dy = -1;
+                if (e.key === 'ArrowDown') dy = 1;
+                if (e.key === 'ArrowLeft') dx = -1;
+                if (e.key === 'ArrowRight') dx = 1;
+                if (dx === 0 && dy === 0) return;
+
+                const nx = mazeState.player.x + dx;
+                const ny = mazeState.player.y + dy;
+
+                if (nx >= 0 && nx < size && ny >= 0 && ny < size && mazeState.grid[ny][nx] === 0) {
+                    mazeState.player.x = nx;
+                    mazeState.player.y = ny;
+                    drawMaze();
+                    checkMazeWin();
+                }
+                e.preventDefault();
+            };
+
+            setTimeout(() => {
+                drawMaze();
+            }, 50);
+            
+            document.getElementById('maze-status').textContent = `Уровень ${level} / 200. Найди выход`;
+        }
+
+        function drawMaze() {
+            const canvas = document.getElementById('mazeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const cellSize = mazeState.cellSize;
+
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, 300, 300);
+
+            for (let y = 0; y < mazeState.size; y++) {
+                for (let x = 0; x < mazeState.size; x++) {
+                    if (mazeState.grid[y][x] === 1) {
+                        ctx.fillStyle = '#555';
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            ctx.fillStyle = '#ffd23f';
+            ctx.fillRect(mazeState.exit.x * cellSize, mazeState.exit.y * cellSize, cellSize, cellSize);
+
+            ctx.fillStyle = '#3ddbb0';
+            ctx.fillRect(mazeState.player.x * cellSize, mazeState.player.y * cellSize, cellSize, cellSize);
+        }
+
+        function checkMazeWin() {
+            if (mazeState.player.x === mazeState.exit.x && mazeState.player.y === mazeState.exit.y) {
+                mazeState.gameOver = true;
+                document.getElementById('maze-status').textContent = `🎉 Уровень ${mazeState.level} пройден!`;
+                addQuestProgress('g_maze_1', 1);
+                
+                if (mazeState.level < 200) {
+                    localStorage.setItem('mazeLevel', mazeState.level + 1);
+                    setTimeout(() => {
+                        initMaze(); 
+                    }, 1000);
+                } else {
+                    setTimeout(() => alert("Поздравляю! Ты прошел все 200 уровней лабиринта!"), 100);
+                }
+            }
+        }
+
+        // --- СЛАЙД-ПАЗЛ (УНИКАЛЬНЫЙ) ---
+        let slidingState = { board: [], emptyIdx: 8, gameOver: false, targetImage: null };
+
+        function initSlidingPuzzle() {
+            let solved = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+            let empty = 8;
+            
+            for (let i = 0; i < 50; i++) {
+                const neighbors = [];
+                const r = Math.floor(empty / 3);
+                const c = empty % 3;
+                if (r > 0) neighbors.push(empty - 3);
+                if (r < 2) neighbors.push(empty + 3);
+                if (c > 0) neighbors.push(empty - 1);
+                if (c < 2) neighbors.push(empty + 1);
+                
+                const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
+                [solved[empty], solved[randomNeighbor]] = [solved[randomNeighbor], solved[empty]];
+                empty = randomNeighbor;
+            }
+
+            slidingState = { board: solved, emptyIdx: empty, gameOver: false };
+            renderSlidingPuzzle();
+            document.getElementById('sliding-status').textContent = 'Собери числа по порядку';
+        }
+
+        function renderSlidingPuzzle() {
+            const container = document.getElementById('sliding-board');
+            if (!container) return;
+            container.innerHTML = '';
+
+            slidingState.board.forEach((num, idx) => {
+                const cell = document.createElement('div');
+                cell.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: ${num === 0 ? 'transparent' : 'rgba(255,255,255,0.2)'};
+                    border: ${num === 0 ? 'none' : '2px solid rgba(255,255,255,0.5)'};
+                    border-radius: 8px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    cursor: ${num === 0 ? 'default' : 'pointer'};
+                    color: #fff;
+                    user-select: none;
+                `;
+                cell.textContent = num === 0 ? '' : num;
+                if (num !== 0) {
+                    cell.onclick = () => moveSlidingPuzzle(idx);
+                }
+                container.appendChild(cell);
+            });
+        }
+
+        function moveSlidingPuzzle(idx) {
+            if (slidingState.gameOver) return;
+
+            const r1 = Math.floor(idx / 3);
+            const c1 = idx % 3;
+            const r2 = Math.floor(slidingState.emptyIdx / 3);
+            const c2 = slidingState.emptyIdx % 3;
+
+            if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+                [slidingState.board[idx], slidingState.board[slidingState.emptyIdx]] = [slidingState.board[slidingState.emptyIdx], slidingState.board[idx]];
+                slidingState.emptyIdx = idx;
+                renderSlidingPuzzle();
+                checkSlidingPuzzleWin();
+            }
+        }
+
+        function checkSlidingPuzzleWin() {
+            for (let i = 0; i < 8; i++) {
+                if (slidingState.board[i] !== i + 1) return;
+            }
+            slidingState.gameOver = true;
+            document.getElementById('sliding-status').textContent = '🎉 Победа! Ты собрал пазл!';
+            addQuestProgress('g_slidingpuzzle_1', 1);
+            setTimeout(() => {
+                if(confirm("Пазл собран! Начать заново?")) initSlidingPuzzle();
+            }, 500);
+        }
+
+        // ============================================
+        // === 10 НОВЫХ ИГР (ПОЛНОСТЬЮ РАБОЧИЕ) ===
+        // ============================================
+
+        // --- УДАРЬ КРОТА ---
+        let whackState = { score: 0, activeMole: -1, timeout: null };
+        function initWhackAMole() {
+            whackState = { score: 0, activeMole: -1, timeout: null };
+            document.getElementById('whack-score').textContent = 'Счёт: 0';
+            document.getElementById('whack-status').textContent = 'Бей кротов, не бей бомбы!';
+            renderWhackBoard();
+            spawnWhackMole();
+        }
+
+        function renderWhackBoard() {
+            const board = document.getElementById('whack-board');
+            if (!board) return;
+            board.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.style.cssText = `
+                    height: 60px;
+                    background: ${i === whackState.activeMole ? '#ff6b6b' : 'rgba(255,255,255,0.1)'};
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 30px;
+                    cursor: pointer;
+                `;
+                cell.textContent = i === whackState.activeMole ? '🐭' : '';
+                cell.onclick = () => whackMole(i);
+                board.appendChild(cell);
+            }
+        }
+
+        function spawnWhackMole() {
+            if (whackState.timeout) clearTimeout(whackState.timeout);
+            whackState.activeMole = Math.floor(Math.random() * 9);
+            renderWhackBoard();
+            whackState.timeout = setTimeout(() => {
+                whackState.activeMole = -1;
+                renderWhackBoard();
+                spawnWhackMole();
+            }, 1000);
+        }
+
+        function whackMole(idx) {
+            if (idx === whackState.activeMole) {
+                whackState.score++;
+                document.getElementById('whack-score').textContent = 'Счёт: ' + whackState.score;
+                whackState.activeMole = -1;
+                renderWhackBoard();
+                spawnWhackMole();
+            }
+        }
+
+        // --- КУБИКИ САЙМОНА (УВЕЛИЧЕНО ПОЛЕ) ---
+        let sdiceState = { sequence: [], playerStep: 0, playing: false, accepting: false };
+        function initSimonDice() {
+            sdiceState = { sequence: [], playerStep: 0, playing: false, accepting: false };
+            document.getElementById('sdice-status').textContent = 'Запоминай последовательность';
+            renderSimonDiceBoard();
+        }
+
+        function renderSimonDiceBoard() {
+            const board = document.getElementById('sdice-board');
+            if (!board) return;
+            board.innerHTML = '';
+            for (let i = 0; i < 4; i++) {
+                const btn = document.createElement('div');
+                btn.style.cssText = `
+                    width: 120px;
+                    height: 120px;
+                    background: ${['#ff6b6b', '#6bc5ff', '#3ddbb0', '#ffd23f'][i]};
+                    border-radius: 20px;
+                    cursor: pointer;
+                    opacity: 0.5;
+                    transition: opacity 0.2s;
+                    border: 4px solid rgba(255,255,255,0.3);
+                `;
+                btn.onclick = () => clickSimonDice(i);
+                board.appendChild(btn);
+            }
+        }
+
+        function startSimonDice() {
+            initSimonDice();
+            nextSimonDiceRound();
+        }
+
+        function nextSimonDiceRound() {
+            sdiceState.sequence.push(Math.floor(Math.random() * 4));
+            sdiceState.playerStep = 0;
+            sdiceState.accepting = false;
+            document.getElementById('sdice-status').textContent = 'Смотри...';
+            playSimonDiceSequence();
+        }
+
+        function playSimonDiceSequence() {
+            sdiceState.playing = true;
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= sdiceState.sequence.length) {
+                    clearInterval(interval);
+                    sdiceState.playing = false;
+                    sdiceState.accepting = true;
+                    document.getElementById('sdice-status').textContent = 'Твой ход!';
+                    return;
+                }
+                const el = document.querySelectorAll('#sdice-board div')[sdiceState.sequence[i]];
+                if (el) {
+                    el.style.opacity = '1';
+                    setTimeout(() => el.style.opacity = '0.5', 300);
+                }
+                i++;
+            }, 600);
+        }
+
+        function clickSimonDice(idx) {
+            if (!sdiceState.accepting || sdiceState.playing) return;
+            const el = document.querySelectorAll('#sdice-board div')[idx];
+            if (el) {
+                el.style.opacity = '1';
+                setTimeout(() => el.style.opacity = '0.5', 200);
+            }
+
+            if (idx === sdiceState.sequence[sdiceState.playerStep]) {
+                sdiceState.playerStep++;
+                if (sdiceState.playerStep >= sdiceState.sequence.length) {
+                    sdiceState.accepting = false;
+                    document.getElementById('sdice-status').textContent = 'Правильно! Следующий уровень...';
+                    setTimeout(nextSimonDiceRound, 1000);
+                }
+            } else {
+                sdiceState.accepting = false;
+                document.getElementById('sdice-status').textContent = '❌ Ошибка! Нажми "Старт" чтобы начать заново.';
+            }
+        }
+
+        // --- ПАМЯТЬ ЧИСЕЛ ---
+        let mnumState = { board: [], flipped: [], matched: [], lock: false, score: 0 };
+        function initMemoryNumbers() {
+            const nums = [1, 2, 3, 4, 5, 6, 7, 8];
+            const deck = [...nums, ...nums].sort(() => Math.random() - 0.5);
+            mnumState = { deck, flipped: [], matched: [], lock: false, score: 0 };
+            renderMemoryNumbers();
+            document.getElementById('mnum-status').textContent = 'Найди все пары!';
+            document.getElementById('mnum-score').textContent = 'Счёт: 0';
+        }
+
+        function renderMemoryNumbers() {
+            const board = document.getElementById('mnum-board');
+            if (!board) return;
+            board.innerHTML = '';
+            mnumState.deck.forEach((num, idx) => {
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    height: 50px;
+                    background: ${mnumState.flipped.includes(idx) || mnumState.matched.includes(idx) ? '#3ddbb0' : 'rgba(255,255,255,0.1)'};
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    font-weight: bold;
+                    cursor: pointer;
+                `;
+                card.textContent = mnumState.flipped.includes(idx) || mnumState.matched.includes(idx) ? num : '';
+                card.onclick = () => clickMemoryNumbers(idx);
+                board.appendChild(card);
+            });
+        }
+
+        function clickMemoryNumbers(idx) {
+            if (mnumState.lock || mnumState.flipped.includes(idx) || mnumState.matched.includes(idx)) return;
+            mnumState.flipped.push(idx);
+            renderMemoryNumbers();
+
+            if (mnumState.flipped.length === 2) {
+                mnumState.lock = true;
+                const [a, b] = mnumState.flipped;
+                if (mnumState.deck[a] === mnumState.deck[b]) {
+                    mnumState.matched.push(a, b);
+                    mnumState.flipped = [];
+                    mnumState.lock = false;
+                    renderMemoryNumbers();
+                    if (mnumState.matched.length === mnumState.deck.length) {
+                        document.getElementById('mnum-status').textContent = '🎉 Ты нашёл все пары!';
+                    }
+                } else {
+                    setTimeout(() => {
+                        mnumState.flipped = [];
+                        mnumState.lock = false;
+                        renderMemoryNumbers();
+                    }, 800);
+                }
+            }
+        }
+
+        // --- ЦВЕТОВАЯ РЕАКЦИЯ ---
+        let rcolorState = { score: 0, currentColor: null };
+        function initReactionColor() {
+            rcolorState = { score: 0, currentColor: null };
+            nextReactionColorRound();
+        }
+
+        function nextReactionColorRound() {
+            const colors = [...colorNames].sort(() => Math.random() - 0.5);
+            const correct = colors[Math.floor(Math.random() * colors.length)];
+            rcolorState.currentColor = correct;
+            
+            document.getElementById('rcolor-word').textContent = correct.name;
+            document.getElementById('rcolor-score').textContent = 'Счёт: ' + rcolorState.score;
+            document.getElementById('rcolor-status').textContent = 'Нажми на правильный цвет!';
+            
+            const optionsEl = document.getElementById('rcolor-options');
+            optionsEl.innerHTML = '';
+            
+            const shuffled = [...colorNames].sort(() => Math.random() - 0.5).slice(0, 4);
+            if (!shuffled.some(c => c.name === correct.name)) {
+                shuffled[0] = correct;
+            }
+            
+            shuffled.sort(() => Math.random() - 0.5).forEach(color => {
+                const btn = document.createElement('div');
+                btn.className = 'color-game-btn';
+                btn.style.background = color.hex;
+                btn.onclick = () => checkReactionColor(color.name === correct.name);
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function checkReactionColor(isCorrect) {
+            if (isCorrect) {
+                rcolorState.score++;
+                document.getElementById('rcolor-status').textContent = '✅ Правильно!';
+                setTimeout(nextReactionColorRound, 500);
+            } else {
+                document.getElementById('rcolor-status').textContent = '❌ Неправильно! Попробуй ещё раз.';
+            }
+            document.getElementById('rcolor-score').textContent = 'Счёт: ' + rcolorState.score;
+        }
+
+        // --- МАТЕМАТИКА ---
+        let mathState = { score: 0, answer: 0 };
+        function initMathGame() {
+            mathState = { score: 0, answer: 0 };
+            nextMathRound();
+        }
+
+        function nextMathRound() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 10) + 1;
+            const op = Math.random() > 0.5 ? '+' : '-';
+            mathState.answer = op === '+' ? a + b : a - b;
+            
+            document.getElementById('math-question').textContent = `${a} ${op} ${b} = ?`;
+            document.getElementById('math-score').textContent = 'Счёт: ' + mathState.score;
+            document.getElementById('math-status').textContent = 'Выбери правильный ответ';
+            
+            const optionsEl = document.getElementById('math-options');
+            optionsEl.innerHTML = '';
+            
+            const options = [mathState.answer];
+            while (options.length < 4) {
+                const wrong = mathState.answer + Math.floor(Math.random() * 10) - 5;
+                if (!options.includes(wrong) && wrong !== mathState.answer) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5).forEach(val => {
+                const btn = document.createElement('div');
+                btn.className = 'color-game-btn';
+                btn.style.background = '#3ddbb0';
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.justifyContent = 'center';
+                btn.style.fontSize = '24px';
+                btn.style.fontWeight = 'bold';
+                btn.textContent = val;
+                btn.onclick = () => checkMath(val);
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function checkMath(val) {
+            if (val === mathState.answer) {
+                mathState.score++;
+                document.getElementById('math-status').textContent = '✅ Правильно!';
+                setTimeout(nextMathRound, 500);
+            } else {
+                document.getElementById('math-status').textContent = '❌ Неправильно!';
+            }
+            document.getElementById('math-score').textContent = 'Счёт: ' + mathState.score;
+        }
+
+        // --- СЛОВА ---
+        let wordState = { score: 0, currentWord: '' };
+        const wordList = ['КОТ', 'СОБАКА', 'ДОМ', 'ЛЕС', 'РЕКА', 'ГОРА', 'СОЛНЦЕ', 'ЛУНА', 'ЗВЕЗДА', 'МОРЕ'];
+        function initWordScramble() {
+            wordState = { score: 0, currentWord: '' };
+            nextWordRound();
+        }
+
+        function nextWordRound() {
+            const word = wordList[Math.floor(Math.random() * wordList.length)];
+            wordState.currentWord = word;
+            const scrambled = word.split('').sort(() => Math.random() - 0.5).join('');
+            document.getElementById('word-display').textContent = scrambled;
+            document.getElementById('word-score').textContent = 'Счёт: ' + wordState.score;
+            document.getElementById('word-status').textContent = 'Собери слово из букв';
+            document.getElementById('word-input').value = '';
+        }
+
+        function checkWord() {
+            const input = document.getElementById('word-input');
+            if (input.value.toUpperCase() === wordState.currentWord) {
+                wordState.score++;
+                document.getElementById('word-status').textContent = '✅ Правильно!';
+                setTimeout(nextWordRound, 500);
+            } else {
+                document.getElementById('word-status').textContent = '❌ Неправильно! Попробуй ещё.';
+            }
+            document.getElementById('word-score').textContent = 'Счёт: ' + wordState.score;
+        }
+
+        // --- ПОСЛЕДОВАТЕЛЬНОСТЬ ---
+        let nseqState = { score: 0, answer: 0 };
+        function initNumberSequence() {
+            nseqState = { score: 0, answer: 0 };
+            nextNumberSequenceRound();
+        }
+
+        function nextNumberSequenceRound() {
+            const start = Math.floor(Math.random() * 5) + 1;
+            const step = Math.floor(Math.random() * 3) + 1;
+            const seq = [start, start + step, start + step * 2];
+            nseqState.answer = start + step * 3;
+            document.getElementById('nseq-question').textContent = seq.join(', ') + ', ?';
+            document.getElementById('nseq-score').textContent = 'Счёт: ' + nseqState.score;
+            document.getElementById('nseq-status').textContent = 'Введи следующее число';
+            document.getElementById('nseq-input').value = '';
+        }
+
+        function checkNumberSequence() {
+            const input = document.getElementById('nseq-input');
+            if (parseInt(input.value) === nseqState.answer) {
+                nseqState.score++;
+                document.getElementById('nseq-status').textContent = '✅ Правильно!';
+                setTimeout(nextNumberSequenceRound, 500);
+            } else {
+                document.getElementById('nseq-status').textContent = '❌ Неправильно! Попробуй ещё.';
+            }
+            document.getElementById('nseq-score').textContent = 'Счёт: ' + nseqState.score;
+        }
+
+        // --- НАЙДИ ОТЛИЧИЕ ---
+        let fdiffState = { score: 0 };
+        const emojis = ['🍎', '🍊', '🍇', '🍓', '🍒', '🍑', '🍋', '🍌'];
+        function initFindTheDifference() {
+            fdiffState = { score: 0 };
+            nextFindDifferenceRound();
+        }
+
+        function nextFindDifferenceRound() {
+            const board = document.getElementById('fdiff-board');
+            if (!board) return;
+            board.innerHTML = '';
+            const baseEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const diffEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const diffIndex = Math.floor(Math.random() * 9);
+            
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.style.cssText = `
+                    height: 60px;
+                    background: rgba(255,255,255,0.1);
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 30px;
+                    cursor: pointer;
+                `;
+                cell.textContent = i === diffIndex ? diffEmoji : baseEmoji;
+                cell.onclick = () => {
+                    if (i === diffIndex) {
+                        fdiffState.score++;
+                        document.getElementById('fdiff-score').textContent = 'Счёт: ' + fdiffState.score;
+                        document.getElementById('fdiff-status').textContent = '✅ Правильно!';
+                        setTimeout(nextFindDifferenceRound, 500);
+                    } else {
+                        document.getElementById('fdiff-status').textContent = '❌ Неправильно! Попробуй ещё.';
+                    }
+                };
+                board.appendChild(cell);
+            }
+            document.getElementById('fdiff-status').textContent = 'Найди отличающуюся картинку';
+            document.getElementById('fdiff-score').textContent = 'Счёт: ' + fdiffState.score;
+        }
+
+        // --- СКОРОСТЬ ПЕЧАТИ ---
+        let typeState = { score: 0, currentWord: '', startTime: 0, timerInterval: null };
+        const typeWords = ['КОТ', 'СОБАКА', 'ДОМ', 'ЛЕС', 'РЕКА', 'ГОРА', 'СОЛНЦЕ', 'ЛУНА', 'ЗВЕЗДА', 'МОРЕ'];
+        function initTypingTest() {
+            typeState = { score: 0, currentWord: '', startTime: 0, timerInterval: null };
+            nextTypeRound();
+        }
+
+        function nextTypeRound() {
+            const word = typeWords[Math.floor(Math.random() * typeWords.length)];
+            typeState.currentWord = word;
+            document.getElementById('type-word').textContent = word;
+            document.getElementById('type-score').textContent = 'Счёт: ' + typeState.score;
+            document.getElementById('type-status').textContent = 'Напечатай слово';
+            document.getElementById('type-input').value = '';
+            
+            typeState.startTime = Date.now();
+            if (typeState.timerInterval) clearInterval(typeState.timerInterval);
+            typeState.timerInterval = setInterval(() => {
+                const elapsed = ((Date.now() - typeState.startTime) / 1000).toFixed(1);
+                const timerEl = document.getElementById('type-timer');
+                if (timerEl) timerEl.textContent = 'Время: ' + elapsed + ' сек';
+            }, 100);
+        }
+
+        function checkTyping() {
+            const input = document.getElementById('type-input');
+            if (input.value.toUpperCase() === typeState.currentWord) {
+                clearInterval(typeState.timerInterval);
+                typeState.score++;
+                document.getElementById('type-status').textContent = '✅ Правильно!';
+                setTimeout(nextTypeRound, 500);
+            } else {
+                document.getElementById('type-status').textContent = '❌ Неправильно! Попробуй ещё.';
+            }
+            document.getElementById('type-score').textContent = 'Счёт: ' + typeState.score;
         }
 
         // ============================================
@@ -5306,7 +6752,7 @@
                 lastX = pos.x;
                 lastY = pos.y;
                 ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 40; // УВЕЛИЧЕННЫЙ ЛАСТИК
+                ctx.lineWidth = 40;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.beginPath();
@@ -5371,13 +6817,11 @@
 
             const currentPixels = countPixelsInZone(ctx, w, h, eraseTask);
             
-            // ДОБРЫЙ БОТ: Достаточно стереть 30% лишнего (было 20%)
-            if (currentPixels < eraseOriginalPixels * 0.3) {
+            if (currentPixels < eraseOriginalPixels * 0.4) {
                 botFace.textContent = '😄';
                 botText.textContent = 'Отлично! Ты справился!';
                 nextBtn.style.display = 'block';
-            } else if (currentPixels < eraseOriginalPixels * 0.6) {
-                // Подбадриваем, если стёрто больше половины
+            } else if (currentPixels < eraseOriginalPixels * 0.7) {
                 botFace.textContent = '🙂';
                 botText.textContent = 'Хорошо! Осталось совсем чуть-чуть!';
             } else {
@@ -5672,40 +7116,28 @@
                             <button class="cat-prestige-btn" onclick="prestigeCatGame()" id="cat-prestige-btn">Prestige</button>
                         </div>
                         <div class="cat-character-container" onclick="clickCat(event)">
-                            <!-- Новая ровная и большая SVG иконка кота -->
                             <svg class="cat-character-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Уши -->
                                 <path d="M 25 40 L 35 10 L 50 35 Z" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2" stroke-linejoin="round"/>
                                 <path d="M 95 40 L 85 10 L 70 35 Z" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2" stroke-linejoin="round"/>
-                                <!-- Внутренние уши -->
                                 <path d="M 30 35 L 37 18 L 45 33 Z" fill="#ffb366" />
                                 <path d="M 90 35 L 83 18 L 75 33 Z" fill="#ffb366" />
-                                <!-- Тело -->
                                 <ellipse cx="60" cy="80" rx="40" ry="30" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2"/>
-                                <!-- Голова -->
                                 <circle cx="60" cy="55" r="35" fill="#ff8c00" stroke="#1d1b4d" stroke-width="2"/>
-                                <!-- Мордочка -->
                                 <ellipse cx="60" cy="65" rx="22" ry="15" fill="#ffb366" />
-                                <!-- Глаза -->
                                 <ellipse cx="45" cy="55" rx="5" ry="7" fill="#fff" />
                                 <ellipse cx="75" cy="55" rx="5" ry="7" fill="#fff" />
                                 <circle cx="45" cy="55" r="3" fill="#000" />
                                 <circle cx="75" cy="55" r="3" fill="#000" />
                                 <circle cx="46" cy="54" r="1" fill="#fff" />
                                 <circle cx="76" cy="54" r="1" fill="#fff" />
-                                <!-- Нос -->
                                 <path d="M 57 65 L 63 65 L 60 68 Z" fill="#ff6b6b" stroke="#1d1b4d" stroke-width="1"/>
-                                <!-- Рот -->
                                 <path d="M 55 70 Q 60 74 65 70" stroke="#1d1b4d" stroke-width="2" fill="none" stroke-linecap="round"/>
-                                <!-- Усы -->
                                 <line x1="35" y1="68" x2="20" y2="65" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
                                 <line x1="35" y1="72" x2="20" y2="73" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
                                 <line x1="85" y1="68" x2="100" y2="65" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
                                 <line x1="85" y1="72" x2="100" y2="73" stroke="#1d1b4d" stroke-width="2" stroke-linecap="round"/>
-                                <!-- Пятна -->
                                 <circle cx="45" cy="35" r="5" fill="#ff6b00" opacity="0.5"/>
                                 <circle cx="75" cy="35" r="5" fill="#ff6b00" opacity="0.5"/>
-                                <!-- Лапки -->
                                 <ellipse cx="35" cy="100" rx="10" ry="8" fill="#ffb366" stroke="#1d1b4d" stroke-width="2"/>
                                 <ellipse cx="85" cy="100" rx="10" ry="8" fill="#ffb366" stroke="#1d1b4d" stroke-width="2"/>
                             </svg>
@@ -5734,7 +7166,6 @@
             const sidebar = document.getElementById('cat-sidebar');
             if (!sidebar) return;
 
-            // Проверяем, есть ли уже элементы. Если нет — создаем их один раз.
             if (sidebar.children.length === 0) {
                 let html = '';
                 catUpgradesInfo.forEach(info => {
@@ -5758,7 +7189,6 @@
                 sidebar.innerHTML = html;
             }
 
-            // Обновляем только текст внутри (цена, доход), чтобы не сбивать hover-эффект
             catUpgradesInfo.forEach(info => {
                 const cost = getCatUpgradeCost(info.id);
                 const level = catGameState.upgrades[info.id];
@@ -5848,7 +7278,6 @@
             }
         }
 
-        // Кастомное окно для вывода
         function withdrawCatCoins() {
             const amountToWithdraw = Math.floor(catGameState.coins);
             if (amountToWithdraw <= 0) {
@@ -5856,7 +7285,6 @@
                 return;
             }
 
-            // Заменяем стандартный confirm на красивое модальное окно
             openModal(`
                 <div class="withdraw-modal">
                     <div style="font-size: 60px; margin-bottom: 15px;">⚠️</div>
@@ -5879,15 +7307,12 @@
             const amountToWithdraw = Math.floor(catGameState.coins);
             const converted = Math.floor(amountToWithdraw / 3);
             
-            // Обнуляем баланс кликера
             catGameState.coins = 0;
             saveCatGame();
             
-            // Начисляем в основной кошелек
             playerCoins += converted;
             saveQuestData();
             
-            // Возвращаемся в кликер и обновляем UI
             openCatClicker();
             
             alert(`Успешно выведено!\nВаш баланс кликера обнулен.\nНа основной счет зачислено: ${converted.toLocaleString()} монет (сумма была поделена на 3).`);
@@ -5919,6 +7344,633 @@
         // Инициализация при запуске
         updateCoinDisplay();
         updateQuestBadge();
+                // ============================================
+        // === ВСТРОЕННЫЕ ИГРЫ (ПАКМАН, ПОНГ, ЗАХВАТЧИКИ, ФРОГГЕР) ===
+        // ============================================
+
+               // --- ПАКМАН ---
+        let pacmanState = {};
+        function initPacman() {
+            const canvas = document.getElementById('pacmanCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const size = 20;
+
+            // Карта: 1 - стена, 0 - пусто, 2 - точка, 3 - энергайзер
+            const map = [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+                [1,2,1,1,1,2,1,1,1,2,1,1,1,1,2,1,1,1,2,1],
+                [1,3,1,0,0,2,0,0,0,2,0,0,0,0,2,0,0,1,3,1],
+                [1,2,1,1,1,2,1,1,1,2,1,1,1,1,2,1,1,1,2,1],
+                [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+                [1,2,1,1,1,2,1,0,0,0,0,0,1,1,2,1,1,1,2,1],
+                [1,2,1,1,1,2,1,0,0,0,0,0,1,1,2,1,1,1,2,1],
+                [1,2,2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,1],
+                [1,2,1,1,1,2,0,0,0,0,0,0,0,0,2,1,1,1,2,1],
+                [1,2,2,2,2,2,0,0,0,0,0,0,0,0,2,2,2,2,2,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ];
+
+            pacmanState = {
+                player: {x: 9.5, y: 9.5, dx: 0, dy: 0},
+                ghosts: [
+                    {x: 8.5, y: 7.5, dx: 0.08, dy: 0, color: '#ff0000'},
+                    {x: 10.5, y: 7.5, dx: -0.08, dy: 0, color: '#00ffff'},
+                    {x: 8.5, y: 9.5, dx: 0, dy: 0.08, color: '#ffb8ff'},
+                    {x: 10.5, y: 9.5, dx: 0, dy: -0.08, color: '#ffb852'}
+                ],
+                dots: map.map(row => row.map(cell => cell === 2 || cell === 3 ? 1 : 0)),
+                score: 0,
+                lives: 3,
+                level: 1,
+                gameOver: false,
+                animId: null
+            };
+
+            // Управление: устанавливаем направление, но не сбрасываем его, если путь свободен
+            document.onkeydown = (e) => {
+                if (pacmanState.gameOver) return;
+                const p = pacmanState.player;
+                
+                if (e.key === 'ArrowUp') { p.dx = 0; p.dy = -1; }
+                if (e.key === 'ArrowDown') { p.dx = 0; p.dy = 1; }
+                if (e.key === 'ArrowLeft') { p.dx = -1; p.dy = 0; }
+                if (e.key === 'ArrowRight') { p.dx = 1; p.dy = 0; }
+                
+                e.preventDefault();
+            };
+
+            drawPacman(ctx, size, map);
+            pacmanState.animId = requestAnimationFrame(() => pacmanLoop(ctx, size, map));
+        }
+
+        function pacmanLoop(ctx, size, map) {
+            if (pacmanState.gameOver) return;
+
+            const p = pacmanState.player;
+            const speed = 0.12; // Скорость движения
+
+            // Плавное движение игрока
+            if (p.dx !== 0 || p.dy !== 0) {
+                const nx = p.x + p.dx * speed;
+                const ny = p.y + p.dy * speed;
+
+                // Проверяем следующую клетку
+                const checkX = Math.floor(nx + p.dx * 0.5);
+                const checkY = Math.floor(ny + p.dy * 0.5);
+
+                if (map[checkY] && map[checkY][checkX] !== 1) {
+                    p.x = nx;
+                    p.y = ny;
+
+                    // Сбор точек
+                    const dotX = Math.floor(p.x);
+                    const dotY = Math.floor(p.y);
+                    if (pacmanState.dots[dotY] && pacmanState.dots[dotY][dotX]) {
+                        pacmanState.dots[dotY][dotX] = 0;
+                        pacmanState.score++;
+                        
+                        // Проверка на победу
+                        if (pacmanState.dots.every(row => row.every(d => d === 0))) {
+                            pacmanState.gameOver = true;
+                            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                            ctx.fillRect(0, 0, 400, 240);
+                            ctx.fillStyle = '#3ddbb0';
+                            ctx.font = 'bold 30px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('Победа! Уровень пройден!', 200, 120);
+                            return;
+                        }
+                    }
+                } else {
+                    // Если впереди стена, останавливаемся
+                    p.dx = 0;
+                    p.dy = 0;
+                }
+            }
+
+            // Движение призраков
+            pacmanState.ghosts.forEach(ghost => {
+                const gnx = ghost.x + ghost.dx;
+                const gny = ghost.y + ghost.dy;
+
+                if (map[Math.floor(gny)] && map[Math.floor(gny)][Math.floor(gnx)] !== 1) {
+                    ghost.x = gnx;
+                    ghost.y = gny;
+                } else {
+                    // Если в стену, меняем направление
+                    ghost.dx *= -1;
+                    ghost.dy *= -1;
+                }
+
+                // Проверка на столкновение
+                if (Math.abs(ghost.x - p.x) < 0.8 && Math.abs(ghost.y - p.y) < 0.8) {
+                    pacmanState.lives--;
+                    if (pacmanState.lives <= 0) {
+                        pacmanState.gameOver = true;
+                    } else {
+                        // Сброс позиции игрока
+                        p.x = 9.5; p.y = 9.5; p.dx = 0; p.dy = 0;
+                    }
+                }
+            });
+
+            drawPacman(ctx, size, map);
+            pacmanState.animId = requestAnimationFrame(() => pacmanLoop(ctx, size, map));
+        }
+
+        function drawPacman(ctx, size, map) {
+            const w = 400, h = 240;
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, w, h);
+
+            for (let y = 0; y < map.length; y++) {
+                for (let x = 0; x < map[y].length; x++) {
+                    if (map[y][x] === 1) {
+                        ctx.fillStyle = '#555';
+                        ctx.fillRect(x * size, y * size, size, size);
+                    } else if (pacmanState.dots[y][x]) {
+                        ctx.fillStyle = '#fff';
+                        ctx.beginPath();
+                        ctx.arc(x * size + size/2, y * size + size/2, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Игрок
+            ctx.fillStyle = '#ffd23f';
+            ctx.beginPath();
+            ctx.arc(pacmanState.player.x * size, pacmanState.player.y * size, size/2 - 2, 0.2 * Math.PI, 1.8 * Math.PI);
+            ctx.lineTo(pacmanState.player.x * size, pacmanState.player.y * size);
+            ctx.fill();
+
+            // Призраки
+            pacmanState.ghosts.forEach(ghost => {
+                ctx.fillStyle = ghost.color;
+                ctx.beginPath();
+                ctx.arc(ghost.x * size, ghost.y * size, size/2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + pacmanState.score, 10, 20);
+            ctx.fillText('Жизни: ' + pacmanState.lives, 200, 20);
+        }
+
+        function startPacman() {
+            const canvas = document.getElementById('pacmanCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            initPacman();
+        }
+
+        // --- ПОНГ ---
+        let pongState = {};
+        function initPong() {
+            const canvas = document.getElementById('pongCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            pongState = {
+                ball: {x: 200, y: 150, dx: 3, dy: 3, radius: 8},
+                paddle: {x: 160, y: 280, width: 80, height: 10},
+                score: 0,
+                gameOver: false,
+                animId: null
+            };
+
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                pongState.paddle.x = Math.max(0, Math.min(320, x - 40));
+            };
+
+            canvas.ontouchmove = (e) => {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                const x = e.touches[0].clientX - rect.left;
+                pongState.paddle.x = Math.max(0, Math.min(320, x - 40));
+            };
+
+            drawPong(ctx);
+        }
+
+        function drawPong(ctx) {
+            const w = 400, h = 300;
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(pongState.ball.x, pongState.ball.y, pongState.ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#3ddbb0';
+            ctx.fillRect(pongState.paddle.x, pongState.paddle.y, pongState.paddle.width, pongState.paddle.height);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + pongState.score, 10, 25);
+        }
+
+        function startPong() {
+            const canvas = document.getElementById('pongCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            initPong();
+            pongState.animId = requestAnimationFrame((t) => pongLoop(t, ctx));
+        }
+
+        function pongLoop(now, ctx) {
+            if (pongState.gameOver) return;
+
+            pongState.ball.x += pongState.ball.dx;
+            pongState.ball.y += pongState.ball.dy;
+
+            if (pongState.ball.x <= 8 || pongState.ball.x >= 392) pongState.ball.dx *= -1;
+            if (pongState.ball.y <= 8) pongState.ball.dy *= -1;
+
+            if (pongState.ball.y >= 280 && pongState.ball.y <= 290 &&
+                pongState.ball.x >= pongState.paddle.x && pongState.ball.x <= pongState.paddle.x + pongState.paddle.width) {
+                pongState.ball.dy = -Math.abs(pongState.ball.dy);
+                pongState.score++;
+            }
+
+            if (pongState.ball.y > 300) {
+                pongState.gameOver = true;
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, 400, 300);
+                ctx.fillStyle = '#ff6b6b';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Игра окончена!', 200, 130);
+                ctx.fillStyle = '#fff';
+                ctx.font = '20px Arial';
+                ctx.fillText('Счёт: ' + pongState.score, 200, 170);
+                return;
+            }
+
+            drawPong(ctx);
+            pongState.animId = requestAnimationFrame((t) => pongLoop(t, ctx));
+        }
+
+                // ============================================
+        // === ЗАХВАТЧИКИ (ФИНАЛЬНАЯ ВЕРСИЯ) ===
+        // ============================================
+        let invadersState = {};
+        function initInvaders() {
+            const canvas = document.getElementById('invadersCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            invadersState = {
+                player: {x: 180, y: 360, width: 40, height: 20, speed: 8},
+                bullets: [],
+                enemies: [],
+                score: 0,
+                gameOver: false,
+                animId: null,
+                enemyDir: 1,
+                lastShot: 0
+            };
+
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 6; c++) {
+                    invadersState.enemies.push({
+                        x: 40 + c * 50, y: 40 + r * 40,
+                        width: 30, height: 30, alive: true
+                    });
+                }
+            }
+
+            document.onkeydown = (e) => {
+                if (invadersState.gameOver) return;
+                if (e.key === 'ArrowLeft') invadersState.player.x = Math.max(0, invadersState.player.x - invadersState.player.speed);
+                if (e.key === 'ArrowRight') invadersState.player.x = Math.min(360, invadersState.player.x + invadersState.player.speed);
+                if (e.key === ' ') {
+                    const now = Date.now();
+                    if (now - invadersState.lastShot > 250) {
+                        invadersState.bullets.push({x: invadersState.player.x + 20, y: 360, dy: -7});
+                        invadersState.lastShot = now;
+                    }
+                    e.preventDefault();
+                }
+            };
+
+            drawInvaders(ctx);
+            invadersState.animId = requestAnimationFrame((t) => invadersLoop(t, ctx));
+        }
+
+        function drawInvaders(ctx) {
+            const w = 400, h = 400;
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#3ddbb0';
+            ctx.fillRect(invadersState.player.x, invadersState.player.y, invadersState.player.width, invadersState.player.height);
+            ctx.fillStyle = '#ffd23f';
+            invadersState.bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 10));
+            ctx.fillStyle = '#ff6b6b';
+            invadersState.enemies.forEach(en => { if (en.alive) ctx.fillRect(en.x, en.y, en.width, en.height); });
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + invadersState.score, 10, 25);
+        }
+
+        function startInvaders() {
+            const canvas = document.getElementById('invadersCanvas');
+            if (!canvas) return;
+            initInvaders();
+        }
+
+        function invadersLoop(now, ctx) {
+            if (invadersState.gameOver) return;
+            invadersState.bullets.forEach(b => b.y += b.dy);
+            invadersState.bullets = invadersState.bullets.filter(b => b.y > 0);
+            let hitEdge = false;
+            invadersState.enemies.forEach(en => {
+                if (en.alive) {
+                    en.x += invadersState.enemyDir * 1.5;
+                    if (en.x <= 0 || en.x >= 370) hitEdge = true;
+                }
+            });
+            if (hitEdge) {
+                invadersState.enemyDir *= -1;
+                invadersState.enemies.forEach(en => en.y += 20);
+            }
+            for (let i = invadersState.bullets.length - 1; i >= 0; i--) {
+                const b = invadersState.bullets[i];
+                for (let j = invadersState.enemies.length - 1; j >= 0; j--) {
+                    const en = invadersState.enemies[j];
+                    if (en.alive && b.x > en.x && b.x < en.x + en.width && b.y > en.y && b.y < en.y + en.height) {
+                        en.alive = false;
+                        invadersState.bullets.splice(i, 1);
+                        invadersState.score += 10;
+                        break;
+                    }
+                }
+            }
+            if (invadersState.enemies.every(en => !en.alive)) {
+                invadersState.gameOver = true;
+                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 400, 400);
+                ctx.fillStyle = '#3ddbb0'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('Победа!', 200, 180);
+                ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+                ctx.fillText('Счёт: ' + invadersState.score, 200, 220);
+                return;
+            }
+            if (invadersState.enemies.some(en => en.alive && en.y > 350)) {
+                invadersState.gameOver = true;
+                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 400, 400);
+                ctx.fillStyle = '#ff6b6b'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('Игра окончена!', 200, 180);
+                ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+                ctx.fillText('Счёт: ' + invadersState.score, 200, 220);
+                return;
+            }
+            drawInvaders(ctx);
+            invadersState.animId = requestAnimationFrame((t) => invadersLoop(t, ctx));
+        }
+
+        // ============================================
+        // === ФРОГГЕР (ФИНАЛЬНАЯ ВЕРСИЯ) ===
+        // ============================================
+        let froggerState = {};
+        function initFrogger() {
+            const canvas = document.getElementById('froggerCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            froggerState = {
+                frog: {x: 140, y: 360, size: 20, speed: 20},
+                cars: [],
+                score: 0,
+                gameOver: false,
+                animId: null
+            };
+
+            for (let i = 0; i < 5; i++) {
+                froggerState.cars.push({
+                    x: Math.random() * 300,
+                    y: 40 + i * 60,
+                    width: 40, height: 20,
+                    speed: 1 + Math.random() * 2,
+                    dir: Math.random() > 0.5 ? 1 : -1
+                });
+            }
+
+            document.onkeydown = (e) => {
+                if (froggerState.gameOver) return;
+                if (e.key === 'ArrowUp') froggerState.frog.y -= froggerState.frog.speed;
+                if (e.key === 'ArrowDown') froggerState.frog.y += froggerState.frog.speed;
+                if (e.key === 'ArrowLeft') froggerState.frog.x -= froggerState.frog.speed;
+                if (e.key === 'ArrowRight') froggerState.frog.x += froggerState.frog.speed;
+                froggerState.frog.x = Math.max(0, Math.min(280, froggerState.frog.x));
+                froggerState.frog.y = Math.max(0, Math.min(380, froggerState.frog.y));
+                drawFrogger(ctx);
+                e.preventDefault();
+            };
+
+            drawFrogger(ctx);
+            froggerState.animId = requestAnimationFrame((t) => froggerLoop(t, ctx));
+        }
+
+        function drawFrogger(ctx) {
+            const w = 300, h = 400;
+            ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#555';
+            for (let i = 0; i < 5; i++) ctx.fillRect(0, 40 + i * 60, 300, 20);
+            ctx.fillStyle = '#ff6b6b';
+            froggerState.cars.forEach(car => ctx.fillRect(car.x, car.y, car.width, car.height));
+            ctx.fillStyle = '#3ddbb0';
+            ctx.fillRect(froggerState.frog.x, froggerState.frog.y, froggerState.frog.size, froggerState.frog.size);
+            ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + froggerState.score, 10, 25);
+        }
+
+        function startFrogger() {
+            const canvas = document.getElementById('froggerCanvas');
+            if (!canvas) return;
+            initFrogger();
+        }
+
+        function froggerLoop(now, ctx) {
+            if (froggerState.gameOver) return;
+            froggerState.cars.forEach(car => {
+                car.x += car.speed * car.dir;
+                if (car.x > 300) car.x = -40;
+                if (car.x < -40) car.x = 300;
+            });
+            froggerState.cars.forEach(car => {
+                if (froggerState.frog.x < car.x + car.width &&
+                    froggerState.frog.x + froggerState.frog.size > car.x &&
+                    froggerState.frog.y < car.y + car.height &&
+                    froggerState.frog.y + froggerState.frog.size > car.y) {
+                    froggerState.gameOver = true;
+                }
+            });
+            if (froggerState.frog.y <= 0) {
+                froggerState.gameOver = true;
+                froggerState.score++;
+            }
+            if (froggerState.gameOver) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 400);
+                ctx.fillStyle = '#ff6b6b'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('Игра окончена!', 150, 180);
+                ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+                ctx.fillText('Счёт: ' + froggerState.score, 150, 220);
+                return;
+            }
+            drawFrogger(ctx);
+            froggerState.animId = requestAnimationFrame((t) => froggerLoop(t, ctx));
+        }
+
+        // ============================================
+        // === АСТЕРОИДЫ (ФИНАЛЬНАЯ ВЕРСИЯ) ===
+        // ============================================
+        let asteroidsState = {};
+        function initAsteroids() {
+            const canvas = document.getElementById('asteroidsCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            asteroidsState = {
+                ship: {x: 150, y: 300, angle: -Math.PI/2, speed: 0, size: 10},
+                bullets: [],
+                asteroids: [],
+                score: 0,
+                gameOver: false,
+                animId: null
+            };
+
+            for (let i = 0; i < 5; i++) {
+                asteroidsState.asteroids.push({
+                    x: Math.random() * 300, y: Math.random() * 200,
+                    dx: (Math.random() - 0.5) * 2, dy: (Math.random() - 0.5) * 2,
+                    radius: 15 + Math.random() * 15
+                });
+            }
+
+            document.onkeydown = (e) => {
+                if (asteroidsState.gameOver) return;
+                if (e.key === 'ArrowLeft') asteroidsState.ship.angle -= 0.15;
+                if (e.key === 'ArrowRight') asteroidsState.ship.angle += 0.15;
+                if (e.key === 'ArrowUp') asteroidsState.ship.speed = 3;
+                if (e.key === ' ') {
+                    asteroidsState.bullets.push({
+                        x: asteroidsState.ship.x + Math.cos(asteroidsState.ship.angle) * 15,
+                        y: asteroidsState.ship.y + Math.sin(asteroidsState.ship.angle) * 15,
+                        dx: Math.cos(asteroidsState.ship.angle) * 6,
+                        dy: Math.sin(asteroidsState.ship.angle) * 6
+                    });
+                    e.preventDefault();
+                }
+            };
+
+            drawAsteroids(ctx);
+            asteroidsState.animId = requestAnimationFrame((t) => asteroidsLoop(t, ctx));
+        }
+
+        function drawAsteroids(ctx) {
+            const w = 300, h = 400;
+            ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h);
+
+            ctx.save();
+            ctx.translate(asteroidsState.ship.x, asteroidsState.ship.y);
+            ctx.rotate(asteroidsState.ship.angle);
+            ctx.strokeStyle = '#3ddbb0'; ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(10, 0); ctx.lineTo(-10, -7); ctx.lineTo(-10, 7);
+            ctx.closePath(); ctx.stroke();
+            ctx.restore();
+
+            ctx.fillStyle = '#ffd23f';
+            asteroidsState.bullets.forEach(b => {
+                ctx.beginPath(); ctx.arc(b.x, b.y, 2, 0, Math.PI * 2); ctx.fill();
+            });
+
+            ctx.strokeStyle = '#fff';
+            asteroidsState.asteroids.forEach(a => {
+                ctx.beginPath(); ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2); ctx.stroke();
+            });
+
+            ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + asteroidsState.score, 10, 25);
+        }
+
+        function startAsteroids() {
+            const canvas = document.getElementById('asteroidsCanvas');
+            if (!canvas) return;
+            initAsteroids();
+        }
+
+        function asteroidsLoop() {
+            if (asteroidsState.gameOver) return;
+            const canvas = document.getElementById('asteroidsCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const ship = asteroidsState.ship;
+            ship.x += Math.cos(ship.angle) * ship.speed;
+            ship.y += Math.sin(ship.angle) * ship.speed;
+            ship.speed *= 0.95;
+
+            if (ship.x < 0) ship.x = 300;
+            if (ship.x > 300) ship.x = 0;
+            if (ship.y < 0) ship.y = 400;
+            if (ship.y > 400) ship.y = 0;
+
+            asteroidsState.bullets.forEach(b => { b.x += b.dx; b.y += b.dy; });
+            asteroidsState.bullets = asteroidsState.bullets.filter(b => b.x > 0 && b.x < 300 && b.y > 0 && b.y < 400);
+
+            asteroidsState.asteroids.forEach(ast => {
+                ast.x += ast.dx; ast.y += ast.dy;
+                if (ast.x < 0 || ast.x > 300) ast.dx *= -1;
+                if (ast.y < 0 || ast.y > 400) ast.dy *= -1;
+            });
+
+            for (let i = asteroidsState.bullets.length - 1; i >= 0; i--) {
+                const b = asteroidsState.bullets[i];
+                for (let j = asteroidsState.asteroids.length - 1; j >= 0; j--) {
+                    const a = asteroidsState.asteroids[j];
+                    const dist = Math.hypot(b.x - a.x, b.y - a.y);
+                    if (dist < a.radius) {
+                        asteroidsState.bullets.splice(i, 1);
+                        asteroidsState.asteroids.splice(j, 1);
+                        asteroidsState.score += 20;
+                        if (a.radius > 20) {
+                            for (let k = 0; k < 2; k++) {
+                                asteroidsState.asteroids.push({
+                                    x: a.x, y: a.y,
+                                    dx: (Math.random() - 0.5) * 4,
+                                    dy: (Math.random() - 0.5) * 4,
+                                    radius: a.radius / 2
+                                });
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            for (const a of asteroidsState.asteroids) {
+                if (Math.hypot(ship.x - a.x, ship.y - a.y) < a.radius + 10) {
+                    asteroidsState.gameOver = true;
+                    ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 400);
+                    ctx.fillStyle = '#ff6b6b'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+                    ctx.fillText('Корабль уничтожен!', 150, 180);
+                    ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+                    ctx.fillText('Счёт: ' + asteroidsState.score, 150, 220);
+                    return;
+                }
+            }
+
+            drawAsteroids(ctx);
+            asteroidsState.animId = requestAnimationFrame(asteroidsLoop);
+        }
+
     </script>
 </body>
 </html>
