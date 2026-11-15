@@ -2,6 +2,63 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRm99i1faxC82iRLvgGQNhxEBqu2tMGJU",
+      authDomain: "my-site1-c0b58.firebaseapp.com",
+      projectId: "my-site1-c0b58",
+      storageBucket: "my-site1-c0b58.firebasestorage.app",
+      messagingSenderId: "464769943913",
+      appId: "1:464769943913:web:816d2bb89b9892701755f8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function checkMaintenance() {
+        try {
+            const docSnap = await getDoc(doc(db, "config", "maintenance"));
+            if (docSnap.exists() && docSnap.data().enabled) {
+                document.body.innerHTML = `
+                    <style>
+                        body {
+                            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh;
+                            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+                            font-family: system-ui, sans-serif;
+                        }
+                        .maintenance-box {
+                            background: #fff8ec; border: 4px solid #1d1b4d; border-radius: 28px;
+                            box-shadow: 10px 10px 0 #1d1b4d; padding: 40px; text-align: center;
+                            max-width: 400px; width: 90%; animation: slideUp 0.6s ease-out;
+                        }
+                        .maintenance-icon { font-size: 80px; margin-bottom: 20px; }
+                        .maintenance-title { font-size: 2rem; color: #1d1b4d; margin: 0 0 10px; }
+                        .maintenance-text { font-size: 1.1rem; color: #333; line-height: 1.5; }
+                        @keyframes slideUp {
+                            from { opacity: 0; transform: translateY(50px); }
+                            to { opacity: 1; transform: translateY(0); }
+                        }
+                    </style>
+                    <div class="maintenance-box">
+                        <div class="maintenance-icon">🛠️</div>
+                        <h1 class="maintenance-title">Технический перерыв</h1>
+                        <p class="maintenance-text">Сайт временно недоступен. Пожалуйста, зайдите позже.</p>
+                    </div>
+                `;
+                throw new Error("Maintenance mode active");
+            }
+        } catch (e) {
+            if (e.message !== "Maintenance mode active") {
+                console.warn("Ошибка проверки тех. перерыва:", e);
+            }
+        }
+    }
+
+    checkMaintenance();
+</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Всё в одном</title>
     <style>
@@ -7617,28 +7674,33 @@
             pongState.animId = requestAnimationFrame((t) => pongLoop(t, ctx));
         }
 
-                // ============================================
-        // === ЗАХВАТЧИКИ (ФИНАЛЬНАЯ ВЕРСИЯ) ===
+                      // ============================================
+        // === ЗАХВАТЧИКИ (ФИНАЛЬНАЯ ВЕРСИЯ С УРОВНЯМИ) ===
         // ============================================
         let invadersState = {};
-        function initInvaders() {
+        function initInvaders(level = 1) {
             const canvas = document.getElementById('invadersCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
+
+            const rows = Math.min(2 + level, 5); // Больше врагов с уровнем
+            const cols = 6;
+            const enemySpeed = 1 + level * 0.2;
 
             invadersState = {
                 player: {x: 180, y: 360, width: 40, height: 20, speed: 8},
                 bullets: [],
                 enemies: [],
                 score: 0,
+                level: level,
                 gameOver: false,
                 animId: null,
                 enemyDir: 1,
                 lastShot: 0
             };
 
-            for (let r = 0; r < 3; r++) {
-                for (let c = 0; c < 6; c++) {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
                     invadersState.enemies.push({
                         x: 40 + c * 50, y: 40 + r * 40,
                         width: 30, height: 30, alive: true
@@ -7661,45 +7723,47 @@
             };
 
             drawInvaders(ctx);
-            invadersState.animId = requestAnimationFrame((t) => invadersLoop(t, ctx));
+            invadersState.animId = requestAnimationFrame((t) => invadersLoop(t, ctx, enemySpeed));
         }
 
         function drawInvaders(ctx) {
             const w = 400, h = 400;
-            ctx.fillStyle = '#1a1a2e';
-            ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h);
             ctx.fillStyle = '#3ddbb0';
             ctx.fillRect(invadersState.player.x, invadersState.player.y, invadersState.player.width, invadersState.player.height);
             ctx.fillStyle = '#ffd23f';
             invadersState.bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 10));
             ctx.fillStyle = '#ff6b6b';
             invadersState.enemies.forEach(en => { if (en.alive) ctx.fillRect(en.x, en.y, en.width, en.height); });
-            ctx.fillStyle = '#fff';
-            ctx.font = '20px Arial';
-            ctx.fillText('Счёт: ' + invadersState.score, 10, 25);
+            ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
+            ctx.fillText('Счёт: ' + invadersState.score + ' | Уровень: ' + invadersState.level, 10, 25);
         }
 
         function startInvaders() {
             const canvas = document.getElementById('invadersCanvas');
             if (!canvas) return;
-            initInvaders();
+            initInvaders(1);
         }
 
-        function invadersLoop(now, ctx) {
+        function invadersLoop(now, ctx, enemySpeed) {
             if (invadersState.gameOver) return;
+
             invadersState.bullets.forEach(b => b.y += b.dy);
             invadersState.bullets = invadersState.bullets.filter(b => b.y > 0);
+
             let hitEdge = false;
             invadersState.enemies.forEach(en => {
                 if (en.alive) {
-                    en.x += invadersState.enemyDir * 1.5;
+                    en.x += invadersState.enemyDir * enemySpeed;
                     if (en.x <= 0 || en.x >= 370) hitEdge = true;
                 }
             });
+
             if (hitEdge) {
                 invadersState.enemyDir *= -1;
                 invadersState.enemies.forEach(en => en.y += 20);
             }
+
             for (let i = invadersState.bullets.length - 1; i >= 0; i--) {
                 const b = invadersState.bullets[i];
                 for (let j = invadersState.enemies.length - 1; j >= 0; j--) {
@@ -7712,15 +7776,21 @@
                     }
                 }
             }
+
             if (invadersState.enemies.every(en => !en.alive)) {
-                invadersState.gameOver = true;
-                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 400, 400);
-                ctx.fillStyle = '#3ddbb0'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
-                ctx.fillText('Победа!', 200, 180);
-                ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
-                ctx.fillText('Счёт: ' + invadersState.score, 200, 220);
+                // Следующий уровень
+                invadersState.level++;
+                if (invadersState.level > 5) {
+                    invadersState.gameOver = true;
+                    ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 400, 400);
+                    ctx.fillStyle = '#3ddbb0'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+                    ctx.fillText('Победа! Все уровни пройдены!', 200, 180);
+                    return;
+                }
+                initInvaders(invadersState.level);
                 return;
             }
+
             if (invadersState.enemies.some(en => en.alive && en.y > 350)) {
                 invadersState.gameOver = true;
                 ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 400, 400);
@@ -7730,8 +7800,9 @@
                 ctx.fillText('Счёт: ' + invadersState.score, 200, 220);
                 return;
             }
+
             drawInvaders(ctx);
-            invadersState.animId = requestAnimationFrame((t) => invadersLoop(t, ctx));
+            invadersState.animId = requestAnimationFrame((t) => invadersLoop(t, ctx, enemySpeed));
         }
 
         // ============================================
