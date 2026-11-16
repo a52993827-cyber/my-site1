@@ -15,9 +15,9 @@
     };
 
     const app = initializeApp(firebaseConfig);
-   const db = initializeFirestore(app, {
-    experimentalForceLongPolling: true
-});
+    const db = initializeFirestore(app, {
+        experimentalForceLongPolling: true
+    });
 
     window.db = db;
     window.doc = doc;
@@ -25,14 +25,13 @@
     window.getDoc = getDoc;
 
     // Функция для сохранения данных пользователя в Firebase
-    window.saveUserToFirebase = async function() {
+            window.saveUserToFirebase = async function() {
         const userId = localStorage.getItem("userId");
         if (!userId) return;
-
         try {
+            // Сохраняем ТОЛЬКО имя и квесты, монеты трогать запрещено!
             await setDoc(doc(db, "users", userId), {
                 name: localStorage.getItem("userName") || "Гость",
-                coins: parseInt(localStorage.getItem("playerCoins") || "0"),
                 quests: JSON.parse(localStorage.getItem("playerQuests") || "{}"),
                 lastSeen: new Date().toISOString()
             }, { merge: true });
@@ -40,24 +39,7 @@
             console.warn("Не удалось сохранить в Firebase:", e);
         }
     };
-</script>
-    <meta charset="UTF-8">
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBRm99i1faxC82iRLvgGQNhxEBqu2tMGJU",
-      authDomain: "my-site1-c0b58.firebaseapp.com",
-      projectId: "my-site1-c0b58",
-      storageBucket: "my-site1-c0b58.firebasestorage.app",
-      messagingSenderId: "464769943913",
-      appId: "1:464769943913:web:816d2bb89b9892701755f8"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
+    // Проверка технического перерыва
     async function checkMaintenance() {
         try {
             const docSnap = await getDoc(doc(db, "config", "maintenance"));
@@ -98,7 +80,8 @@
     }
 
     checkMaintenance();
-</script>
+    </script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Всё в одном</title>
     <style>
@@ -1913,7 +1896,7 @@
             <h2>Добро пожаловать!</h2>
             <p>Давай познакомимся. Как тебя зовут?</p>
             <input type="text" id="inputName" placeholder="Введи своё имя..." maxlength="20">
-            <button onclick="saveName()" style="width: 100%;">Далее ▶</button>
+            <button id="btn-save-name" style="width: 100%;">Далее ▶</button>
         </div>
     </div>
 
@@ -1987,7 +1970,10 @@
             'minesweeper', 'snake', 'breakout', '15puzzle', 'simon', 'tetris',
             'pacman', 'invaders', 'asteroids', 'pong', 'frogger', 'maze', 'slidingpuzzle',
             'whackamole', 'simondice', 'memorynumbers', 'reactioncolor', 'mathgame',
-            'wordscramble', 'numbersequence', 'findthedifference', 'typingtest'
+            'wordscramble', 'numbersequence', 'findthedifference', 'typingtest',
+            // ... твои старые игры ...
+            'color_click', 'arrow_react', 'hold_btn', 'bomb_avoid', 'seq_game',
+            'fast_click', 'find_num', 'math_game_2', 'word_memory', 'color_match_2'
         ];
         
         // Строго мобильные игры (без клавиатуры)
@@ -2040,7 +2026,12 @@
             'wordscramble': { icon: '🔤', name: 'Слова', price: 750 },
             'numbersequence': { icon: '📊', name: 'Последовательность', price: 850 },
             'findthedifference': { icon: '🔍', name: 'Найди отличие', price: 950 },
-            'typingtest': { icon: '⌨️', name: 'Скорость печати', price: 1050 }
+            'typingtest': { icon: '⌨️', name: 'Скорость печати', price: 1050 },
+            'jump_game': { icon: '🎯', name: 'Точный прыжок', price: 100 },
+            'traffic_game': { icon: '🚦', name: 'Светофор', price: 150 },
+            'compare_game': { icon: '⚖️', name: 'Выбери большее', price: 200 },
+            'shooter_game': { icon: '🎯', name: 'Сбей всех', price: 250 },
+            'catcher_game': { icon: '🧺', name: 'Поймай квадрат', price: 300 }
         };
 
         // === МАГАЗИН АВАТАРОК (ПЕРЕРАБОТАН) ===
@@ -2060,7 +2051,7 @@
             { emoji: '🦸', rarity: 5 }, { emoji: '🧙', rarity: 5 }, { emoji: '🐲', rarity: 5 }
         ];
 
-        emojisList.forEach(item => {
+               emojisList.forEach(item => {
             let basePrice = 0;
             switch(item.rarity) {
                 case 1: basePrice = 100; break;
@@ -2069,13 +2060,14 @@
                 case 4: basePrice = 5000; break;
                 case 5: basePrice = 15000; break;
             }
+
             shopAvatars.push({
                 emoji: item.emoji,
                 price: basePrice,
                 rarity: item.rarity
             });
         });
-
+        
         const legendaryAvatars = [
             { emoji: '🐉', price: 50000 },
             { emoji: '🦄', price: 50000 },
@@ -2087,7 +2079,7 @@
             shopAvatars.push({ emoji: item.emoji, price: item.price, rarity: 5 });
         });
 
-        const uniqueAvatars = [];
+                const uniqueAvatars = [];
         const seenEmojis = new Set();
         shopAvatars.forEach(item => {
             if (!seenEmojis.has(item.emoji)) {
@@ -2553,31 +2545,32 @@
             deviceScreen.style.display = "none";
         }
 
-        function saveName() {
-    const name = inputName.value.trim();
-    if (name === "") {
-        alert("Пожалуйста, введи своё имя!");
-        return;
-    }
-    localStorage.setItem("userName", name);
-    
-    // Генерируем ID пользователя, если его нет
-    let userId = localStorage.getItem("userId");
-    if (!userId) {
-        userId = Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("userId", userId);
-    }
+                function saveName() {
+            const name = inputName.value.trim();
+            if (name === "") {
+                alert("Пожалуйста, введи своё имя!");
+                return;
+            }
+            localStorage.setItem("userName", name);
+            
+            // === ДОБАВЬ ЭТОТ БЛОК ===
+            let userId = localStorage.getItem("userId");
+            if (!userId) {
+                userId = Math.random().toString(36).substr(2, 9);
+                localStorage.setItem("userId", userId);
+            }
+            // =========================
 
-    // Сохраняем в Firebase
-    if (window.saveUserToFirebase) {
-        window.saveUserToFirebase();
-    }
-
-    welcomeScreen.style.display = "none";
-    mainTitle.textContent = `Привет, ${name}!`;
-    greetingText.textContent = "Как прошёл твой день? Надеюсь, отлично! Давай поиграем?";
-    deviceScreen.style.display = "flex";
-}
+            // Сохраняем в Firebase
+            if (window.saveUserToFirebase) {
+                window.saveUserToFirebase();
+            }
+            
+            welcomeScreen.style.display = "none";
+            mainTitle.textContent = `Привет, ${name}!`;
+            greetingText.textContent = "Как прошёл твой день? Надеюсь, отлично! Давай поиграем?";
+            deviceScreen.style.display = "flex";
+        }
 
         inputName.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -3006,6 +2999,35 @@
 
         function startGame(gameType) {
             saveGameResult(gameType);
+                        if (gameType === 'typingtest') {
+                startTypingGame();
+                return;
+            }
+                        if (gameType === 'jump_game') { startJumpGame(); return; }
+            if (gameType === 'traffic_game') { startTrafficGame(); return; }
+            if (gameType === 'compare_game') { startCompareGame(); return; }
+            if (gameType === 'shooter_game') { startShooterGame(); return; }
+            if (gameType === 'catcher_game') { startCatcherGame(); return; }
+                    function startGame(gameType) {
+            saveGameResult(gameType);
+            
+            // Проверки на новые игры
+            if (gameType === 'color_click') { startColorClick(); return; }
+            if (gameType === 'arrow_react') { startArrowReaction(); return; }
+            if (gameType === 'hold_btn') { startHoldButton(); return; }
+            if (gameType === 'bomb_avoid') { startBombAvoid(); return; }
+            if (gameType === 'seq_game') { startSequenceGame(); return; }
+            if (gameType === 'fast_click') { startFastClick(); return; }
+            if (gameType === 'find_num') { startFindNumber(); return; }
+            if (gameType === 'math_game_2') { startMath(); return; }
+            if (gameType === 'word_memory') { startWordMemory(); return; }
+            if (gameType === 'color_match_2') { startColorMatch(); return; }
+            
+            // ... остальной твой код ...
+                        if (gameType === 'frogger') {
+                startFroggerGame();
+                return;
+            }}
 
             // --- Встроенные игры ---
             if (gameType === 'minesweeper') {
@@ -6251,44 +6273,112 @@
             document.getElementById('fdiff-score').textContent = 'Счёт: ' + fdiffState.score;
         }
 
-        // --- СКОРОСТЬ ПЕЧАТИ ---
-        let typeState = { score: 0, currentWord: '', startTime: 0, timerInterval: null };
+                        // ==========================================
+        // --- СКОРОСТЬ ПЕЧАТИ (ПОЛНОСТЬЮ ГОТОВЫЙ БЛОК) ---
+        // ==========================================
+        
+        let typeState = { score: 0, currentWord: '', startTime: 0, timerInterval: null, isTimerStarted: false };
         const typeWords = ['КОТ', 'СОБАКА', 'ДОМ', 'ЛЕС', 'РЕКА', 'ГОРА', 'СОЛНЦЕ', 'ЛУНА', 'ЗВЕЗДА', 'МОРЕ'];
-        function initTypingTest() {
-            typeState = { score: 0, currentWord: '', startTime: 0, timerInterval: null };
+
+        // Эта функция открывает игру (вызывай её при клике на игру)
+        function startTypingGame() {
+            // 1. Рисуем интерфейс игры
+            let html = `
+                <div class="modern-game-bg">
+                    <div class="embedded-game">
+                        <h2>⌨️ Скорость печати</h2>
+                        <div id="type-status" style="font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 10px;">Напечатай слово</div>
+                        
+                        <!-- Блок для отображения слова -->
+                        <div id="type-word" style="font-size: 32px; font-weight: bold; color: #ffd23f; margin-bottom: 20px; letter-spacing: 2px; text-align: center;">СЛОВО</div>
+                        
+                        <!-- Поле ввода с привязкой oninput для запуска таймера -->
+                        <input id="type-input" type="text" autocomplete="off" placeholder="Введи слово..." oninput="checkTyping()" class="guess-input" style="text-align: center;">
+                        
+                        <div style="display: flex; gap: 20px; margin-top: 10px;">
+                            <div id="type-score" style="font-size: 20px; font-weight: bold; color: #fff;">Счёт: 0</div>
+                            <div id="type-timer" style="font-size: 20px; font-weight: bold; color: #3ddbb0;">Время: 0.0 сек</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Вставляем HTML в модальное окно
+            document.getElementById('modalContent').innerHTML = html;
+            
+            // 2. Сбрасываем состояние игры
+            typeState.score = 0;
+            typeState.isTimerStarted = false;
+            typeState.startTime = 0;
+            if (typeState.timerInterval) clearInterval(typeState.timerInterval);
+            
+            // Запускаем первое слово
             nextTypeRound();
         }
 
+        // Запуск нового раунда со словом
         function nextTypeRound() {
+            // Берем случайное слово из массива
             const word = typeWords[Math.floor(Math.random() * typeWords.length)];
             typeState.currentWord = word;
+            
+            // Обновляем интерфейс
             document.getElementById('type-word').textContent = word;
             document.getElementById('type-score').textContent = 'Счёт: ' + typeState.score;
             document.getElementById('type-status').textContent = 'Напечатай слово';
             document.getElementById('type-input').value = '';
+            document.getElementById('type-input').focus();
             
-            typeState.startTime = Date.now();
+            // Сбрасываем таймер
+            typeState.isTimerStarted = false;
+            typeState.startTime = 0;
             if (typeState.timerInterval) clearInterval(typeState.timerInterval);
-            typeState.timerInterval = setInterval(() => {
-                const elapsed = ((Date.now() - typeState.startTime) / 1000).toFixed(1);
-                const timerEl = document.getElementById('type-timer');
-                if (timerEl) timerEl.textContent = 'Время: ' + elapsed + ' сек';
-            }, 100);
+            document.getElementById('type-timer').textContent = 'Время: 0.0 сек';
         }
 
+        // Функция проверки ввода (вызывается при каждом нажатии клавиши)
         function checkTyping() {
             const input = document.getElementById('type-input');
-            if (input.value.toUpperCase() === typeState.currentWord) {
+            
+            // Запуск таймера при ПЕРВОМ символе
+            if (!typeState.isTimerStarted && input.value.length > 0) {
+                typeState.isTimerStarted = true;
+                typeState.startTime = Date.now();
+                
+                if (typeState.timerInterval) clearInterval(typeState.timerInterval);
+                typeState.timerInterval = setInterval(() => {
+                    if (!typeState.startTime) return;
+                    const elapsed = ((Date.now() - typeState.startTime) / 1000).toFixed(1);
+                    const timerEl = document.getElementById('type-timer');
+                    if (timerEl) timerEl.textContent = 'Время: ' + elapsed + ' сек';
+                }, 100);
+            }
+
+            // Проверка правильности слова
+            if (input.value.trim().toLowerCase() === typeState.currentWord.toLowerCase()) {
+                // ПРАВИЛЬНО!
                 clearInterval(typeState.timerInterval);
                 typeState.score++;
                 document.getElementById('type-status').textContent = '✅ Правильно!';
-                setTimeout(nextTypeRound, 500);
+                document.getElementById('type-status').style.color = '#3ddbb0';
+                
+                // Переход к следующему слову через полсекунды
+                setTimeout(() => {
+                    document.getElementById('type-status').style.color = '#fff';
+                    nextTypeRound();
+                }, 500);
             } else {
-                document.getElementById('type-status').textContent = '❌ Неправильно! Попробуй ещё.';
+                // НЕПРАВИЛЬНО (показываем ошибку только если ввели достаточно букв)
+                if (input.value.length >= typeState.currentWord.length) {
+                    document.getElementById('type-status').textContent = '❌ Неправильно!';
+                    document.getElementById('type-status').style.color = '#ff6b6b';
+                }
             }
+            
+            // Обновляем счет
             document.getElementById('type-score').textContent = 'Счёт: ' + typeState.score;
         }
-
+        // === КОНЕЦ БЛОКА СКОРОСТИ ПЕЧАТИ ============
         // ============================================
         // === РАЗДЕЛ РИСОВАНИЯ ===
         // ============================================
@@ -7174,7 +7264,7 @@
             `);
         }
 
-        // ============================================
+                // ============================================
         // === КОТИК-КЛИКЕР ===
         // ============================================
 
@@ -7186,11 +7276,11 @@
         };
 
         const catUpgradesInfo = [
-            { id: 'food', name: 'Food', icon: '🍖', baseCost: 10, baseIncome: 0.1 },
-            { id: 'treat', name: 'Treat', icon: '🍬', baseCost: 100, baseIncome: 1 },
-            { id: 'toy', name: 'Toy', icon: '🧸', baseCost: 1000, baseIncome: 10 },
-            { id: 'litter', name: 'Litter', icon: '🧹', baseCost: 10000, baseIncome: 100 },
-            { id: 'accessory', name: 'Accessory', icon: '🎀', baseCost: 100000, baseIncome: 1000 }
+            { id: 'food', name: 'Food', icon: '🍖', baseCost: 50, baseIncome: 0.03 },
+            { id: 'treat', name: 'Treat', icon: '🍬', baseCost: 500, baseIncome: 0.3 },
+            { id: 'toy', name: 'Toy', icon: '🧸', baseCost: 5000, baseIncome: 3 },
+            { id: 'litter', name: 'Litter', icon: '🧹', baseCost: 50000, baseIncome: 30 },
+            { id: 'accessory', name: 'Accessory', icon: '🎀', baseCost: 500000, baseIncome: 300 }
         ];
 
         function saveCatGame() {
@@ -7203,7 +7293,7 @@
         function getCatUpgradeCost(id) {
             const info = catUpgradesInfo.find(u => u.id === id);
             const level = catGameState.upgrades[id];
-            return Math.floor(info.baseCost * Math.pow(1.15, level));
+            return Math.floor(info.baseCost * Math.pow(1.25, level));
         }
 
         function getCatIncomePerSec() {
@@ -7268,13 +7358,13 @@
 
             if (window.catClickerInterval) clearInterval(window.catClickerInterval);
             window.catClickerInterval = setInterval(() => {
-                const income = getCatIncomePerSec();
+                const income = getCatIncomePerSec() * 2;
                 if (income > 0) {
                     catGameState.coins += income;
                     catGameState.totalCoins += income;
                     updateCatUI();
                 }
-            }, 100);
+            }, 2000);
         }
 
         function renderCatSidebar() {
@@ -7308,7 +7398,7 @@
                 const cost = getCatUpgradeCost(info.id);
                 const level = catGameState.upgrades[info.id];
                 const canAfford = catGameState.coins >= cost;
-                const income = (info.baseIncome * catGameState.prestigeMultiplier).toFixed(1);
+                const income = (info.baseIncome * catGameState.prestigeMultiplier * 2).toFixed(1);
 
                 const itemEl = document.getElementById(`upg-${info.id}`);
                 if (itemEl) {
@@ -7331,7 +7421,7 @@
             const coinsEl = document.getElementById('cat-coins-display');
             const passiveEl = document.getElementById('cat-passive-display');
             if (coinsEl) coinsEl.textContent = Math.floor(catGameState.coins).toLocaleString();
-            if (passiveEl) passiveEl.textContent = getCatIncomePerSec().toFixed(1);
+            if (passiveEl) passiveEl.textContent = (getCatIncomePerSec() * 2).toFixed(1);
             
             renderCatSidebar();
         }
@@ -7432,33 +7522,6 @@
             
             alert(`Успешно выведено!\nВаш баланс кликера обнулен.\nНа основной счет зачислено: ${converted.toLocaleString()} монет (сумма была поделена на 3).`);
         }
-
-        // --- КНОПКА ПОДЕЛИТЬСЯ ---
-        document.getElementById("btn-share").addEventListener("click", async () => {
-            const url = "https://a52993827-cyber.github.io/my-site/html/";
-            try {
-                await navigator.clipboard.writeText(url);
-                alert("Ссылка скопирована! Можешь отправить её другу: " + url);
-            } catch (err) {
-                prompt("Скопируй эту ссылку и отправь другу:", url);
-            }
-        });
-
-        const btnTop = document.getElementById("btn-top");
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 200) {
-                btnTop.style.display = "flex";
-            } else {
-                btnTop.style.display = "none";
-            }
-        });
-        btnTop.addEventListener("click", () => {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-
-        // Инициализация при запуске
-        updateCoinDisplay();
-        updateQuestBadge();
                 // ============================================
         // === ВСТРОЕННЫЕ ИГРЫ (ПАКМАН, ПОНГ, ЗАХВАТЧИКИ, ФРОГГЕР) ===
         // ============================================
@@ -7864,99 +7927,6 @@
         }
 
         // ============================================
-        // === ФРОГГЕР (ФИНАЛЬНАЯ ВЕРСИЯ) ===
-        // ============================================
-        let froggerState = {};
-        function initFrogger() {
-            const canvas = document.getElementById('froggerCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            froggerState = {
-                frog: {x: 140, y: 360, size: 20, speed: 20},
-                cars: [],
-                score: 0,
-                gameOver: false,
-                animId: null
-            };
-
-            for (let i = 0; i < 5; i++) {
-                froggerState.cars.push({
-                    x: Math.random() * 300,
-                    y: 40 + i * 60,
-                    width: 40, height: 20,
-                    speed: 1 + Math.random() * 2,
-                    dir: Math.random() > 0.5 ? 1 : -1
-                });
-            }
-
-            document.onkeydown = (e) => {
-                if (froggerState.gameOver) return;
-                if (e.key === 'ArrowUp') froggerState.frog.y -= froggerState.frog.speed;
-                if (e.key === 'ArrowDown') froggerState.frog.y += froggerState.frog.speed;
-                if (e.key === 'ArrowLeft') froggerState.frog.x -= froggerState.frog.speed;
-                if (e.key === 'ArrowRight') froggerState.frog.x += froggerState.frog.speed;
-                froggerState.frog.x = Math.max(0, Math.min(280, froggerState.frog.x));
-                froggerState.frog.y = Math.max(0, Math.min(380, froggerState.frog.y));
-                drawFrogger(ctx);
-                e.preventDefault();
-            };
-
-            drawFrogger(ctx);
-            froggerState.animId = requestAnimationFrame((t) => froggerLoop(t, ctx));
-        }
-
-        function drawFrogger(ctx) {
-            const w = 300, h = 400;
-            ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h);
-            ctx.fillStyle = '#555';
-            for (let i = 0; i < 5; i++) ctx.fillRect(0, 40 + i * 60, 300, 20);
-            ctx.fillStyle = '#ff6b6b';
-            froggerState.cars.forEach(car => ctx.fillRect(car.x, car.y, car.width, car.height));
-            ctx.fillStyle = '#3ddbb0';
-            ctx.fillRect(froggerState.frog.x, froggerState.frog.y, froggerState.frog.size, froggerState.frog.size);
-            ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
-            ctx.fillText('Счёт: ' + froggerState.score, 10, 25);
-        }
-
-        function startFrogger() {
-            const canvas = document.getElementById('froggerCanvas');
-            if (!canvas) return;
-            initFrogger();
-        }
-
-        function froggerLoop(now, ctx) {
-            if (froggerState.gameOver) return;
-            froggerState.cars.forEach(car => {
-                car.x += car.speed * car.dir;
-                if (car.x > 300) car.x = -40;
-                if (car.x < -40) car.x = 300;
-            });
-            froggerState.cars.forEach(car => {
-                if (froggerState.frog.x < car.x + car.width &&
-                    froggerState.frog.x + froggerState.frog.size > car.x &&
-                    froggerState.frog.y < car.y + car.height &&
-                    froggerState.frog.y + froggerState.frog.size > car.y) {
-                    froggerState.gameOver = true;
-                }
-            });
-            if (froggerState.frog.y <= 0) {
-                froggerState.gameOver = true;
-                froggerState.score++;
-            }
-            if (froggerState.gameOver) {
-                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 400);
-                ctx.fillStyle = '#ff6b6b'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
-                ctx.fillText('Игра окончена!', 150, 180);
-                ctx.fillStyle = '#fff'; ctx.font = '20px Arial';
-                ctx.fillText('Счёт: ' + froggerState.score, 150, 220);
-                return;
-            }
-            drawFrogger(ctx);
-            froggerState.animId = requestAnimationFrame((t) => froggerLoop(t, ctx));
-        }
-
-        // ============================================
         // === АСТЕРОИДЫ (ФИНАЛЬНАЯ ВЕРСИЯ) ===
         // ============================================
         let asteroidsState = {};
@@ -8099,7 +8069,923 @@
             drawAsteroids(ctx);
             asteroidsState.animId = requestAnimationFrame(asteroidsLoop);
         }
+document.getElementById("btn-save-name").addEventListener("click", function(e) {
+    e.preventDefault();
+    const nameInput = document.getElementById("inputName");
+    if (!nameInput) return;
+    
+    const name = nameInput.value.trim();
+    if (name === "") {
+        alert("Пожалуйста, введи своё имя!");
+        return;
+    }
+    
+    // Принудительно сохраняем
+    localStorage.setItem("userName", name);
+    
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+        userId = Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("userId", userId);
+    }
 
+    if (window.saveUserToFirebase) {
+        window.saveUserToFirebase();
+    }
+
+    // Принудительно меняем экраны
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const deviceScreen = document.getElementById("deviceScreen");
+    const mainTitle = document.getElementById("mainTitle");
+    const greetingText = document.getElementById("greetingText");
+
+    if (welcomeScreen) welcomeScreen.style.display = "none";
+    if (deviceScreen) deviceScreen.style.display = "flex";
+    
+    if (mainTitle) mainTitle.textContent = `Привет, ${name}!`;
+    if (greetingText) greetingText.textContent = "Как прошёл твой день? Надеюсь, отлично! Давай поиграем?";
+});
+                    // ==========================================
+        // === ФРОГГЕР С УРОВНЯМИ (СТИЛИЗОВАННЫЙ) ===
+        // ==========================================
+        let froggerInterval = null;
+        let froggerState = {};
+
+        function startFroggerGame() {
+            // Принудительно очищаем контейнер
+            document.getElementById('modalContent').innerHTML = '';
+
+            // 1. Рисуем интерфейс в стиле сайта
+            let html = `
+                <div class="modern-game-bg" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f4f4f9; border-radius: 0; box-shadow: none;">
+                    <div class="embedded-game" style="padding: 20px; background: #1d1b4d; border: 4px solid #1d1b4d; border-radius: 20px; box-shadow: 8px 8px 0 #1d1b4d; position: relative; max-width: 500px; width: 95%;">
+                        
+                        <!-- Кнопка выхода в меню -->
+                        <button class="game-exit-btn" onclick="backToGamesMenu()" style="position: absolute; top: 15px; left: 15px; z-index: 10;">← Меню</button>
+                        
+                        <h2 style="color: #fff; margin: 0 0 15px 0; text-align: center; text-shadow: 0 0 10px rgba(255,255,255,0.5);">🐸 Фроггер</h2>
+                        
+                        <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 15px;">
+                            <div style="font-size: 18px; font-weight: bold; color: #fff;">Уровень: <span id="frogger-level" style="color: #3ddbb0;">1</span></div>
+                            <div style="font-size: 18px; font-weight: bold; color: #fff;">Счёт: <span id="frogger-score" style="color: #ffd23f;">0</span></div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: center; width: 100%;">
+                            <canvas id="frogger-canvas" width="400" height="400" style="background: #111; border: 4px solid #3ddbb0; border-radius: 12px; max-width: 100%; touch-action: none; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);"></canvas>
+                        </div>
+                        
+                        <div style="color: #aaa; margin-top: 15px; text-align: center; font-size: 14px;">Управление: Стрелки или свайпы</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalContent').innerHTML = html;
+
+            // 2. Настраиваем игру
+            const canvas = document.getElementById('frogger-canvas');
+            
+            froggerState = {
+                level: 1,
+                score: 0,
+                frog: { x: 185, y: 360, size: 30 },
+                cars: [],
+                lanes: [
+                    { y: 50, speed: 2, color: '#ff6b6b', dir: 1 },
+                    { y: 120, speed: 1.5, color: '#ffd23f', dir: -1 },
+                    { y: 190, speed: 2.5, color: '#3ddbb0', dir: 1 },
+                    { y: 260, speed: 1, color: '#6bc5ff', dir: -1 },
+                    { y: 330, speed: 3, color: '#b19cd9', dir: 1 }
+                ]
+            };
+
+            // Создаем машины для каждого ряда
+            froggerState.lanes.forEach(lane => {
+                for (let i = 0; i < 2; i++) {
+                    froggerState.cars.push({
+                        x: Math.random() * 400,
+                        y: lane.y,
+                        width: 50,
+                        height: 30,
+                        speed: lane.speed,
+                        dir: lane.dir,
+                        color: lane.color
+                    });
+                }
+            });
+
+            // 3. Управление клавиатурой
+            window.removeEventListener('keydown', handleFroggerKeys);
+            window.addEventListener('keydown', handleFroggerKeys);
+            
+            // Управление свайпами
+            let touchStartX = 0;
+            let touchStartY = 0;
+            canvas.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const dx = touchEndX - touchStartX;
+                const dy = touchEndY - touchStartY;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx > 30) moveFrog(30, 0);
+                    else if (dx < -30) moveFrog(-30, 0);
+                } else {
+                    if (dy > 30) moveFrog(0, 30);
+                    else if (dy < -30) moveFrog(0, -30);
+                }
+            });
+
+            // 4. Запускаем игровой цикл
+            if (froggerInterval) clearInterval(froggerInterval);
+            froggerInterval = setInterval(updateFrogger, 1000 / 60);
+            
+            drawFrogger();
+        }
+
+        function moveFrog(dx, dy) {
+            if (!froggerState.frog) return;
+            froggerState.frog.x += dx;
+            froggerState.frog.y += dy;
+
+            // Границы
+            if (froggerState.frog.x < 0) froggerState.frog.x = 0;
+            if (froggerState.frog.x > 400 - froggerState.frog.size) froggerState.frog.x = 400 - froggerState.frog.size;
+            if (froggerState.frog.y < 0) froggerState.frog.y = 0;
+            if (froggerState.frog.y > 400 - froggerState.frog.size) froggerState.frog.y = 400 - froggerState.frog.size;
+
+            // Победа (дошел до верха)
+            if (froggerState.frog.y <= 20) {
+                froggerState.level++;
+                froggerState.score += 10;
+                document.getElementById('frogger-level').textContent = froggerState.level;
+                document.getElementById('frogger-score').textContent = froggerState.score;
+                
+                // Ускоряем машины
+                froggerState.cars.forEach(car => car.speed += 0.5);
+                
+                // Возвращаем лягушку вниз
+                froggerState.frog.y = 360;
+                froggerState.frog.x = 185;
+            }
+        }
+
+        function handleFroggerKeys(e) {
+            if (!froggerState.frog) return;
+            if (e.key === 'ArrowUp') { moveFrog(0, -30); e.preventDefault(); }
+            if (e.key === 'ArrowDown') { moveFrog(0, 30); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { moveFrog(-30, 0); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { moveFrog(30, 0); e.preventDefault(); }
+        }
+
+        function updateFrogger() {
+            if (!froggerState.cars) return;
+            
+            froggerState.cars.forEach(car => {
+                car.x += car.speed * car.dir;
+                if (car.dir === 1 && car.x > 400) car.x = -car.width;
+                if (car.dir === -1 && car.x < -car.width) car.x = 400;
+            });
+            
+            // Проверка столкновения
+            froggerState.cars.forEach(car => {
+                if (froggerState.frog.x < car.x + car.width &&
+                    froggerState.frog.x + froggerState.frog.size > car.x &&
+                    froggerState.frog.y < car.y + car.height &&
+                    froggerState.frog.y + froggerState.frog.size > car.y) {
+                    
+                    // Столкновение
+                    if (confirm("Игра окончена! Ваш счёт: " + froggerState.score + "\nНачать заново?")) {
+                        startFroggerGame();
+                    } else {
+                        closeModalFunc();
+                    }
+                    clearInterval(froggerInterval);
+                }
+            });
+            
+            drawFrogger();
+        }
+
+        function drawFrogger() {
+            const canvas = document.getElementById('frogger-canvas');
+            if (!canvas || !froggerState.frog) return;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, 400, 400);
+            
+            // Дороги
+            froggerState.lanes.forEach(lane => {
+                ctx.fillStyle = '#222';
+                ctx.fillRect(0, lane.y - 10, 400, 50);
+                ctx.fillStyle = '#444';
+                for(let i=0; i<400; i+=40) {
+                    ctx.fillRect(i, lane.y + 15, 20, 4);
+                }
+            });
+            
+            // Машины
+            froggerState.cars.forEach(car => {
+                ctx.fillStyle = car.color;
+                ctx.beginPath();
+                if (ctx.roundRect) {
+                    ctx.roundRect(car.x, car.y, car.width, car.height, 5);
+                } else {
+                    ctx.rect(car.x, car.y, car.width, car.height);
+                }
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                ctx.fillRect(car.x + 10, car.y + 5, 10, 10);
+            });
+            
+            // Лягушка
+            ctx.fillStyle = '#3ddbb0';
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                ctx.roundRect(froggerState.frog.x, froggerState.frog.y, froggerState.frog.size, froggerState.frog.size, 8);
+            } else {
+                ctx.rect(froggerState.frog.x, froggerState.frog.y, froggerState.frog.size, froggerState.frog.size);
+            }
+            ctx.fill();
+            
+            // Глазки
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(froggerState.frog.x + 8, froggerState.frog.y + 8, 3, 0, Math.PI * 2);
+            ctx.arc(froggerState.frog.x + 22, froggerState.frog.y + 8, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function stopFrogger() {
+            if (froggerInterval) clearInterval(froggerInterval);
+            window.removeEventListener('keydown', handleFroggerKeys);
+                        if (window.catcherInterval) clearInterval(window.catcherInterval);
+            if (window.shooterTimeout) clearTimeout(window.shooterTimeout);
+        }
+
+                // ============================================
+        // === СИНХРОНИЗАЦИЯ С FIREBASE ===
+        // ============================================
+                                      async function loadUserFromFirebase() {
+            const userId = localStorage.getItem("userId");
+            if (!userId || !window.db) return;
+
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "users", userId));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Берем монеты ТОЛЬКО из базы
+                    if (data.coins !== undefined) {
+                        playerCoins = data.coins;
+                    } else {
+                        playerCoins = 0;
+                    }
+
+                    // Перезаписываем локальную память и обновляем экран
+                    localStorage.setItem('playerCoins', playerCoins);
+                    const coinEl = document.getElementById('coin-display');
+                    if (coinEl) coinEl.textContent = playerCoins;
+                    
+                    // Синхронизируем имя
+                    if (data.name) {
+                        localStorage.setItem("userName", data.name);
+                        document.getElementById("mainTitle").textContent = `Привет, ${data.name}!`;
+                    }
+                }
+            } catch (e) {
+                console.error("Ошибка синхронизации:", e);
+            }
+        }
+        // Вызываем загрузку при старте
+                        async function loadUserFromFirebase() {
+            const userId = localStorage.getItem("userId");
+            if (!userId || !window.db) return;
+
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "users", userId));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    if (data.coins !== undefined && data.coins !== playerCoins) {
+                        playerCoins = data.coins;
+                        localStorage.setItem('playerCoins', playerCoins);
+                        
+                        const coinEl = document.getElementById('coin-display');
+                        if (coinEl) coinEl.textContent = playerCoins;
+                        console.log("Монеты обновлены из базы:", playerCoins);
+                    }
+                }
+            } catch (e) {
+                console.error("Ошибка синхронизации:", e);
+            }
+        }
+
+        // Запускаем первый раз
+        loadUserFromFirebase();
+        
+        // А теперь запускаем проверку каждые 2 секунды!
+        setInterval(loadUserFromFirebase, 2000);
+                // ============================================
+        // === 5 УНИКАЛЬНЫХ ИГР (НЕ ПОВТОРЯЮТ СТАРЫЕ) ===
+        // ============================================
+
+        // ИГРА 1: "ТОЧНЫЙ ПРЫЖОК" (Механика удержания и силы)
+        function startJumpGame() {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🎯 Точный прыжок</h2>
+                    <p style="color:#fff; text-align:center;">Зажми кнопку, чтобы набрать силу, и отпусти, чтобы прыгнуть!</p>
+                    <div style="width:300px; height:20px; background:#333; margin:20px 0; border-radius:10px; overflow:hidden;">
+                        <div id="power-bar" style="width:0%; height:100%; background:#ff6b6b; transition: width 0.05s;"></div>
+                    </div>
+                    <button id="jump-btn" style="padding:20px 40px; font-size:20px; background:#3ddbb0; border:3px solid #fff; border-radius:15px; font-weight:bold; cursor:pointer;">ЗАЖМИ</button>
+                    <p id="jump-result" style="color:#ffd23f; font-size:24px; font-weight:bold; margin-top:15px;"></p>
+                </div>
+            `;
+            const btn = document.getElementById('jump-btn');
+            const bar = document.getElementById('power-bar');
+            const result = document.getElementById('jump-result');
+            let power = 0;
+            let isCharging = false;
+            let chargeInterval = null;
+
+            btn.addEventListener('mousedown', () => {
+                isCharging = true;
+                power = 0;
+                chargeInterval = setInterval(() => {
+                    power += 2;
+                    if (power >= 100) power = 100;
+                    bar.style.width = power + '%';
+                }, 20);
+            });
+
+            btn.addEventListener('mouseup', () => {
+                if (!isCharging) return;
+                isCharging = false;
+                clearInterval(chargeInterval);
+                if (power > 80) result.textContent = "ПЕРЕЛЁТ! Слишком сильно.";
+                else if (power > 50) result.textContent = "ИДЕАЛЬНО! 🎯";
+                else result.textContent = "НЕДОЛЁТ! Слишком слабо.";
+                setTimeout(() => { bar.style.width = '0%'; result.textContent = ''; }, 1500);
+            });
+            // Для телефонов
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); btn.dispatchEvent(new Event('mousedown')); });
+            btn.addEventListener('touchend', (e) => { e.preventDefault(); btn.dispatchEvent(new Event('mouseup')); });
+        }
+
+        // ИГРА 2: "СВЕТОФОР" (Механика тайминга)
+        function startTrafficGame() {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🚦 Светофор</h2>
+                    <p style="color:#fff; text-align:center;">Нажми, когда загорится ЗЕЛЁНЫЙ!</p>
+                    <div id="traffic-light" style="width:100px; height:250px; background:#222; border:4px solid #fff; border-radius:20px; display:flex; flex-direction:column; justify-content:space-around; align-items:center; padding:10px 0; margin:20px 0;">
+                        <div id="light-red" style="width:60px; height:60px; border-radius:50%; background:#444;"></div>
+                        <div id="light-yellow" style="width:60px; height:60px; border-radius:50%; background:#444;"></div>
+                        <div id="light-green" style="width:60px; height:60px; border-radius:50%; background:#444;"></div>
+                    </div>
+                    <button id="traffic-btn" style="padding:20px 40px; font-size:24px; background:#ffd23f; border:3px solid #fff; border-radius:15px; font-weight:bold; cursor:pointer;">ЖМИ!</button>
+                </div>
+            `;
+            const btn = document.getElementById('traffic-btn');
+            const red = document.getElementById('light-red');
+            const yellow = document.getElementById('light-yellow');
+            const green = document.getElementById('light-green');
+            let isGreen = false;
+            let timeout;
+
+            const startCycle = () => {
+                red.style.background = '#ff4d4d';
+                yellow.style.background = '#444';
+                green.style.background = '#444';
+                isGreen = false;
+                timeout = setTimeout(() => {
+                    red.style.background = '#444';
+                    yellow.style.background = '#ffd23f';
+                    timeout = setTimeout(() => {
+                        yellow.style.background = '#444';
+                        green.style.background = '#3ddbb0';
+                        isGreen = true;
+                    }, Math.random() * 2000 + 500);
+                }, Math.random() * 2000 + 1000);
+            };
+            startCycle();
+
+            btn.addEventListener('click', () => {
+                if (isGreen) {
+                    alert("🎉 Отлично! Ты успел!");
+                    closeModalFunc();
+                } else {
+                    alert("❌ Слишком рано! Попробуй ещё.");
+                    clearTimeout(timeout);
+                    startCycle();
+                }
+            });
+        }
+
+        // ИГРА 3: "ВЫБЕРИ БОЛЬШЕЕ" (Механика сравнения чисел)
+        function startCompareGame() {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">⚖️ Выбери большее</h2>
+                    <p style="color:#fff;">Нажми на карточку с бóльшим числом!</p>
+                    <div style="display:flex; gap:20px; margin-top:30px;">
+                        <div id="card-left" onclick="checkCompare('left')" style="width:120px; height:150px; background:#3ddbb0; border:4px solid #fff; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:40px; font-weight:bold; cursor:pointer; color:#111;">0</div>
+                        <div id="card-right" onclick="checkCompare('right')" style="width:120px; height:150px; background:#ff6b6b; border:4px solid #fff; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:40px; font-weight:bold; cursor:pointer; color:#111;">0</div>
+                    </div>
+                    <p id="compare-score" style="color:#ffd23f; font-size:24px; margin-top:20px;">Счёт: 0</p>
+                </div>
+            `;
+            window.compareState = { score: 0, left: 0, right: 0 };
+            nextCompareRound();
+        }
+
+        function nextCompareRound() {
+            const left = Math.floor(Math.random() * 100);
+            const right = Math.floor(Math.random() * 100);
+            window.compareState.left = left;
+            window.compareState.right = right;
+            document.getElementById('card-left').textContent = left;
+            document.getElementById('card-right').textContent = right;
+            document.getElementById('compare-score').textContent = `Счёт: ${window.compareState.score}`;
+        }
+
+        window.checkCompare = function(side) {
+            const state = window.compareState;
+            const correct = state.left > state.right ? 'left' : (state.right > state.left ? 'right' : 'none');
+            if (side === correct) {
+                state.score++;
+                nextCompareRound();
+            } else {
+                alert(`Ошибка! Счёт: ${state.score}`);
+                closeModalFunc();
+            }
+        };
+
+        // ИГРА 4: "СБЕЙ ВСЕХ" (Механика клика по движущимся целям)
+        function startShooterGame() {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; position:relative;">
+                    <h2 style="color:#fff; z-index:2;">🎯 Сбей всех</h2>
+                    <p style="color:#fff; z-index:2;">Кликай по появляющимся кругам!</p>
+                    <p style="color:#ffd23f; font-size:20px; z-index:2;">Счёт: <span id="shooter-score">0</span></p>
+                    <div id="shooter-area" style="width:100%; height:100%; position:absolute; top:0; left:0; cursor:crosshair; overflow:hidden;"></div>
+                </div>
+            `;
+            const area = document.getElementById('shooter-area');
+            let score = 0;
+            let targetTimeout = null;
+            const scoreEl = document.getElementById('shooter-score');
+
+            const spawnTarget = () => {
+                if (!document.getElementById('shooter-area')) return;
+                const target = document.createElement('div');
+                target.style.cssText = `position:absolute; width:40px; height:40px; background:#ff6b6b; border-radius:50%; border:3px solid #fff; cursor:pointer; left:${Math.random() * 80 + 10}%; top:${Math.random() * 80 + 10}%;`;
+                target.onclick = (e) => {
+                    e.stopPropagation();
+                    score++;
+                    scoreEl.textContent = score;
+                    target.remove();
+                };
+                area.appendChild(target);
+                setTimeout(() => target.remove(), 1500);
+                targetTimeout = setTimeout(spawnTarget, Math.random() * 500 + 300);
+            };
+            
+            spawnTarget();
+            // Сохраняем таймауты, чтобы очистить при выходе
+            window.shooterTimeout = targetTimeout;
+        }
+
+        // ИГРА 5: "ПОЙМАЙ КВАДРАТ" (Механика управления мышью)
+        function startCatcherGame() {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🧺 Поймай квадрат</h2>
+                    <p style="color:#fff; text-align:center;">Двигай корзину мышкой или пальцем, чтобы ловить падающие блоки!</p>
+                    <p style="color:#ffd23f; font-size:20px;">Счёт: <span id="catcher-score">0</span></p>
+                    <div id="catcher-area" style="width:300px; height:400px; background:#222; border:4px solid #fff; position:relative; overflow:hidden; margin-top:10px;">
+                        <div id="basket" style="width:60px; height:20px; background:#3ddbb0; position:absolute; bottom:10px; left:120px; border-radius:5px;"></div>
+                    </div>
+                </div>
+            `;
+            const area = document.getElementById('catcher-area');
+            const basket = document.getElementById('basket');
+            let score = 0;
+            const scoreEl = document.getElementById('catcher-score');
+
+            area.addEventListener('mousemove', (e) => {
+                const rect = area.getBoundingClientRect();
+                let x = e.clientX - rect.left - 30;
+                if (x < 0) x = 0;
+                if (x > 240) x = 240;
+                basket.style.left = x + 'px';
+            });
+            area.addEventListener('touchmove', (e) => {
+                const rect = area.getBoundingClientRect();
+                let x = e.touches[0].clientX - rect.left - 30;
+                if (x < 0) x = 0;
+                if (x > 240) x = 240;
+                basket.style.left = x + 'px';
+                e.preventDefault();
+            }, { passive: false });
+
+            window.catcherInterval = setInterval(() => {
+                if (!document.getElementById('catcher-area')) return;
+                const block = document.createElement('div');
+                block.style.cssText = `width:20px; height:20px; background:#ff6b6b; position:absolute; top:-20px; left:${Math.random() * 280}px; border-radius:4px;`;
+                area.appendChild(block);
+
+                let top = -20;
+                const fall = setInterval(() => {
+                    top += 5;
+                    block.style.top = top + 'px';
+                    const basketLeft = parseInt(basket.style.left);
+                    const blockLeft = parseInt(block.style.left);
+
+                    // Проверка поимки
+                    if (top > 360 && top < 380 && blockLeft > basketLeft - 20 && blockLeft < basketLeft + 60) {
+                        score++;
+                        scoreEl.textContent = score;
+                        clearInterval(fall);
+                        block.remove();
+                    }
+                    // Если упал
+                    if (top > 400) {
+                        clearInterval(fall);
+                        block.remove();
+                    }
+                }, 20);
+            }, 800);
+        }
+
+        // ============================================
+        // === ДОБАВЬ ИХ В gameInfo И startGame ===
+        // ============================================
+                // ============================================
+        // === 20 НОВЫХ ИГР (БЛОК 2) ===
+        // ============================================
+
+        // 1. Клик по цвету
+        function startColorClick() {
+            const colors = ['#ff6b6b', '#3ddbb0', '#ffd23f', '#6bc5ff'];
+            let score = 0, target = colors[Math.floor(Math.random() * 4)];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🎨 Клик по цвету</h2>
+                    <p style="color:#fff;">Кликни на цвет: <b id="target-color-name">${target}</b></p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
+                        ${colors.map(c => `<div onclick="clickColor('${c}', '${target}')" style="width:80px; height:80px; background:${c}; border-radius:10px; cursor:pointer;"></div>`).join('')}
+                    </div>
+                    <p id="color-score" style="color:#ffd23f; font-size:20px;">Счёт: ${score}</p>
+                </div>
+            `;
+            window.colorState = { colors, score: 0, target };
+        }
+        window.clickColor = function(clicked, target) {
+            if (clicked === target) {
+                window.colorState.score++;
+                window.colorState.target = window.colorState.colors[Math.floor(Math.random() * 4)];
+                document.getElementById('target-color-name').textContent = window.colorState.target;
+                document.getElementById('target-color-name').style.color = window.colorState.target;
+                document.getElementById('color-score').textContent = 'Счёт: ' + window.colorState.score;
+            } else {
+                alert('Неправильно! Игра окончена. Счёт: ' + window.colorState.score);
+                closeModalFunc();
+            }
+        };
+
+        // 2. Реакция на стрелки
+        function startArrowReaction() {
+            const arrows = ['⬆️', '⬇️', '⬅️', '➡️'];
+            let score = 0, currentArrow = arrows[Math.floor(Math.random() * 4)];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">⬆️ Реакция на стрелки</h2>
+                    <p style="color:#fff; font-size:40px;" id="arrow-target">${currentArrow}</p>
+                    <p style="color:#fff;">Нажми правильную кнопку!</p>
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        ${arrows.map(a => `<button onclick="clickArrow('${a}', '${currentArrow}')" style="font-size:30px; padding:20px; border-radius:10px; cursor:pointer; background:#333; color:#fff; border:2px solid #fff;">${a}</button>`).join('')}
+                    </div>
+                    <p style="color:#ffd23f; font-size:20px;">Счёт: <span id="arrow-score">0</span></p>
+                </div>
+            `;
+            window.arrowState = { arrows, score: 0, current: currentArrow };
+        }
+        window.clickArrow = function(clicked, target) {
+            if (clicked === target) {
+                window.arrowState.score++;
+                window.arrowState.current = window.arrowState.arrows[Math.floor(Math.random() * 4)];
+                document.getElementById('arrow-target').textContent = window.arrowState.current;
+                document.getElementById('arrow-score').textContent = window.arrowState.score;
+            } else {
+                alert('Ошибка! Счёт: ' + window.arrowState.score);
+                closeModalFunc();
+            }
+        };
+
+        // 3. Удержи кнопку
+        function startHoldButton() {
+            let timeLeft = 5, isHolding = false, score = 0;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">👆 Удержи кнопку</h2>
+                    <p style="color:#fff;">Держи кнопку зажатой 5 секунд!</p>
+                    <p style="color:#ffd23f; font-size:30px;" id="hold-timer">5.0</p>
+                    <button id="hold-btn" style="padding:20px 50px; font-size:20px; background:#3ddbb0; border:3px solid #fff; border-radius:15px; font-weight:bold; cursor:pointer;">ЗАЖМИ</button>
+                </div>
+            `;
+            const btn = document.getElementById('hold-btn');
+            const timerEl = document.getElementById('hold-timer');
+            let interval;
+
+            btn.addEventListener('mousedown', () => {
+                isHolding = true;
+                interval = setInterval(() => {
+                    if (!isHolding) return;
+                    timeLeft -= 0.1;
+                    timerEl.textContent = timeLeft.toFixed(1);
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        alert('Ты удержал! Счёт: ' + score);
+                        closeModalFunc();
+                    }
+                }, 100);
+            });
+            btn.addEventListener('mouseup', () => {
+                isHolding = false;
+                clearInterval(interval);
+                alert('Ты отпустил слишком рано!');
+                closeModalFunc();
+            });
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); btn.dispatchEvent(new Event('mousedown')); });
+            btn.addEventListener('touchend', (e) => { e.preventDefault(); btn.dispatchEvent(new Event('mouseup')); });
+        }
+
+        // 4. Не нажми на бомбу
+        function startBombAvoid() {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">💣 Не нажми на бомбу</h2>
+                    <p style="color:#fff;">Нажимай на зеленые квадраты, но не на бомбы!</p>
+                    <div id="bomb-area" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-top:20px;"></div>
+                    <p style="color:#ffd23f; font-size:20px;">Счёт: <span id="bomb-score">0</span></p>
+                </div>
+            `;
+            window.bombState = { score: 0 };
+            renderBombGrid();
+        }
+        window.renderBombGrid = function() {
+            const area = document.getElementById('bomb-area');
+            if (!area) return;
+            area.innerHTML = '';
+            for (let i = 0; i < 16; i++) {
+                const isBomb = Math.random() > 0.7;
+                const cell = document.createElement('div');
+                cell.style.cssText = `width:50px; height:50px; background:${isBomb ? '#ff4d4d' : '#3ddbb0'}; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:20px;`;
+                cell.textContent = isBomb ? '💣' : '✅';
+                cell.onclick = () => {
+                    if (isBomb) {
+                        alert('Бум! Ты нажал на бомбу. Счёт: ' + window.bombState.score);
+                        closeModalFunc();
+                    } else {
+                        window.bombState.score++;
+                        document.getElementById('bomb-score').textContent = window.bombState.score;
+                        renderBombGrid();
+                    }
+                };
+                area.appendChild(cell);
+            }
+        };
+
+        // 5. Логическая последовательность (запоминалка)
+        function startSequenceGame() {
+            const colors = ['#ff6b6b', '#3ddbb0', '#ffd23f', '#6bc5ff'];
+            let sequence = [], userSequence = [], isShowing = false;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🧠 Запомни последовательность</h2>
+                    <p style="color:#fff;" id="seq-msg">Смотри...</p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:20px;">
+                        ${colors.map((c, i) => `<div id="seq-btn-${i}" onclick="clickSequence(${i})" style="width:80px; height:80px; background:${c}; border-radius:15px; cursor:pointer; opacity:0.5; transition:opacity 0.2s;"></div>`).join('')}
+                    </div>
+                </div>
+            `;
+            window.seqState = { colors, sequence, userSequence, isShowing: false };
+            addSequenceStep();
+        }
+        function addSequenceStep() {
+            const state = window.seqState;
+            state.sequence.push(Math.floor(Math.random() * 4));
+            state.userSequence = [];
+            state.isShowing = true;
+            document.getElementById('seq-msg').textContent = 'Смотри...';
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= state.sequence.length) {
+                    clearInterval(interval);
+                    state.isShowing = false;
+                    document.getElementById('seq-msg').textContent = 'Твой ход!';
+                    return;
+                }
+                const btn = document.getElementById(`seq-btn-${state.sequence[i]}`);
+                btn.style.opacity = '1';
+                setTimeout(() => btn.style.opacity = '0.5', 300);
+                i++;
+            }, 600);
+        }
+        window.clickSequence = function(index) {
+            const state = window.seqState;
+            if (state.isShowing) return;
+            state.userSequence.push(index);
+            const currentIndex = state.userSequence.length - 1;
+            
+            if (state.userSequence[currentIndex] !== state.sequence[currentIndex]) {
+                alert('Ошибка! Последовательность сброшена.');
+                closeModalFunc();
+                return;
+            }
+            if (state.userSequence.length === state.sequence.length) {
+                setTimeout(addSequenceStep, 1000);
+            }
+        };
+
+        // Остальные 15 игр (6-20) — это мини-задания на скорость и клики
+        // Чтобы не раздувать код, мы сделаем их с уникальными параметрами
+        const simpleGames = [
+            { id: 'click_fast', name: 'Клик на скорость', desc: 'Нажми 20 раз за 5 секунд!' },
+            { id: 'find_num', name: 'Найди число', desc: 'Найди все числа от 1 до 10' },
+            { id: 'math_easy', name: 'Примеры', desc: 'Реши 5 примеров подряд' },
+            { id: 'color_match', name: 'Совпадение цветов', desc: 'Нажми на совпадающий цвет' },
+            { id: 'memory_word', name: 'Слова', desc: 'Запомни слово и введи его' }
+        ];
+
+        // Функция генерации простых игр
+        function startSimpleGame(id) {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🎮 ${id}</h2>
+                    <p style="color:#fff;">Игра в разработке (тут будет код для ${id})</p>
+                    <button onclick="closeModalFunc()" style="padding:10px 20px; background:#ff6b6b; border:none; border-radius:8px; color:#fff; cursor:pointer;">Выход</button>
+                </div>
+            `;
+        }
+
+        // 6. Быстрый клик
+        function startFastClick() {
+            let count = 0, time = 5;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">⚡ Быстрый клик</h2>
+                    <p style="color:#fff;">Нажми 20 раз за 5 секунд!</p>
+                    <p style="color:#ffd23f; font-size:20px;">Осталось: <span id="fast-time">5</span>с</p>
+                    <button id="fast-btn" style="padding:30px 60px; font-size:24px; background:#3ddbb0; border:none; border-radius:15px; cursor:pointer;">ЖМИ</button>
+                    <p style="color:#fff; font-size:20px;">Кликов: <span id="fast-count">0</span></p>
+                </div>
+            `;
+            const btn = document.getElementById('fast-btn');
+            const timerEl = document.getElementById('fast-time');
+            const countEl = document.getElementById('fast-count');
+            const interval = setInterval(() => {
+                time--;
+                timerEl.textContent = time;
+                if (time <= 0) {
+                    clearInterval(interval);
+                    alert(count >= 20 ? 'Победа!' : 'Провал!');
+                    closeModalFunc();
+                }
+            }, 1000);
+            btn.onclick = () => {
+                count++;
+                countEl.textContent = count;
+            };
+        }
+
+        // 7. Найди число
+        function startFindNumber() {
+            let numbers = [1,2,3,4,5,6,7,8,9,10].sort(() => Math.random() - 0.5);
+            let next = 1;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🔢 Найди число</h2>
+                    <p style="color:#fff;">Нажми на число <b id="next-num">1</b></p>
+                    <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-top:20px;">
+                        ${numbers.map(n => `<div onclick="findNum(${n})" style="width:50px; height:50px; background:#333; color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; border-radius:10px; cursor:pointer;">${n}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+            window.findState = { next: 1 };
+        }
+        window.findNum = function(n) {
+            if (n === window.findState.next) {
+                window.findState.next++;
+                document.getElementById('next-num').textContent = window.findState.next;
+                if (window.findState.next > 10) {
+                    alert('Победа!');
+                    closeModalFunc();
+                }
+            } else {
+                alert('Неправильно!');
+                closeModalFunc();
+            }
+        };
+
+        // 8. Математика
+        function startMath() {
+            let score = 0;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">➗ Математика</h2>
+                    <p id="math-question" style="color:#ffd23f; font-size:30px;"></p>
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <input type="number" id="math-answer" style="padding:10px; font-size:20px; width:100px; text-align:center;">
+                        <button onclick="checkMath()" style="padding:10px 20px; background:#3ddbb0; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Ответить</button>
+                    </div>
+                    <p style="color:#fff; font-size:20px;">Счёт: <span id="math-score">0</span></p>
+                </div>
+            `;
+            window.mathState = { score: 0 };
+            nextMath();
+        }
+        function nextMath() {
+            const a = Math.floor(Math.random() * 20) + 1;
+            const b = Math.floor(Math.random() * 20) + 1;
+            window.mathState.answer = a + b;
+            document.getElementById('math-question').textContent = `${a} + ${b} = ?`;
+            document.getElementById('math-answer').value = '';
+        }
+        window.checkMath = function() {
+            const val = parseInt(document.getElementById('math-answer').value);
+            if (val === window.mathState.answer) {
+                window.mathState.score++;
+                document.getElementById('math-score').textContent = window.mathState.score;
+                if (window.mathState.score >= 5) {
+                    alert('Победа!');
+                    closeModalFunc();
+                } else {
+                    nextMath();
+                }
+            } else {
+                alert('Неправильно! Игра окончена.');
+                closeModalFunc();
+            }
+        };
+
+        // 9. Память слов
+        function startWordMemory() {
+            const words = ['КОТ', 'ДОМ', 'ЛЕС', 'МИР', 'СОН'];
+            const target = words[Math.floor(Math.random() * 5)];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🔤 Запомни слово</h2>
+                    <p style="color:#fff; font-size:40px; letter-spacing:5px;">${target}</p>
+                    <button onclick="startWordCheck('${target}')" style="margin-top:20px; padding:10px 20px; background:#3ddbb0; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Я запомнил</button>
+                </div>
+            `;
+        }
+        window.startWordCheck = function(target) {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">Какое слово было?</h2>
+                    <input type="text" id="word-answer" style="padding:10px; font-size:20px; width:200px; text-align:center; text-transform:uppercase;">
+                    <button onclick="checkWord('${target}')" style="margin-top:20px; padding:10px 20px; background:#ffd23f; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Проверить</button>
+                </div>
+            `;
+        };
+        window.checkWord = function(target) {
+            const val = document.getElementById('word-answer').value.toUpperCase();
+            if (val === target) {
+                alert('Победа!');
+            } else {
+                alert('Ошибка! Было слово: ' + target);
+            }
+            closeModalFunc();
+        };
+
+        // 10. Совпадение цветов
+        function startColorMatch() {
+            const colors = ['#ff6b6b', '#3ddbb0', '#ffd23f', '#6bc5ff', '#b19cd9'];
+            const target = colors[Math.floor(Math.random() * 5)];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modern-game-bg" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                    <h2 style="color:#fff;">🎨 Совпадение</h2>
+                    <p style="color:#fff;">Выбери цвет: <b style="color:${target};">${target}</b></p>
+                    <div style="display:flex; gap:15px; margin-top:20px;">
+                        ${colors.map(c => `<div onclick="checkColor('${c}', '${target}')" style="width:60px; height:60px; background:${c}; border-radius:50%; cursor:pointer;"></div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        window.checkColor = function(c, target) {
+            if (c === target) alert('Победа!');
+            else alert('Ошибка!');
+            closeModalFunc();
+        };
     </script>
 </body>
 </html>
